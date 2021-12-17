@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Light.GuardClauses;
 
@@ -7,7 +8,12 @@ namespace Light.Validation;
 
 public sealed class ValidationContext
 {
+    public ValidationContext(Func<string, string>? normalizeKey = null) =>
+        NormalizeKey = normalizeKey;
+
     public Dictionary<string, object>? Errors { get; private set; }
+
+    private Func<string, string>? NormalizeKey { get; }
 
     public bool HasErrors => Errors is { Count: > 0 };
 
@@ -60,6 +66,17 @@ public sealed class ValidationContext
 
     private static Dictionary<string, object> CreateErrorsDictionary() =>
         new(StringComparer.OrdinalIgnoreCase);
+
+    public Check<T> Check<T>(T value, [CallerArgumentExpression("value")] string key = "")
+    {
+        key.MustNotBeNullOrWhiteSpace();
+        key = NormalizeKeyInternal(key);
+
+        return new Check<T>(this, key, value);
+    }
+
+    private string NormalizeKeyInternal(string key) =>
+        NormalizeKey?.Invoke(key) ?? StringExtensions.EnsureFirstLetterIsLowerCase(key);
 
     public override string ToString()
     {
