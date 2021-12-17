@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using Light.GuardClauses;
 
 namespace Light.Validation;
@@ -13,7 +14,7 @@ public sealed class ValidationContext
     public void AddError(string key, string errorMessage, bool tryAppend = true)
     {
         key.MustNotBeNullOrWhiteSpace();
-        
+
         if (Errors == null)
         {
             Errors = CreateErrorsDictionary();
@@ -58,5 +59,41 @@ public sealed class ValidationContext
     public bool RemoveError(string key) => Errors?.Remove(key) ?? false;
 
     private static Dictionary<string, object> CreateErrorsDictionary() =>
-        new (StringComparer.OrdinalIgnoreCase);
+        new(StringComparer.OrdinalIgnoreCase);
+
+    public override string ToString()
+    {
+        if (Errors is null or { Count: 0 })
+            return "No Errors";
+
+        var stringBuilder = new StringBuilder();
+        CreateStringRepresentationRecursively(stringBuilder, Errors);
+        return stringBuilder.ToString();
+
+        static void CreateStringRepresentationRecursively(StringBuilder stringBuilder, Dictionary<string, object> currentErrors)
+        {
+            stringBuilder.Append("{ ");
+            var count = currentErrors.Count;
+            var i = 0;
+            foreach (var keyValuePair in currentErrors)
+            {
+                stringBuilder.Append(keyValuePair.Key)
+                             .Append(": ");
+                switch (keyValuePair.Value)
+                {
+                    case string errorMessage:
+                        stringBuilder.Append(errorMessage);
+                        break;
+                    case Dictionary<string, object> childErrors:
+                        CreateStringRepresentationRecursively(stringBuilder, childErrors);
+                        break;
+                }
+
+                if (i++ < count - 1)
+                    stringBuilder.Append(", ");
+            }
+
+            stringBuilder.Append(" }");
+        }
+    }
 }
