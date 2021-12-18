@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Light.GuardClauses;
@@ -73,6 +74,18 @@ public sealed class ValidationContext
         key = NormalizeKeyInternal(key);
 
         return new Check<T>(this, key, value);
+    }
+
+    public bool TryGetErrors([NotNullWhen(true)] out Dictionary<string, object>? errors)
+    {
+        if (Errors is { Count: > 0 })
+        {
+            errors = Errors;
+            return true;
+        }
+
+        errors = default;
+        return false;
     }
 
     private string NormalizeKeyInternal(string key) =>
