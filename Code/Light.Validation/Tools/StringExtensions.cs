@@ -10,7 +10,7 @@ public static class StringExtensions
     {
         value.MustNotBeNullOrWhiteSpace();
 
-        var indexOfDot = value.IndexOf('.');
+        var indexOfDot = value.LastIndexOf('.');
         if (indexOfDot == -1)
             return EnsureFirstLetterIsLowerCase(value);
 
