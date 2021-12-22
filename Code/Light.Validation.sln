@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Light.Validation", "Light.V
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Light.Validation.Tests", "Light.Validation.Tests\Light.Validation.Tests.csproj", "{C807F4D3-1C85-4C02-817B-74D9E7D300A6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Light.Validation.Benchmarks", "Light.Validation.Benchmarks\Light.Validation.Benchmarks.csproj", "{B87C45EB-A063-44BC-AF8A-B4C498539A02}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{C807F4D3-1C85-4C02-817B-74D9E7D300A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C807F4D3-1C85-4C02-817B-74D9E7D300A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C807F4D3-1C85-4C02-817B-74D9E7D300A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B87C45EB-A063-44BC-AF8A-B4C498539A02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B87C45EB-A063-44BC-AF8A-B4C498539A02}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B87C45EB-A063-44BC-AF8A-B4C498539A02}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B87C45EB-A063-44BC-AF8A-B4C498539A02}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
