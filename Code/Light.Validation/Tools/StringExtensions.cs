@@ -1,7 +1,7 @@
 ﻿using System;
 using Light.GuardClauses;
 
-namespace Light.Validation;
+namespace Light.Validation.Tools;
 
 public static class StringExtensions
 {
