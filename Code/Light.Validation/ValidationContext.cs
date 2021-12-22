@@ -90,7 +90,7 @@ public sealed class ValidationContext
     }
 
     private string NormalizeKeyInternal(string key) =>
-        NormalizeKey?.Invoke(key) ?? StringExtensions.EnsureFirstLetterIsLowerCase(key);
+        NormalizeKey?.Invoke(key) ?? key.NormalizeLastSectionToLowerCamelCase();
 
     public override string ToString()
     {

@@ -1,11 +1,31 @@
 ﻿using System;
 using Light.GuardClauses;
+using Light.GuardClauses.Exceptions;
 
 namespace Light.Validation.Tools;
 
 public static class StringExtensions
 {
-    public static string EnsureFirstLetterIsLowerCase(string value)
+    public static string NormalizeLastSectionToLowerCamelCase(this string value)
+    {
+        value.MustNotBeNullOrWhiteSpace();
+
+        var indexOfDot = value.IndexOf('.');
+        if (indexOfDot == -1)
+            return EnsureFirstLetterIsLowerCase(value);
+
+        var startIndex = indexOfDot + 1;
+        if (startIndex == value.Length)
+            throw new StringException(nameof(value), $"The value \"{value}\" cannot be normalized because it ends with a dot");
+
+        var readOnlySpan = value.AsSpan(startIndex);
+        Span<char> span = stackalloc char[readOnlySpan.Length];
+        readOnlySpan.CopyTo(span);
+        span[0] = char.ToLowerInvariant(span[0]);
+        return span.ToString();
+    }
+    
+    public static string EnsureFirstLetterIsLowerCase(this string value)
     {
         value.MustNotBeNullOrWhiteSpace();
 
@@ -18,7 +38,7 @@ public static class StringExtensions
         return span.ToString();
     }
 
-    public static string EnsureFirstLetterIsUpperCase(string value)
+    public static string EnsureFirstLetterIsUpperCase(this string value)
     {
         value.MustNotBeNullOrWhiteSpace();
 

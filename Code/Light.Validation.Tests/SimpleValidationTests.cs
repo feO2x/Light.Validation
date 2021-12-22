@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
 using Xunit;
 using Xunit.Abstractions;
@@ -12,7 +13,7 @@ public sealed class SimpleValidationTests
     private ITestOutputHelper Output { get; }
 
     [Fact]
-    public void ValidateInvalidLoginDto()
+    public void ValidateDtoDirectly()
     {
         var invalidDto = new UpdateUserNameDto { Id = 0, UserName = "" };
 
@@ -21,6 +22,33 @@ public sealed class SimpleValidationTests
         Output.WriteLine(Json.Serialize(errors));
         result.Should().BeTrue();
         errors.Should().HaveCount(2);
+        CheckKeys(errors!, "id", "userName");
+    }
+
+    [Fact]
+    public void ValidateViaValidator()
+    {
+        var invalidDto = new UpdateUserNameDto { Id = 0, UserName = " " };
+        var validator = new DtoValidator();
+
+        var result = validator.CheckForErrors(invalidDto, out var errors);
+
+        Output.WriteLine(Json.Serialize(errors));
+        result.Should().BeTrue();
+        errors.Should().HaveCount(2);
+        CheckKeys(errors!, "id", "userName");
+    }
+
+    private static void CheckKeys(Dictionary<string, object> errors, params string[] expectedKeys) =>
+        errors.Keys.OrderBy(key => key).Should().Equal(expectedKeys.OrderBy(key => key));
+
+    private sealed class DtoValidator : Validator<UpdateUserNameDto>
+    {
+        protected override void CheckForErrors(ValidationContext context, UpdateUserNameDto dto)
+        {
+            context.Check(dto.Id).GreaterThan(0);
+            dto.UserName = context.Check(dto.UserName).TrimAndCheckNotWhiteSpace();
+        }
     }
 
     private sealed class UpdateUserNameDto
