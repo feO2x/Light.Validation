@@ -22,7 +22,7 @@ public static class Checks
 
     public static Check<string> IsNotNullOrWhiteSpace(this Check<string> check, string message = null)
     {
-        if (check.IsNotNull().HasErrors)
+        if (check.IsNotNull().HasError)
             return check;
 
         if (check.Value.IsNullOrWhiteSpace())
