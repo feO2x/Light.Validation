@@ -162,6 +162,11 @@ public sealed class ValidationContext
     }
 
     /// <summary>
+    /// Creates a validation result with the internal errors dictionary.
+    /// </summary>
+    public ValidationResult CreateResult() => new (Errors);
+
+    /// <summary>
     /// Tries to retrieve the errors that were tracked by this context.
     /// </summary>
     /// <param name="errors">The dictionary that contains the errors.</param>
