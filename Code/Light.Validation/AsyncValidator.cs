@@ -27,7 +27,7 @@ public abstract class AsyncValidator<T>
     public async Task<ValidationResult> ValidateAsync(T value, ValidationContext context)
     {
         context.MustNotBeNull();
-        await CheckForErrorsAsync(context, value).ConfigureAwait(false);
+        await PerformValidationAsync(context, value).ConfigureAwait(false);
         return context.CreateResult();
     }
 
@@ -38,5 +38,5 @@ public abstract class AsyncValidator<T>
     /// </summary>
     /// <param name="context">The context that tracks errors in a dictionary.</param>
     /// <param name="value">The value to be checked.</param>
-    protected abstract Task CheckForErrorsAsync(ValidationContext context, T value);
+    protected abstract Task PerformValidationAsync(ValidationContext context, T value);
 }
