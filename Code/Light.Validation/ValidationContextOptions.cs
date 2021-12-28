@@ -7,7 +7,7 @@ namespace Light.Validation;
 /// <summary>
 /// Represents options for the <see cref="ValidationContext" /> class.
 /// </summary>
-public sealed class ValidationContextOptions
+public sealed record ValidationContextOptions
 {
     /// <summary>
     /// Gets the default validation context options.
