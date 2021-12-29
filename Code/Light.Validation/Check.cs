@@ -1,5 +1,6 @@
 ﻿using System;
 using Light.GuardClauses;
+using Light.Validation.Tools;
 
 namespace Light.Validation;
 
@@ -8,7 +9,7 @@ namespace Light.Validation;
 /// objects to validate a value.
 /// </summary>
 /// <typeparam name="T">The type of the value to be checked.</typeparam>
-public readonly record struct Check<T>
+public readonly record struct Check<T> : ICheck
 {
     /// <summary>
     /// Initializes a new instance of <see cref="Check{T}" />.

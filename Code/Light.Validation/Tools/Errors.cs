@@ -17,9 +17,9 @@ public static class Errors
     /// The error message (optional). If null is provided, an error message will be
     /// generated from the error templates associated with the context.
     /// </param>
-    /// <typeparam name="T">The type of the value to be checked.</typeparam>
-    public static void AddNotNullError<T>(this Check<T> check, string? message = null)
-        where T : class
+    /// <typeparam name="TCheck">The struct type that implements <see cref="ICheck"/>.</typeparam>
+    public static void AddNotNullError<TCheck>(this TCheck check, string? message = null)
+        where TCheck : struct, ICheck
     {
         message ??= string.Format(check.Context.ErrorTemplates.NotNull, check.Key);
         check.AddError(message);

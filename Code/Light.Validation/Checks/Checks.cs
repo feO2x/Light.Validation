@@ -43,8 +43,43 @@ public static class Checks
     /// <typeparam name="T">The type of the value to be checked.</typeparam>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="errorMessageFactory"/> is null.</exception>
     public static Check<T> IsNotNull<T>(this Check<T> check, Func<Check<T>, string> errorMessageFactory)
+        where T : class
     {
         if (check.Value is null)
+            check.AddError(errorMessageFactory);
+        return check;
+    }
+
+    /// <summary>
+    /// Checks if the specified nullable value is not null, or otherwise adds an error message
+    /// to the validation context.
+    /// </summary>
+    /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
+    /// <param name="message">
+    /// The error message that will be added to the context (optional). If null is provided, the default error
+    /// message will be created from the error templates associated to the validation context.
+    /// </param>
+    /// <typeparam name="T">The type of the value to be checked.</typeparam>
+    public static Check<T?> IsNotNull<T>(this Check<T?> check, string message = null)
+        where T : struct
+    {
+        if (check.Value == null)
+            check.AddNotNullError(message);
+        return check;
+    }
+    
+    /// <summary>
+    /// Checks if the specified value is not null, or otherwise adds the error message that was created
+    /// from the specified factory to the validation context.
+    /// </summary>
+    /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
+    /// <param name="errorMessageFactory">The delegate that is used to create the error message.</param>
+    /// <typeparam name="T">The type of the value to be checked.</typeparam>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="errorMessageFactory"/> is null.</exception>
+    public static Check<T?> IsNotNull<T>(this Check<T?> check, Func<Check<T?>, string> errorMessageFactory)
+        where T : struct
+    {
+        if (check.Value == null)
             check.AddError(errorMessageFactory);
         return check;
     }
