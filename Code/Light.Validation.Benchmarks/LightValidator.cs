@@ -1,4 +1,7 @@
-﻿namespace Light.Validation.Benchmarks;
+﻿using Light.Validation.Checks;
+using Light.Validation.Tools;
+
+namespace Light.Validation.Benchmarks;
 
 public sealed class LightValidator : Validator<UpdateUserNameDto>
 {

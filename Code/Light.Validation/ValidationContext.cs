@@ -4,6 +4,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Light.GuardClauses;
+using Light.Validation.Checks;
+using Light.Validation.Localization;
 using Light.Validation.Tools;
 
 namespace Light.Validation;
@@ -22,9 +24,17 @@ public sealed class ValidationContext
     /// The options for this context (optional). If null is specified,
     /// <see cref="ValidationContextOptions.Default" /> will be used.
     /// </param>
-    public ValidationContext(ValidationContextOptions? options = null)
+    /// <param name="errorTemplates">
+    /// The error templates for this context (optional). These are
+    /// used to format the error messages if a check fails. If null
+    /// is specified, <see cref="Light.Validation.Localization.ErrorTemplates.Default" />
+    /// will be used.
+    /// </param>
+    public ValidationContext(ValidationContextOptions? options = null,
+                             ErrorTemplates? errorTemplates = null)
     {
         Options = options ?? ValidationContextOptions.Default;
+        ErrorTemplates = errorTemplates ?? ErrorTemplates.Default;
     }
 
     /// <summary>
@@ -33,7 +43,16 @@ public sealed class ValidationContext
     /// </summary>
     public Dictionary<string, object>? Errors { get; private set; }
 
-    private ValidationContextOptions Options { get; }
+    /// <summary>
+    /// Gets the options for this validation context. 
+    /// </summary>
+    public ValidationContextOptions Options { get; }
+    
+    /// <summary>
+    /// Gets the error templates for this context. These are
+    /// used to format the error messages if a check fails.
+    /// </summary>
+    public ErrorTemplates ErrorTemplates { get; }
 
     /// <summary>
     /// Checks if the internal errors dictionary is initialized

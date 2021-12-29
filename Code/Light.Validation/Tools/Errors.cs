@@ -1,14 +1,27 @@
 ﻿using System;
+using Light.GuardClauses;
 using Light.GuardClauses.FrameworkExtensions;
 
 namespace Light.Validation.Tools;
 
+/// <summary>
+/// Provides extension methods that add error messages to the validation context.
+/// </summary>
 public static class Errors
 {
-    public static void AddIsNotNullError<T>(this Check<T> check, string? message = null)
+    /// <summary>
+    /// Adds the not null error message to the context.
+    /// </summary>
+    /// <param name="check">The structure that encapsulates the value to be checked.</param>
+    /// <param name="message">
+    /// The error message (optional). If null is provided, an error message will be
+    /// generated from the error templates associated with the context.
+    /// </param>
+    /// <typeparam name="T">The type of the value to be checked.</typeparam>
+    public static void AddNotNullError<T>(this Check<T> check, string? message = null)
         where T : class
     {
-        message ??= $"{check.Key} must not be null";
+        message ??= string.Format(check.Context.ErrorTemplates.NotNull, check.Key);
         check.AddError(message);
     }
 
@@ -21,13 +34,50 @@ public static class Errors
     public static void AddIsGreaterThanError<T>(this Check<T> check, T other, string? message = null)
         where T : IComparable<T>
     {
-        message ??= $"{check.Key} must be greater than {other.ToStringRepresentation()}.";
+        message ??= string.Format(
+            check.Context.ErrorTemplates.GreaterThan,
+            check.Key,
+            other.ToStringRepresentation()
+        );
         check.AddError(message);
     }
 
     public static void AddIsEmptyOrWhiteSpaceError(this Check<string> check, string? message = null)
     {
         message ??= $"{check.Key} must not be empty or contain only white space";
+        check.AddError(message);
+    }
+
+    /// <summary>
+    /// Adds the error message to the context, using the specified error message factory.
+    /// </summary>
+    /// <param name="check">The structure that encapsulates the value to be checked.</param>
+    /// <param name="errorMessageFactory">The delegate that receives the check and creates an error message.</param>
+    /// <typeparam name="T">The type of the value to be checked.</typeparam>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="errorMessageFactory"/> is null.</exception>
+    public static void AddError<T>(this Check<T> check, Func<Check<T>, string> errorMessageFactory)
+    {
+        errorMessageFactory.MustNotBeNull();
+
+        var message = errorMessageFactory(check);
+        check.AddError(message);
+    }
+
+    /// <summary>
+    /// Adds the error message to the context, using the specified error message factory.
+    /// </summary>
+    /// <param name="check">The structure that encapsulates the value to be checked.</param>
+    /// <param name="comparativeValue">A comparative value that was used to validate the value to be validated.</param>
+    /// <param name="errorMessageFactory">The delegate that receives the check and creates an error message.</param>
+    /// <typeparam name="T">The type of the value to be checked.</typeparam>
+    /// <typeparam name="TParameter">The type of the comparative value.</typeparam>
+    public static void AddError<T, TParameter>(this Check<T> check,
+                                               TParameter comparativeValue,
+                                               Func<Check<T>, TParameter, string> errorMessageFactory)
+    {
+        errorMessageFactory.MustNotBeNull();
+
+        var message = errorMessageFactory(check, comparativeValue);
         check.AddError(message);
     }
 }

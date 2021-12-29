@@ -48,10 +48,13 @@ public static class StringExtensions
         // We only want to find dots that are not the last
         // character of the input key. That's why we start at
         // span.Length - 2.
-        for (var i = span.Length - 2; i >= 0; i--)
+        var i = span.Length - 2;
+        while (i >= 0)
         {
             if (span[i] == '.')
                 return i;
+
+            i--;
         }
 
         return -1;

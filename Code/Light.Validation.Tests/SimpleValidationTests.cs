@@ -3,6 +3,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Light.GuardClauses;
+using Light.Validation.Checks;
+using Light.Validation.Tools;
 using Microsoft.AspNetCore.Mvc;
 using Synnotech.DatabaseAbstractions;
 using Synnotech.DatabaseAbstractions.Mocks;
