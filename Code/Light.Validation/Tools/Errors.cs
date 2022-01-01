@@ -39,6 +39,20 @@ public static class Errors
         check.AddError(message);
     }
 
+    /// <summary>
+    /// Adds the Regex Must Match error message to the context.
+    /// </summary>
+    /// <param name="check">The structure that encapsulates the value to be checked.</param>
+    /// <param name="message">
+    /// The error message (optional). If null is provided, an error message will be
+    /// generated from the error templates associated with the context.
+    /// </param>
+    public static void AddRegexMustMatchError(this Check<string> check, string? message = null)
+    {
+        message ??= string.Format(check.Context.ErrorTemplates.RegexMustMatch, check.Key);
+        check.AddError(message);
+    }
+
     public static void AddIsNotNullOrWhiteSpaceError(this Check<string> check, string? message = null)
     {
         message ??= $"{check.Key} must not be empty or contain only white space.";

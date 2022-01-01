@@ -14,7 +14,7 @@ namespace Light.Validation.Checks;
 /// Provides extensions for the <see cref="Check{T}"/> structure
 /// that allow easy validation of values.
 /// </summary>
-public static class Checks
+public static partial class Checks
 {
     /// <summary>
     /// Checks if the specified value is not null, or otherwise adds an error message
@@ -36,7 +36,7 @@ public static class Checks
 
     /// <summary>
     /// Checks if the specified value is not null, or otherwise adds the error message that was created
-    /// from the specified factory to the validation context.
+    /// by the specified factory to the validation context.
     /// </summary>
     /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
     /// <param name="errorMessageFactory">The delegate that is used to create the error message.</param>
@@ -70,7 +70,7 @@ public static class Checks
     
     /// <summary>
     /// Checks if the specified value is not null, or otherwise adds the error message that was created
-    /// from the specified factory to the validation context.
+    /// by the specified factory to the validation context.
     /// </summary>
     /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
     /// <param name="errorMessageFactory">The delegate that is used to create the error message.</param>
@@ -102,7 +102,7 @@ public static class Checks
 
     /// <summary>
     /// Checks if the specified GUID is not empty, or otherwise adds the error message that was created
-    /// from the specified factory to the validation context.
+    /// by the specified factory to the validation context.
     /// </summary>
     /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
     /// <param name="errorMessageFactory">The delegate that is used to create the error message.</param>

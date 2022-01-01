@@ -50,4 +50,14 @@ public record ErrorTemplates
     /// </list>
     /// </summary>
     public string NotEmptyGuid { get; set; } = "{0} must not be an empty GUID.";
+
+    /// <summary>
+    /// Gets or sets the template for the Regex Must Match error message.
+    /// The default value is "{0} must match the required pattern.".
+    /// This template takes one parameter:
+    /// <list type="bullet">
+    /// <item>{0} key</item>
+    /// </list>
+    /// </summary>
+    public string RegexMustMatch { get; set; } = "{0} must match the required pattern.";
 }
