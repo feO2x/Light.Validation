@@ -84,6 +84,36 @@ public static class Checks
         return check;
     }
 
+    /// <summary>
+    /// Checks if the specified GUID is not empty, or otherwise adds an error message to the
+    /// validation context.
+    /// </summary>
+    /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
+    /// <param name="message">
+    /// The error message that will be added to the context (optional). If null is provided, the default error
+    /// message will be created from the error templates associated to the validation context.
+    /// </param>
+    public static Check<Guid> IsNotEmpty(this Check<Guid> check, string message = null)
+    {
+        if (check.Value == Guid.Empty)
+            check.AddNotEmptyGuidError(message);
+        return check;
+    }
+
+    /// <summary>
+    /// Checks if the specified GUID is not empty, or otherwise adds the error message that was created
+    /// from the specified factory to the validation context.
+    /// </summary>
+    /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
+    /// <param name="errorMessageFactory">The delegate that is used to create the error message.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="errorMessageFactory"/> is null.</exception>
+    public static Check<Guid> IsNotEmpty(this Check<Guid> check, Func<Check<Guid>, string> errorMessageFactory)
+    {
+        if (check.Value == Guid.Empty)
+            check.AddError(errorMessageFactory);
+        return check;
+    }
+
     public static Check<string> IsNotNullOrWhiteSpace(this Check<string> check, string message = null)
     {
         if (check.IsNotNull().HasError)

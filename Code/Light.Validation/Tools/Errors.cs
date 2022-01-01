@@ -10,7 +10,7 @@ namespace Light.Validation.Tools;
 public static class Errors
 {
     /// <summary>
-    /// Adds the not null error message to the context.
+    /// Adds the Not Null error message to the context.
     /// </summary>
     /// <param name="check">The structure that encapsulates the value to be checked.</param>
     /// <param name="message">
@@ -22,6 +22,20 @@ public static class Errors
         where TCheck : struct, ICheck
     {
         message ??= string.Format(check.Context.ErrorTemplates.NotNull, check.Key);
+        check.AddError(message);
+    }
+
+    /// <summary>
+    /// Adds the Not Empty GUID error message to the context.
+    /// </summary>
+    /// <param name="check">The structure that encapsulates the value to be checked.</param>
+    /// <param name="message">
+    /// The error message (optional). If null is provided, an error message will be
+    /// generated from the error templates associated with the context.
+    /// </param>
+    public static void AddNotEmptyGuidError(this Check<Guid> check, string? message = null)
+    {
+        message ??= string.Format(check.Context.ErrorTemplates.NotEmptyGuid, check.Key);
         check.AddError(message);
     }
 

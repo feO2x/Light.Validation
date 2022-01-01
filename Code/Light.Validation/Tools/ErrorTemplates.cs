@@ -1,4 +1,6 @@
-﻿namespace Light.Validation.Localization;
+﻿using System;
+
+namespace Light.Validation.Localization;
 
 /// <summary>
 /// <para>
@@ -38,4 +40,14 @@ public record ErrorTemplates
     /// </list>
     /// </summary>
     public string GreaterThan { get; set; } = "{0} must be greater than {1}.";
+
+    /// <summary>
+    /// Gets or sets the template for the Not Empty GUID error message.
+    /// The default value is "{0} must not be an empty GUID.".
+    /// This template takes one parameter:
+    /// <list type="bullet">
+    /// <item>{0} key</item>
+    /// </list>
+    /// </summary>
+    public string NotEmptyGuid { get; set; } = "{0} must not be an empty GUID.";
 }
