@@ -42,6 +42,17 @@ public record ErrorTemplates
     public string GreaterThan { get; set; } = "{0} must be greater than {1}.";
 
     /// <summary>
+    /// Gets or sets the template for the Greater Than Or Equal To error message.
+    /// The default value is "{0} must be greater than or equal to {1}.".
+    /// This template takes two parameters:
+    /// <list type="bullet">
+    /// <item>{0} key</item>
+    /// <item>{1} comparative value</item>
+    /// </list> 
+    /// </summary>
+    public string GreaterThanOrEqualTo { get; set; } = "{0} must be greater than or equal to {1}.";
+
+    /// <summary>
     /// Gets or sets the template for the Not Empty GUID error message.
     /// The default value is "{0} must not be an empty GUID.".
     /// This template takes one parameter:

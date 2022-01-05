@@ -75,7 +75,28 @@ public static class Errors
         message ??= string.Format(
             check.Context.ErrorTemplates.GreaterThan,
             check.Key,
-            comparativeValue.ToStringRepresentation()
+            Formatter.Format(comparativeValue)
+        );
+        check.AddError(message);
+    }
+
+    /// <summary>
+    /// Adds the Greater Than Or Equal To error message to the context.
+    /// </summary>
+    /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
+    /// <param name="comparativeValue">The comparative value the actual value is compared against.</param>
+    /// <param name="message">
+    /// The error message (optional). If null is provided, an error message will be
+    /// generated from the error templates associated with the context.
+    /// </param>
+    /// <typeparam name="T">The type of the value.</typeparam>
+    public static void AddGreaterThanOrEqualToError<T>(this Check<T> check, T comparativeValue, string? message = null)
+        where T : IComparable<T>
+    {
+        message ??= string.Format(
+            check.Context.ErrorTemplates.GreaterThanOrEqualTo,
+            check.Key,
+            Formatter.Format(comparativeValue)
         );
         check.AddError(message);
     }
