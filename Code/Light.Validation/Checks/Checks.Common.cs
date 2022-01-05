@@ -4,12 +4,6 @@ using Light.Validation.Tools;
 
 namespace Light.Validation.Checks;
 
-// We are disabling NRTs here because otherwise, we have many issues
-// with generic parameters that might be null. DTOs are usually deserialized
-// by a serializer that does not care about NRTs, so e.g. even string properties
-// that are marked as non-null might actually be null.
-#nullable disable
-
 /// <summary>
 /// Provides extensions for the <see cref="Check{T}"/> structure
 /// that allow easy validation of values.
@@ -26,14 +20,14 @@ public static partial class Checks
     /// message will be created from the error templates associated to the validation context.
     /// </param>
     /// <typeparam name="T">The type of the value to be checked.</typeparam>
-    public static Check<T> IsNotNull<T>(this Check<T> check, string message = null)
+    public static Check<T> IsNotNull<T>(this Check<T> check, string? message = null)
         where T : class
     {
-        if (check.Value is null)
+        if (check.IsValueNull)
             check.AddNotNullError(message);
         return check;
     }
-
+    
     /// <summary>
     /// Checks if the specified value is not null, or otherwise adds the error message that was created
     /// by the specified factory to the validation context.
@@ -45,7 +39,7 @@ public static partial class Checks
     public static Check<T> IsNotNull<T>(this Check<T> check, Func<Check<T>, string> errorMessageFactory)
         where T : class
     {
-        if (check.Value is null)
+        if (check.IsValueNull)
             check.AddError(errorMessageFactory);
         return check;
     }
@@ -60,10 +54,10 @@ public static partial class Checks
     /// message will be created from the error templates associated to the validation context.
     /// </param>
     /// <typeparam name="T">The type of the value to be checked.</typeparam>
-    public static Check<T?> IsNotNull<T>(this Check<T?> check, string message = null)
+    public static Check<T?> IsNotNull<T>(this Check<T?> check, string? message = null)
         where T : struct
     {
-        if (check.Value == null)
+        if (check.IsValueNull)
             check.AddNotNullError(message);
         return check;
     }
@@ -79,7 +73,7 @@ public static partial class Checks
     public static Check<T?> IsNotNull<T>(this Check<T?> check, Func<Check<T?>, string> errorMessageFactory)
         where T : struct
     {
-        if (check.Value == null)
+        if (check.IsValueNull)
             check.AddError(errorMessageFactory);
         return check;
     }
@@ -93,7 +87,7 @@ public static partial class Checks
     /// The error message that will be added to the context (optional). If null is provided, the default error
     /// message will be created from the error templates associated to the validation context.
     /// </param>
-    public static Check<Guid> IsNotEmpty(this Check<Guid> check, string message = null)
+    public static Check<Guid> IsNotEmpty(this Check<Guid> check, string? message = null)
     {
         if (check.Value == Guid.Empty)
             check.AddNotEmptyGuidError(message);
@@ -114,7 +108,7 @@ public static partial class Checks
         return check;
     }
 
-    public static Check<string> IsNotNullOrWhiteSpace(this Check<string> check, string message = null)
+    public static Check<string> IsNotNullOrWhiteSpace(this Check<string> check, string? message = null)
     {
         if (check.IsNotNull().HasError)
             return check;
@@ -125,12 +119,12 @@ public static partial class Checks
         return check;
     }
 
-    public static Check<T> GreaterThan<T>(this Check<T> check, T other, string message = null)
+    public static Check<T> GreaterThan<T>(this Check<T> check, T other, string? message = null)
         where T : IComparable<T>
     {
         other.MustNotBeNullReference();
         
-        if (check.Value is null)
+        if (check.IsValueNull)
             return check;
 
         if (check.Value.CompareTo(other) <= 0)
@@ -139,12 +133,12 @@ public static partial class Checks
         return check;
     }
 
-    public static string TrimAndCheckNotWhiteSpace(this Check<string> check, string message = null)
+    public static string TrimAndCheckNotWhiteSpace(this Check<string> check, string? message = null)
     {
-        if (check.Value is null)
+        if (check.IsValueNull)
         {
             check.AddNotNullError(message);
-            return null;
+            return null!;
         }
 
         var value = check.Value;

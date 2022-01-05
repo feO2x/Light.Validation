@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using Light.GuardClauses;
 using Light.Validation.Tools;
 
@@ -57,4 +58,13 @@ public readonly record struct Check<T> : ICheck
     /// same context and key, but with the specified value.
     /// </summary>
     public Check<T> WithNewValue(T newValue) => new (Context, Key, newValue);
+    
+    /// <summary>
+    /// Gets the value indicating whether <see cref="Value" /> is null.
+    /// </summary>
+    public bool IsValueNull
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => Value is null;
+    }
 }
