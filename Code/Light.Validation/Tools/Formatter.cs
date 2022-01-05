@@ -1,11 +1,10 @@
 ﻿using System.Globalization;
 using System.Runtime.CompilerServices;
-using Light.GuardClauses;
 
 namespace Light.Validation.Tools;
 
 /// <summary>
-/// Provides an extension method to format generic values. 
+/// Provides an extension method to format generic values.
 /// </summary>
 public static class Formatter
 {
@@ -13,17 +12,18 @@ public static class Formatter
     /// Calls ToString on the value and returns it. If the value is either double, float, or decimal,
     /// ToString will be called with the invariant culture.
     /// </summary>
-    public static string Format<T>(T value)
+    public static string Format<T>(T value, CultureInfo cultureInfo)
     {
-        value.MustNotBeNullReference();
-        
-        if (typeof(T) == typeof(double))
-            return Unsafe.As<T, double>(ref value).ToString(CultureInfo.InvariantCulture);
-        if (typeof(T) == typeof(float))
-            return Unsafe.As<T, float>(ref value).ToString(CultureInfo.InvariantCulture);
-        if (typeof(T) == typeof(decimal))
-            return Unsafe.As<T, decimal>(ref value).ToString(CultureInfo.InvariantCulture);
+        if (value is null)
+            return "null";
 
-        return value!.ToString();
+        if (typeof(T) == typeof(double))
+            return Unsafe.As<T, double>(ref value).ToString(cultureInfo);
+        if (typeof(T) == typeof(float))
+            return Unsafe.As<T, float>(ref value).ToString(cultureInfo);
+        if (typeof(T) == typeof(decimal))
+            return Unsafe.As<T, decimal>(ref value).ToString(cultureInfo);
+
+        return value.ToString();
     }
 }

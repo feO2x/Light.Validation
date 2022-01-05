@@ -1,7 +1,6 @@
 ﻿using System.Globalization;
 using Light.Validation.Checks;
 using Light.Validation.Tests.TestHelpers;
-using Light.Validation.Tools;
 using Xunit;
 
 namespace Light.Validation.Tests.Checks;
@@ -35,7 +34,7 @@ public static class IsGreaterThanOrEqualToTests
         context.Check(dto.Value).IsGreaterThanOrEqualTo(comparativeValue);
 
         context.ShouldHaveSingleError(
-            "value", $"value must be greater than or equal to {Formatter.Format(comparativeValue)}.");
+            "value", $"value must be greater than or equal to {comparativeValue.ToString()}.");
     }
 
     [Theory]

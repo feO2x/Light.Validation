@@ -5,7 +5,6 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using Light.GuardClauses;
 using Light.Validation.Checks;
-using Light.Validation.Localization;
 using Light.Validation.Tools;
 
 namespace Light.Validation;
@@ -27,7 +26,7 @@ public sealed class ValidationContext
     /// <param name="errorTemplates">
     /// The error templates for this context (optional). These are
     /// used to format the error messages if a check fails. If null
-    /// is specified, <see cref="Light.Validation.Localization.ErrorTemplates.Default" />
+    /// is specified, <see cref="Tools.ErrorTemplates.Default" />
     /// will be used.
     /// </param>
     public ValidationContext(ValidationContextOptions? options = null,

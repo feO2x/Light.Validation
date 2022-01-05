@@ -75,7 +75,7 @@ public static class Errors
         message ??= string.Format(
             check.Context.ErrorTemplates.GreaterThan,
             check.Key,
-            Formatter.Format(comparativeValue)
+            check.Context.ErrorTemplates.FormatParameter(comparativeValue)
         );
         check.AddError(message);
     }
@@ -96,7 +96,7 @@ public static class Errors
         message ??= string.Format(
             check.Context.ErrorTemplates.GreaterThanOrEqualTo,
             check.Key,
-            Formatter.Format(comparativeValue)
+            check.Context.ErrorTemplates.FormatParameter(comparativeValue)
         );
         check.AddError(message);
     }

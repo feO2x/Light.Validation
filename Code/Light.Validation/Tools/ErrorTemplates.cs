@@ -1,6 +1,6 @@
-﻿using System;
+﻿using System.Globalization;
 
-namespace Light.Validation.Localization;
+namespace Light.Validation.Tools;
 
 /// <summary>
 /// <para>
@@ -21,17 +21,23 @@ public record ErrorTemplates
     public static ErrorTemplates Default { get; } = new ();
     
     /// <summary>
-    /// Gets or sets the template for the Not Null error message.
+    /// Gets the culture info that is used to format parameters for string.Format.
+    /// The default value is the invariant culture.
+    /// </summary>
+    public CultureInfo CultureInfo { get; init; } = CultureInfo.InvariantCulture;
+    
+    /// <summary>
+    /// Gets the template for the "Not Null" error message.
     /// The default value is "{0} must not be null.".
     /// This template takes one parameter:
     /// <list type="bullet">
     /// <item>{0} key</item>
     /// </list>
     /// </summary>
-    public string NotNull { get; set; } = "{0} must not be null.";
+    public string NotNull { get; init; } = "{0} must not be null.";
 
     /// <summary>
-    /// Gets or sets the template for the Greater Than error message.
+    /// Gets the template for the "Greater Than" error message.
     /// The default value is "{0} must be greater than {1}.".
     /// This template takes two parameters:
     /// <list type="bullet">
@@ -39,10 +45,10 @@ public record ErrorTemplates
     /// <item>{1} comparative value</item>
     /// </list>
     /// </summary>
-    public string GreaterThan { get; set; } = "{0} must be greater than {1}.";
+    public string GreaterThan { get; init; } = "{0} must be greater than {1}.";
 
     /// <summary>
-    /// Gets or sets the template for the Greater Than Or Equal To error message.
+    /// Gets the template for the "Greater Than Or Equal To" error message.
     /// The default value is "{0} must be greater than or equal to {1}.".
     /// This template takes two parameters:
     /// <list type="bullet">
@@ -50,25 +56,31 @@ public record ErrorTemplates
     /// <item>{1} comparative value</item>
     /// </list> 
     /// </summary>
-    public string GreaterThanOrEqualTo { get; set; } = "{0} must be greater than or equal to {1}.";
+    public string GreaterThanOrEqualTo { get; init; } = "{0} must be greater than or equal to {1}.";
 
     /// <summary>
-    /// Gets or sets the template for the Not Empty GUID error message.
+    /// Gets the template for the "Not Empty GUID" error message.
     /// The default value is "{0} must not be an empty GUID.".
     /// This template takes one parameter:
     /// <list type="bullet">
     /// <item>{0} key</item>
     /// </list>
     /// </summary>
-    public string NotEmptyGuid { get; set; } = "{0} must not be an empty GUID.";
+    public string NotEmptyGuid { get; init; } = "{0} must not be an empty GUID.";
 
     /// <summary>
-    /// Gets or sets the template for the Regex Must Match error message.
+    /// Gets the template for the "Regex Must Match" error message.
     /// The default value is "{0} must match the required pattern.".
     /// This template takes one parameter:
     /// <list type="bullet">
     /// <item>{0} key</item>
     /// </list>
     /// </summary>
-    public string RegexMustMatch { get; set; } = "{0} must match the required pattern.";
+    public string RegexMustMatch { get; init; } = "{0} must match the required pattern.";
+    
+    /// <summary>
+    /// Formats the specified parameter, potentially using the culture info attached to this error templates instance.
+    /// </summary>
+    public string FormatParameter<T>(T value) =>
+        Formatter.Format(value, CultureInfo);
 }
