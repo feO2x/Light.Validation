@@ -45,7 +45,7 @@ public static partial class Checks
         regex.MustNotBeNull();
 
         if (!regex.IsMatch(check.Value))
-            check.AddError(regex, errorMessageFactory);
+            check.AddError(errorMessageFactory, regex);
         return check;
     }
 }

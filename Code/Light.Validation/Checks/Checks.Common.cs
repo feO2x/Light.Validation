@@ -119,19 +119,7 @@ public static partial class Checks
         return check;
     }
 
-    public static Check<T> GreaterThan<T>(this Check<T> check, T other, string? message = null)
-        where T : IComparable<T>
-    {
-        other.MustNotBeNullReference();
-        
-        if (check.IsValueNull)
-            return check;
-
-        if (check.Value.CompareTo(other) <= 0)
-            check.AddIsGreaterThanError(other, message);
-
-        return check;
-    }
+    
 
     public static string TrimAndCheckNotWhiteSpace(this Check<string> check, string? message = null)
     {

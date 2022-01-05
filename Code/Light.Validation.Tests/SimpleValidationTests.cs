@@ -92,7 +92,7 @@ public sealed class SimpleValidationTests
     {
         protected override void PerformValidation(ValidationContext context, UpdateUserNameDto dto)
         {
-            context.Check(dto.Id).GreaterThan(0);
+            context.Check(dto.Id).IsGreaterThan(0);
             dto.UserName = context.Check(dto.UserName).TrimAndCheckNotWhiteSpace();
         }
     }
@@ -104,7 +104,7 @@ public sealed class SimpleValidationTests
 
         public bool CheckForErrors(ValidationContext context, out Dictionary<string, object>? errors)
         {
-            context.Check(Id).GreaterThan(0);
+            context.Check(Id).IsGreaterThan(0);
             UserName = context.Check(UserName).TrimAndCheckNotWhiteSpace();
             return context.TryGetErrors(out errors);
         }
