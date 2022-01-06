@@ -121,6 +121,27 @@ public static class Errors
         check.AddError(message);
     }
 
+    /// <summary>
+    /// Adds the "Less Than Or Equal To" error message to the context.
+    /// </summary>
+    /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
+    /// <param name="comparativeValue">The comparative value the actual value is compared against.</param>
+    /// <param name="message">
+    /// The error message (optional). If null is provided, an error message will be
+    /// generated from the error templates associated with the context.
+    /// </param>
+    /// <typeparam name="T">The type of the value.</typeparam>
+    public static void AddLessThanOrEqualToError<T>(this Check<T> check, T comparativeValue, string? message = null)
+        where T : IComparable<T>
+    {
+        message ??= string.Format(
+            check.Context.ErrorTemplates.LessThanOrEqualTo,
+            check.Key,
+            check.Context.ErrorTemplates.FormatParameter(comparativeValue)
+        );
+        check.AddError(message);
+    }
+
     public static void AddIsEmptyOrWhiteSpaceError(this Check<string> check, string? message = null)
     {
         message ??= $"{check.Key} must not be empty or contain only white space";

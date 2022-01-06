@@ -70,6 +70,17 @@ public record ErrorTemplates
     public string LessThan { get; init; } = "{0} must be less than {1}.";
 
     /// <summary>
+    /// Gets the template for the "Less Than Or Equal To" error message.
+    /// The default value is "{0} must be less than or equal to {1}.".
+    /// This template takes two parameters:
+    /// <list type="bullet">
+    /// <item>{0} key</item>
+    /// <item>{1} comparative value</item>
+    /// </list>
+    /// </summary>
+    public string LessThanOrEqualTo { get; init; } = "{0} must be less than or equal to {1}.";
+
+    /// <summary>
     /// Gets the template for the "Not Empty GUID" error message.
     /// The default value is "{0} must not be an empty GUID.".
     /// This template takes one parameter:
@@ -92,6 +103,5 @@ public record ErrorTemplates
     /// <summary>
     /// Formats the specified parameter, potentially using the culture info attached to this error templates instance.
     /// </summary>
-    public string FormatParameter<T>(T value) =>
-        Formatter.Format(value, CultureInfo);
+    public string FormatParameter<T>(T value) => Formatter.Format(value, CultureInfo);
 }
