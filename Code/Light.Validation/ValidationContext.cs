@@ -94,6 +94,34 @@ public sealed class ValidationContext
     }
 
     /// <summary>
+    /// Casts the options of this validation context to the specified subtype
+    /// or throws an <see cref="InvalidCastException" />.
+    /// </summary>
+    /// <typeparam name="T">The subtype the options should be cast into.</typeparam>
+    /// <exception cref="InvalidCastException">Thrown when <see cref="Options"/> cannot be cast to type T.</exception>
+    public T GetOptionsAs<T>() where T : ValidationContextOptions
+    {
+        if (Options is T castOptions)
+            return castOptions;
+
+        throw new InvalidCastException($"The options cannot be cast to type \"{typeof(T)}\"");
+    }
+
+    /// <summary>
+    /// Casts the error templates of this validation context to the specified subtype
+    /// or throws an <see cref="InvalidCastException" />.
+    /// </summary>
+    /// <typeparam name="T">The subtype the error templates should be cast into.</typeparam>
+    /// <exception cref="InvalidCastException">Thrown when <see cref="Options"/> cannot be cast to type T.</exception>
+    public T GetErrorTemplatesAs<T>() where T : ErrorTemplates
+    {
+        if (ErrorTemplates is T castErrorTemplates)
+            return castErrorTemplates;
+        
+        throw new InvalidCastException($"The error templates cannot be cast to type \"{typeof(T)}\"");
+    }
+
+    /// <summary>
     /// <para>
     /// Adds the complex error to the errors dictionary using the specified key.
     /// </para>
