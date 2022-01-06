@@ -54,9 +54,20 @@ public record ErrorTemplates
     /// <list type="bullet">
     /// <item>{0} key</item>
     /// <item>{1} comparative value</item>
-    /// </list> 
+    /// </list>
     /// </summary>
     public string GreaterThanOrEqualTo { get; init; } = "{0} must be greater than or equal to {1}.";
+
+    /// <summary>
+    /// Gets the template for the "Less Than" error message.
+    /// The default value is "{0} must be less than {1}.".
+    /// This template takes two parameters:
+    /// <list type="bullet">
+    /// <item>{0} key</item>
+    /// <item>{1} comparative value</item>
+    /// </list>
+    /// </summary>
+    public string LessThan { get; init; } = "{0} must be less than {1}.";
 
     /// <summary>
     /// Gets the template for the "Not Empty GUID" error message.

@@ -1,6 +1,5 @@
 ﻿using System;
 using Light.GuardClauses;
-using Light.GuardClauses.FrameworkExtensions;
 
 namespace Light.Validation.Tools;
 
@@ -10,14 +9,14 @@ namespace Light.Validation.Tools;
 public static class Errors
 {
     /// <summary>
-    /// Adds the Not Null error message to the context.
+    /// Adds the "Not Null" error message to the context.
     /// </summary>
     /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
     /// <param name="message">
     /// The error message (optional). If null is provided, an error message will be
     /// generated from the error templates associated with the context.
     /// </param>
-    /// <typeparam name="TCheck">The struct type that implements <see cref="ICheck"/>.</typeparam>
+    /// <typeparam name="TCheck">The struct type that implements <see cref="ICheck" />.</typeparam>
     public static void AddNotNullError<TCheck>(this TCheck check, string? message = null)
         where TCheck : struct, ICheck
     {
@@ -26,7 +25,7 @@ public static class Errors
     }
 
     /// <summary>
-    /// Adds the Not Empty GUID error message to the context.
+    /// Adds the "Not Empty GUID" error message to the context.
     /// </summary>
     /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
     /// <param name="message">
@@ -40,7 +39,7 @@ public static class Errors
     }
 
     /// <summary>
-    /// Adds the Regex Must Match error message to the context.
+    /// Adds the "Regex Must Match" error message to the context.
     /// </summary>
     /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
     /// <param name="message">
@@ -60,7 +59,7 @@ public static class Errors
     }
 
     /// <summary>
-    /// Adds the Greater Than error message to the context.
+    /// Adds the "Greater Than" error message to the context.
     /// </summary>
     /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
     /// <param name="comparativeValue">The comparative value the actual value is compared against.</param>
@@ -81,7 +80,7 @@ public static class Errors
     }
 
     /// <summary>
-    /// Adds the Greater Than Or Equal To error message to the context.
+    /// Adds the "Greater Than Or Equal" To error message to the context.
     /// </summary>
     /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
     /// <param name="comparativeValue">The comparative value the actual value is compared against.</param>
@@ -101,6 +100,27 @@ public static class Errors
         check.AddError(message);
     }
 
+    /// <summary>
+    /// Adds the "Less Than" error message to the context.
+    /// </summary>
+    /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
+    /// <param name="comparativeValue">The comparative value the actual value is compared against.</param>
+    /// <param name="message">
+    /// The error message (optional). If null is provided, an error message will be
+    /// generated from the error templates associated with the context.
+    /// </param>
+    /// <typeparam name="T">The type of the value.</typeparam>
+    public static void AddLessThanError<T>(this Check<T> check, T comparativeValue, string? message = null)
+        where T : IComparable<T>
+    {
+        message ??= string.Format(
+            check.Context.ErrorTemplates.LessThan,
+            check.Key,
+            check.Context.ErrorTemplates.FormatParameter(comparativeValue)
+        );
+        check.AddError(message);
+    }
+
     public static void AddIsEmptyOrWhiteSpaceError(this Check<string> check, string? message = null)
     {
         message ??= $"{check.Key} must not be empty or contain only white space";
@@ -113,7 +133,7 @@ public static class Errors
     /// <param name="check">The structure that encapsulates the value to be checked.</param>
     /// <param name="errorMessageFactory">The delegate that receives the check and creates an error message.</param>
     /// <typeparam name="T">The type of the value to be checked.</typeparam>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="errorMessageFactory"/> is null.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="errorMessageFactory" /> is null.</exception>
     public static void AddError<T>(this Check<T> check, Func<Check<T>, string> errorMessageFactory)
     {
         errorMessageFactory.MustNotBeNull();

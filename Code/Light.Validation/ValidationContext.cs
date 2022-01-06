@@ -148,10 +148,7 @@ public sealed class ValidationContext
         return Errors?.Remove(key) ?? false;
     }
 
-    private Dictionary<string, object> CreateErrorsDictionary()
-    {
-        return new Dictionary<string, object>(Options.KeyComparer);
-    }
+    private Dictionary<string, object> CreateErrorsDictionary() => new (Options.KeyComparer);
 
     /// <summary>
     /// <para>
