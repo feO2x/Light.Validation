@@ -37,6 +37,16 @@ public record ErrorTemplates
     public string NotNull { get; init; } = "{0} must not be null.";
 
     /// <summary>
+    /// Gets the template for the "Equal" error message.
+    /// The default value is "{0} must be {1}.".
+    /// <list type="bullet">
+    /// <item>{0} key</item>
+    /// <item>{1} comparative value</item>
+    /// </list>
+    /// </summary>
+    public string Equal { get; init; } = "{0} must be {1}.";
+
+    /// <summary>
     /// Gets the template for the "Greater Than" error message.
     /// The default value is "{0} must be greater than {1}.".
     /// This template takes two parameters:

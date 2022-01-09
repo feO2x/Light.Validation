@@ -10,7 +10,7 @@ public static class Formatter
 {
     /// <summary>
     /// Calls ToString on the value and returns it. If the value is either double, float, or decimal,
-    /// ToString will be called with the invariant culture.
+    /// ToString will be called with the specified culture info.
     /// </summary>
     public static string Format<T>(T value, CultureInfo cultureInfo)
     {
@@ -26,4 +26,10 @@ public static class Formatter
 
         return value.ToString();
     }
+
+    /// <summary>
+    /// Calls ToString on the value and returns it. If the value is either double, float, or decimal,
+    /// ToString will be called with the invariant culture info.
+    /// </summary>
+    public static string Format<T>(T value) => Format(value, CultureInfo.InvariantCulture);
 }

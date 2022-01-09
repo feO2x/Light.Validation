@@ -25,6 +25,26 @@ public static class Errors
     }
 
     /// <summary>
+    /// Adds the "Equals" error message to the context.
+    /// </summary>
+    /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
+    /// <param name="comparativeValue">The comparative value the actual value is compared against.</param>
+    /// <param name="message">
+    /// The error message (optional). If null is provided, an error message will be
+    /// generated from the error templates associated with the context.
+    /// </param>
+    /// <typeparam name="T">The type of the value.</typeparam>
+    public static void AddEqualsError<T>(this Check<T> check, T comparativeValue, string? message = null)
+    {
+        message ??= string.Format(
+            check.Context.ErrorTemplates.Equal,
+            check.Key,
+            check.Context.ErrorTemplates.FormatParameter(comparativeValue)
+        );
+        check.AddError(message);
+    }
+
+    /// <summary>
     /// Adds the "Not Empty GUID" error message to the context.
     /// </summary>
     /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
