@@ -28,8 +28,7 @@ public static class IsGreaterThanOrEqualToTests
     [MemberData(nameof(InvalidValues))]
     public static void ValueIsLess(int value, int comparativeValue)
     {
-        var dto = new Dto<int> { Value = value };
-        var context = new ValidationContext();
+        var (dto, context) = Test.SetupDefault(value);
 
         context.Check(dto.Value).IsGreaterThanOrEqualTo(comparativeValue);
 
@@ -41,8 +40,7 @@ public static class IsGreaterThanOrEqualToTests
     [MemberData(nameof(ValidValues))]
     public static void ValueIsGreaterOrEqual(decimal value, decimal comparativeValue)
     {
-        var dto = new Dto<decimal> { Value = value };
-        var context = new ValidationContext();
+        var (dto, context) = Test.SetupDefault(value);
 
         context.Check(dto.Value).IsGreaterThanOrEqualTo(comparativeValue);
 
@@ -53,8 +51,7 @@ public static class IsGreaterThanOrEqualToTests
     [MemberData(nameof(InvalidValues))]
     public static void CustomErrorMessage(int value, int comparativeValue)
     {
-        var dto = new Dto<int> { Value = value };
-        var context = new ValidationContext();
+        var (dto, context) = Test.SetupDefault(value);
 
         context.Check(dto.Value).IsGreaterThanOrEqualTo(comparativeValue, "Errors.MustBeGreaterThanOrEqualTo");
 
@@ -64,9 +61,8 @@ public static class IsGreaterThanOrEqualToTests
     [Fact]
     public static void CustomErrorMessageFactory()
     {
-        var dto = new Dto<double> { Value = 42.055 };
-        var context = new ValidationContext();
-
+        var (dto, context) = Test.SetupDefault(42.055);
+        
         context
            .Check(dto.Value)
            .IsGreaterThanOrEqualTo(
@@ -80,16 +76,10 @@ public static class IsGreaterThanOrEqualToTests
     [Fact]
     public static void NoErrorWithCustomMessageFactory()
     {
-        var dto = new Dto<float> { Value = -15f };
-        var context = new ValidationContext();
+        var (dto, context) = Test.SetupDefault(-15f);
 
         context.Check(dto.Value).IsGreaterThanOrEqualTo(-19.5f, (_, _) => "Foo");
 
         context.ShouldHaveNoError();
-    }
-
-    private sealed class Dto<T>
-    {
-        public T Value { get; init; } = default!;
     }
 }

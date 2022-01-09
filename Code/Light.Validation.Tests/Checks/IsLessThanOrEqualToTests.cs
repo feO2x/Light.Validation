@@ -28,8 +28,7 @@ public static class IsLessThanOrEqualToTests
     [MemberData(nameof(InvalidValues))]
     public static void ValueIsGreaterThan(float value, float comparativeValue)
     {
-        var dto = new Dto<float> { Value = value };
-        var context = new ValidationContext();
+        var (dto, context) = Test.SetupDefault(value);
 
         context.Check(dto.Value).IsLessThanOrEqualTo(comparativeValue);
 
@@ -40,8 +39,7 @@ public static class IsLessThanOrEqualToTests
     [MemberData(nameof(ValidValues))]
     public static void ValueIsLessThanOrEqualTo(int value, int comparativeValue)
     {
-        var dto = new Dto<int> { Value = value };
-        var context = new ValidationContext();
+        var (dto, context) = Test.SetupDefault(value);
 
         context.Check(dto.Value).IsLessThanOrEqualTo(comparativeValue);
 
@@ -52,8 +50,7 @@ public static class IsLessThanOrEqualToTests
     [MemberData(nameof(InvalidValues))]
     public static void CustomErrorMessage(float value, float comparativeValue)
     {
-        var dto = new Dto<float> { Value = value };
-        var context = new ValidationContext();
+        var (dto, context) = Test.SetupDefault(value);
 
         context.Check(dto.Value).IsLessThanOrEqualTo(comparativeValue, "Errors.LessThanOrEqualTo");
 
@@ -63,8 +60,7 @@ public static class IsLessThanOrEqualToTests
     [Fact]
     public static void CustomErrorMessageFactory()
     {
-        var dto = new Dto<double> { Value = 24.42 };
-        var context = new ValidationContext();
+        var (dto, context) = Test.SetupDefault(24.42);
 
         context.Check(dto.Value).IsLessThanOrEqualTo(24.1, (c, o) => $"{c.Key} is too great ({o.ToString(CultureInfo.InvariantCulture)})");
 
@@ -74,16 +70,10 @@ public static class IsLessThanOrEqualToTests
     [Fact]
     public static void NoErrorWithCustomFactory()
     {
-        var dto = new Dto<char> { Value = 'G' };
-        var context = new ValidationContext();
+        var (dto, context) = Test.SetupDefault('G');
 
         context.Check(dto.Value).IsLessThanOrEqualTo('G', (_, _) => "Foo");
 
         context.ShouldHaveNoError();
-    }
-
-    private sealed class Dto<T>
-    {
-        public T Value { get; init; } = default!;
     }
 }

@@ -30,8 +30,7 @@ public static class IsMatchingTests
     [MemberData(nameof(InvalidValues))]
     public static void InvalidValue(string invalidValue)
     {
-        var dto = new Dto { Value = invalidValue };
-        var context = new ValidationContext();
+        var (dto, context) = Test.SetupDefault(invalidValue);
 
         context.Check(dto.Value).IsMatching(Regex);
 
@@ -42,8 +41,7 @@ public static class IsMatchingTests
     [MemberData(nameof(ValidValues))]
     public static void ValidValue(string validValue)
     {
-        var dto = new Dto { Value = validValue };
-        var context = new ValidationContext();
+        var (dto, context) = Test.SetupDefault(validValue);
 
         context.Check(dto.Value).IsMatching(Regex);
 
@@ -54,8 +52,7 @@ public static class IsMatchingTests
     [MemberData(nameof(InvalidValues))]
     public static void CustomErrorMessage(string invalidValue)
     {
-        var dto = new Dto { Value = invalidValue };
-        var context = new ValidationContext();
+        var (dto, context) = Test.SetupDefault(invalidValue);
 
         context.Check(dto.Value).IsMatching(Regex, "No match for you");
 
@@ -66,8 +63,7 @@ public static class IsMatchingTests
     [MemberData(nameof(InvalidValues))]
     public static void CustomErrorMessageFactory(string invalidValue)
     {
-        var dto = new Dto { Value = invalidValue };
-        var context = new ValidationContext();
+        var (dto, context) = Test.SetupDefault(invalidValue);
 
         context.Check(dto.Value).IsMatching(Regex, (c, r) => $"{c.Key} must match pattern \"{r}\".");
 
@@ -78,16 +74,10 @@ public static class IsMatchingTests
     [MemberData(nameof(ValidValues))]
     public static void NoErrorWithCustomMessageFactory(string validValue)
     {
-        var dto = new Dto { Value = validValue };
-        var context = new ValidationContext();
+        var (dto, context) = Test.SetupDefault(validValue);
 
         context.Check(dto.Value).IsMatching(Regex, (_, _) => "GG");
 
         context.ShouldHaveNoError();
-    }
-
-    private sealed class Dto
-    {
-        public string Value { get; init; } = string.Empty;
     }
 }
