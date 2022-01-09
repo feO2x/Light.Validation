@@ -37,14 +37,26 @@ public record ErrorTemplates
     public string NotNull { get; init; } = "{0} must not be null.";
 
     /// <summary>
-    /// Gets the template for the "Equal" error message.
+    /// Gets the template for the "Equal To" error message.
     /// The default value is "{0} must be {1}.".
+    /// This template takes two parameters:
     /// <list type="bullet">
     /// <item>{0} key</item>
     /// <item>{1} comparative value</item>
     /// </list>
     /// </summary>
-    public string Equal { get; init; } = "{0} must be {1}.";
+    public string EqualTo { get; init; } = "{0} must be {1}.";
+
+    /// <summary>
+    /// Gets the template for the "Not Equal To" error message.
+    /// The default value is "{0} must not be {1}.".
+    /// This template takes two parameters:
+    /// <list type="bullet">
+    /// <item>{0} key</item>
+    /// <item>{1} comparative value</item>
+    /// </list>
+    /// </summary>
+    public string NotEqualTo { get; init; } = "{0} must not be {1}.";
 
     /// <summary>
     /// Gets the template for the "Greater Than" error message.
@@ -113,5 +125,5 @@ public record ErrorTemplates
     /// <summary>
     /// Formats the specified parameter, potentially using the culture info attached to this error templates instance.
     /// </summary>
-    public string FormatParameter<T>(T value) => Formatter.Format(value, CultureInfo);
+    public virtual string FormatParameter<T>(T value) => Formatter.Format(value, CultureInfo);
 }
