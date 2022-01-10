@@ -62,4 +62,28 @@ public static class StringExtensions
 
     private static bool IsStartingCharacterForLowerCamelCase(this char character) =>
         !char.IsLetter(character) || char.IsLower(character);
+
+    /// <summary>
+    /// Checks if the specified value is an email address. This is done by checking if the string
+    /// contains only one "@" sign which must be somewhere in between (not at the beginning and
+    /// not at the end). This is the default way to check an email address in ASP.NET Core, you will
+    /// usually have to send a mail to the address to verify if it exists or not. No complex regular
+    /// expression is used in this check.
+    /// </summary>
+    /// <param name="value">The string to be checked.</param>
+    public static bool IsEmail(this string? value)
+    {
+        if (value is null)
+            return false;
+
+        if (value.Length < 3)
+            return false;
+
+        var indexOfAtSign = value.IndexOf('@');
+        if (indexOfAtSign is -1 or 0 || indexOfAtSign == value.Length - 1)
+            return false;
+
+        var lastIndexOfAtSign = value.LastIndexOf('@');
+        return indexOfAtSign == lastIndexOfAtSign;
+    }
 }

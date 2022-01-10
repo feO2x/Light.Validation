@@ -106,4 +106,43 @@ public static partial class Checks
             check.AddError(errorMessageFactory, regex);
         return check;
     }
+
+    /// <summary>
+    /// Checks if the specified string looks like an email address, or otherwise
+    /// adds an error message to the validation context. This is done by checking if the string
+    /// contains only one "@" sign which must be somewhere in between (not at the beginning and
+    /// not at the end). This is the default way to check an email address in ASP.NET Core, you will
+    /// usually have to send a mail to the address to verify if it exists or not. No complex regular
+    /// expression is used in this check.
+    /// </summary>
+    /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
+    /// <param name="message">
+    /// The error message that will be added to the context (optional). If null is provided, the default error
+    /// message will be created from the error templates associated to the validation context.
+    /// </param>
+    public static Check<string> IsEmail(this Check<string> check, string? message = null)
+    {
+        if (!check.Value.IsEmail())
+            check.AddEmailError(message);
+        return check;
+    }
+
+    /// <summary>
+    /// Checks if the specified string looks like an email address, or otherwise adds the
+    /// error message that was created by the specified factory to the validation context.
+    /// This is done by checking if the string contains only one "@" sign which must be somewhere
+    /// in between (not at the beginning and not at the end).
+    /// This is the default way to check an email address in ASP.NET Core, you will
+    /// usually have to send a mail to the address to verify if it exists or not. No complex regular
+    /// expression is used in this check.
+    /// </summary>
+    /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
+    /// <param name="errorMessageFactory">The delegate that is used to create the error message.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="errorMessageFactory"/> is null.</exception>
+    public static Check<string> IsEmail(this Check<string> check, Func<Check<string>, string> errorMessageFactory)
+    {
+        if (!check.Value.IsEmail())
+            check.AddError(errorMessageFactory);
+        return check;
+    }
 }
