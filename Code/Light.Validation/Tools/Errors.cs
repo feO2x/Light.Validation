@@ -92,9 +92,20 @@ public static class Errors
         check.AddError(message);
     }
 
-    public static void AddIsNotNullOrWhiteSpaceError(this Check<string> check, string? message = null)
+    /// <summary>
+    /// Adds the "Not Null Or White Space" error message to the context.
+    /// </summary>
+    /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
+    /// <param name="message">
+    /// The error message (optional). If null is provided, an error message will be
+    /// generated from the error templates associated with the context.
+    /// </param>
+    public static void AddNotNullOrWhiteSpaceError(this Check<string> check, string? message = null)
     {
-        message ??= $"{check.Key} must not be empty or contain only white space.";
+        message ??= string.Format(
+            check.Context.ErrorTemplates.NotNullOrWhiteSpace,
+            check.Key
+        );
         check.AddError(message);
     }
 
@@ -179,12 +190,6 @@ public static class Errors
             check.Key,
             check.Context.ErrorTemplates.FormatParameter(comparativeValue)
         );
-        check.AddError(message);
-    }
-
-    public static void AddIsEmptyOrWhiteSpaceError(this Check<string> check, string? message = null)
-    {
-        message ??= $"{check.Key} must not be empty or contain only white space";
         check.AddError(message);
     }
 

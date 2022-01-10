@@ -24,9 +24,9 @@ public record ValidationContextOptions
     /// <summary>
     /// Gets or sets the value indicating whether the key
     /// should be normalized when <see cref="ValidationContext.RemoveError" />
-    /// is called. The default value is false.
+    /// is called. The default value is true.
     /// </summary>
-    public bool NormalizeKeyOnRemoveError { get; init; } = false;
+    public bool NormalizeKeyOnRemoveError { get; init; } = true;
 
     /// <summary>
     /// Gets or sets the value indicating whether the key

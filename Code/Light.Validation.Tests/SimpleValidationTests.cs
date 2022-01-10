@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Light.GuardClauses;
 using Light.Validation.Checks;
-using Light.Validation.Tools;
 using Microsoft.AspNetCore.Mvc;
 using Synnotech.DatabaseAbstractions;
 using Synnotech.DatabaseAbstractions.Mocks;
@@ -93,7 +92,10 @@ public sealed class SimpleValidationTests
         protected override void PerformValidation(ValidationContext context, UpdateUserNameDto dto)
         {
             context.Check(dto.Id).IsGreaterThan(0);
-            dto.UserName = context.Check(dto.UserName).TrimAndCheckNotWhiteSpace();
+            dto.UserName = context.Check(dto.UserName)
+                                  .Normalize()
+                                  .IsNotNullOrWhiteSpace()
+                                  .Value;
         }
     }
 
@@ -105,7 +107,10 @@ public sealed class SimpleValidationTests
         public bool CheckForErrors(ValidationContext context, out Dictionary<string, object>? errors)
         {
             context.Check(Id).IsGreaterThan(0);
-            UserName = context.Check(UserName).TrimAndCheckNotWhiteSpace();
+            UserName = context.Check(UserName)
+                              .Normalize()
+                              .IsNotNullOrWhiteSpace()
+                              .Value;
             return context.TryGetErrors(out errors);
         }
     }
@@ -117,7 +122,7 @@ public sealed class SimpleValidationTests
 
     private sealed class UpdateUserNameSessionMock : AsyncSessionMock, IUpdateUserNameSession
     {
-        public bool DoesUserNameExist { get; set; }
+        public bool DoesUserNameExist { get; init; }
 
         public Task<bool> CheckIfUserNameExistsAsync(string userName) =>
             Task.FromResult(DoesUserNameExist);

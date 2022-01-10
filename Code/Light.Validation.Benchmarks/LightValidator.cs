@@ -8,6 +8,9 @@ public sealed class LightValidator : Validator<UpdateUserNameDto>
     protected override void PerformValidation(ValidationContext context, UpdateUserNameDto dto)
     {
         context.Check(dto.Id).IsGreaterThan(0);
-        dto.UserName = context.Check(dto.UserName).TrimAndCheckNotWhiteSpace();
+        dto.UserName = context.Check(dto.UserName)
+                              .Normalize()
+                              .IsNotNullOrWhiteSpace()
+                              .Value;
     }
 }

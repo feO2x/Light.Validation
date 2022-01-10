@@ -113,6 +113,16 @@ public record ErrorTemplates
     public string NotEmptyGuid { get; init; } = "{0} must not be an empty GUID.";
 
     /// <summary>
+    /// Gets the template for the "Not Null Or White Space" error message.
+    /// The default value is "{0} must not be empty.".
+    /// This template takes one parameter:
+    /// <list type="bullet">
+    /// <item>{0} key</item>
+    /// </list>
+    /// </summary>
+    public string NotNullOrWhiteSpace { get; init; } = "{0} must not be empty.";
+
+    /// <summary>
     /// Gets the template for the "Regex Must Match" error message.
     /// The default value is "{0} must match the required pattern.".
     /// This template takes one parameter:

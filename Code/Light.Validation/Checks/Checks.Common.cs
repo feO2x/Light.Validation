@@ -280,41 +280,4 @@ public static partial class Checks
             check.AddError(errorMessageFactory);
         return check;
     }
-
-    public static Check<string> IsNotNullOrWhiteSpace(this Check<string> check, string? message = null)
-    {
-        if (check.IsNotNull().HasError)
-            return check;
-
-        if (check.Value.IsNullOrWhiteSpace())
-            check.AddIsNotNullOrWhiteSpaceError(message);
-
-        return check;
-    }
-
-
-    public static string TrimAndCheckNotWhiteSpace(this Check<string> check, string? message = null)
-    {
-        if (check.IsValueNull)
-        {
-            check.AddNotNullError(message);
-            return null!;
-        }
-
-        var value = check.Value;
-        var span = value.AsSpan().Trim();
-        if (span.IsEmpty)
-        {
-            check.AddIsEmptyOrWhiteSpaceError(message);
-            return check.Value;
-        }
-
-        if (value.Length != span.Length)
-        {
-            value = span.ToString();
-            check = check.WithNewValue(value);
-        }
-
-        return check.Value;
-    }
 }

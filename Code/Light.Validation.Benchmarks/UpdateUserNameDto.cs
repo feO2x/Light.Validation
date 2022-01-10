@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Light.Validation.Checks;
-using Light.Validation.Tools;
 
 namespace Light.Validation.Benchmarks;
 
@@ -13,7 +12,10 @@ public sealed class UpdateUserNameDto
     {
         var context = new ValidationContext();
         context.Check(Id).IsGreaterThan(0);
-        UserName = context.Check(UserName).TrimAndCheckNotWhiteSpace();
+        UserName = context.Check(UserName)
+                          .Normalize()
+                          .IsNotNullOrWhiteSpace()
+                          .Value;
         return context.TryGetErrors(out errors);
     }
 }
