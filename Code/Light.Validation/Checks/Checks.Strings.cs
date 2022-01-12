@@ -30,9 +30,11 @@ public static partial class Checks
         if (readOnlySpan.IsEmpty)
             return check.WithNewValue(string.Empty);
 
-        return readOnlySpan.Length == check.Value.Length ? check : check.WithNewValue(readOnlySpan.ToString());
+        return readOnlySpan.Length == check.Value.Length ?
+            check :
+            check.WithNewValue(readOnlySpan.ToString());
     }
-    
+
     /// <summary>
     /// Checks if the specified string is not null, empty, or contains only white space, or
     /// otherwise adds an error message to the validation context.
@@ -138,7 +140,7 @@ public static partial class Checks
     /// </summary>
     /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
     /// <param name="errorMessageFactory">The delegate that is used to create the error message.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="errorMessageFactory"/> is null.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="errorMessageFactory" /> is null.</exception>
     public static Check<string> IsEmail(this Check<string> check, Func<Check<string>, string> errorMessageFactory)
     {
         if (!check.Value.IsEmail())
