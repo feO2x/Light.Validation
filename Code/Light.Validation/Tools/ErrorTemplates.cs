@@ -141,6 +141,27 @@ public record ErrorTemplates
     /// </list>
     /// </summary>
     public string Email { get; init; } = "{0} must be an email address.";
+
+    /// <summary>
+    /// Gets the template for the "Count Singular" error message.
+    /// The default value is "{0} must have 1 item.".
+    /// This template takes one parameter:
+    /// <list type="bullet">
+    /// <item>{0} key</item>
+    /// </list>
+    /// </summary>
+    public string CountSingular { get; init; } = "{0} must have 1 item.";
+
+    /// <summary>
+    /// Gets the template for the "Count Multiple" error message.
+    /// The default value is "{0} must have {1} items.".
+    /// This template takes two parameters:
+    /// <list type="bullet">
+    /// <item>{0} key</item>
+    /// <item>{1} count</item>
+    /// </list>
+    /// </summary>
+    public string CountMultiple { get; init; } = "{0} must have {1} items.";
     
     /// <summary>
     /// Formats the specified parameter, potentially using the culture info attached to this error templates instance.

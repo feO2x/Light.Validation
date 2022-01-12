@@ -211,6 +211,23 @@ public static class Errors
     }
 
     /// <summary>
+    /// Adds the "Count" error message to the context. Depending on the <paramref name="count"/>,
+    /// the <see cref="ErrorTemplates.CountSingular"/> or <see cref="ErrorTemplates.CountMultiple" />
+    /// error template is chosen (if message is not null).
+    /// </summary>
+    /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
+    /// <param name="count">The count the collection was compared against.</param>
+    /// <param name="message"></param>
+    /// <typeparam name="T"></typeparam>
+    public static void AddCountError<T>(this Check<T> check, int count, string? message = null)
+    {
+        message ??= count == 1 ?
+            string.Format(check.Context.ErrorTemplates.CountSingular, check.Key) :
+            string.Format(check.Context.ErrorTemplates.CountMultiple, check.Key, count.ToString());
+        check.AddError(message);
+    }
+
+    /// <summary>
     /// Adds the error message to the context, using the specified error message factory.
     /// </summary>
     /// <param name="check">The structure that encapsulates the value to be checked.</param>
