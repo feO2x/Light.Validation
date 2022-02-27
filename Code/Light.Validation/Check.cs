@@ -91,7 +91,14 @@ public readonly record struct Check<T> : ICheck
     /// same context, key, and value, but with <see cref="IsShortCircuited" />
     /// set to true.
     /// </summary>
-    public Check<T> ShortCircuit() => new (Context, Key, Value, true);
+    public Check<T> ShortCircuit() => ShortCircuitIfNecessary(true);
+
+    /// <summary>
+    /// Initializes a new instance of <see cref="Check{T}" /> with the
+    /// same context, key, and value, but with <see cref="IsShortCircuited" />
+    /// set to the specified value.
+    /// </summary>
+    public Check<T> ShortCircuitIfNecessary(bool isShortCircuited) => new (Context, Key, Value, isShortCircuited);
 
     /// <summary>
     /// Gets the value indicating whether <see cref="Value" /> is null.
