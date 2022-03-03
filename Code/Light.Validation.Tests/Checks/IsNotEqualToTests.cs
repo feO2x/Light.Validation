@@ -55,7 +55,7 @@ public static class IsNotEqualToTests
 
         context.Check(dto.Value).IsNotEqualTo(comparativeValue);
 
-        context.ShouldHaveNoError();
+        context.ShouldHaveNoErrors();
     }
 
     [Theory]
@@ -88,7 +88,7 @@ public static class IsNotEqualToTests
 
         context.Check(dto.Value).IsNotEqualTo(comparativeValue, StringComparer.OrdinalIgnoreCase);
 
-        context.ShouldHaveNoError();
+        context.ShouldHaveNoErrors();
     }
 
     [Theory]
@@ -121,7 +121,7 @@ public static class IsNotEqualToTests
 
         context.Check(dto.Value).IsNotEqualTo(comparativeValue, (_, _) => "Foo");
 
-        context.ShouldHaveNoError();
+        context.ShouldHaveNoErrors();
     }
 
     [Theory]
@@ -149,6 +149,6 @@ public static class IsNotEqualToTests
                              StringComparer.OrdinalIgnoreCase,
                              (_, _) => "Foo");
 
-        context.ShouldHaveNoError();
+        context.ShouldHaveNoErrors();
     }
 }

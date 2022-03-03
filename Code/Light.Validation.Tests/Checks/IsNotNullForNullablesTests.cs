@@ -1,4 +1,5 @@
-﻿using Light.Validation.Checks;
+﻿using FluentAssertions;
+using Light.Validation.Checks;
 using Light.Validation.Tests.TestHelpers;
 using Xunit;
 
@@ -23,9 +24,10 @@ public static class IsNotNullForNullablesTests
         var dto = new Dto();
         var context = new ValidationContext();
 
-        context.Check(dto.NullableValue).IsNotNull();
+        var check = context.Check(dto.NullableValue).IsNotNull();
 
         context.ShouldHaveSingleError("nullableValue", "nullableValue must not be null.");
+        check.ShouldBeShortCircuited();
     }
     
     [Theory]
@@ -35,9 +37,10 @@ public static class IsNotNullForNullablesTests
         var dto = new Dto { NullableValue = validValue };
         var context = new ValidationContext();
 
-        context.Check(dto.NullableValue).IsNotNull();
+        var check = context.Check(dto.NullableValue).IsNotNull();
 
-        context.ShouldHaveNoError();
+        context.ShouldHaveNoErrors();
+        check.ShouldNotBeShortCircuited();
     }
     
     [Fact]
@@ -46,9 +49,10 @@ public static class IsNotNullForNullablesTests
         var dto = new Dto();
         var context = new ValidationContext();
 
-        context.Check(dto.NullableValue).IsNotNull("How can you pass null?");
+        var check = context.Check(dto.NullableValue).IsNotNull("How can you pass null?");
 
         context.ShouldHaveSingleError("nullableValue", "How can you pass null?");
+        check.ShouldBeShortCircuited();
     }
     
     [Fact]
@@ -57,9 +61,10 @@ public static class IsNotNullForNullablesTests
         var dto = new Dto();
         var context = new ValidationContext();
 
-        context.Check(dto.NullableValue).IsNotNull(c => $"Damn you, {c.Key} is null!");
+        var check = context.Check(dto.NullableValue).IsNotNull(c => $"Damn you, {c.Key} is null!");
 
         context.ShouldHaveSingleError("nullableValue", "Damn you, nullableValue is null!");
+        check.ShouldBeShortCircuited();
     }
     
     [Theory]
@@ -69,9 +74,34 @@ public static class IsNotNullForNullablesTests
         var dto = new Dto { NullableValue = validValue };
         var context = new ValidationContext();
 
-        context.Check(dto.NullableValue).IsNotNull(_ => "It doesn't matter");
+        var check = context.Check(dto.NullableValue).IsNotNull(_ => "It doesn't matter");
 
-        context.ShouldHaveNoError();
+        context.ShouldHaveNoErrors();
+        check.ShouldNotBeShortCircuited();
+    }
+
+    [Fact]
+    public static void DisableShortCircuiting()
+    {
+        var dto = new Dto();
+        var context = new ValidationContext();
+
+        var check = context.Check(dto.NullableValue).IsNotNull(shortCircuitOnError: false);
+
+        context.ShouldHaveErrors();
+        check.IsShortCircuited.Should().BeFalse();
+    }
+
+    [Fact]
+    public static void DisableShortCircuitingWithCustomMessageFactory()
+    {
+        var dto = new Dto();
+        var context = new ValidationContext();
+
+        var check = context.Check(dto.NullableValue).IsNotNull(_ => "OMG it's null", false);
+
+        context.ShouldHaveErrors();
+        check.ShouldNotBeShortCircuited();
     }
     
     private sealed class Dto

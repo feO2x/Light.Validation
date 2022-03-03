@@ -27,7 +27,7 @@ public static class IsNotNullForReferencesTests
         var check = context.Check(dto.ReferenceValue).IsNotNull();
 
         context.ShouldHaveSingleError("referenceValue", "referenceValue must not be null.");
-        check.IsShortCircuited.Should().BeTrue();
+        check.ShouldBeShortCircuited();
     }
 
     [Theory]
@@ -39,8 +39,8 @@ public static class IsNotNullForReferencesTests
 
         var check = context.Check(dto.ReferenceValue).IsNotNull();
 
-        context.ShouldHaveNoError();
-        check.IsShortCircuited.Should().BeFalse();
+        context.ShouldHaveNoErrors();
+        check.ShouldNotBeShortCircuited();
     }
 
     [Fact]
@@ -52,7 +52,7 @@ public static class IsNotNullForReferencesTests
         var check = context.Check(dto.ReferenceValue).IsNotNull("How can you pass null?");
 
         context.ShouldHaveSingleError("referenceValue", "How can you pass null?");
-        check.IsShortCircuited.Should().BeTrue();
+        check.ShouldBeShortCircuited();
     }
 
     [Fact]
@@ -64,7 +64,7 @@ public static class IsNotNullForReferencesTests
         var check = context.Check(dto.ReferenceValue).IsNotNull(c => $"Damn you, {c.Key} is null!");
 
         context.ShouldHaveSingleError("referenceValue", "Damn you, referenceValue is null!");
-        check.IsShortCircuited.Should().BeTrue();
+        check.ShouldBeShortCircuited();
     }
 
     [Theory]
@@ -76,8 +76,8 @@ public static class IsNotNullForReferencesTests
 
         var check = context.Check(dto.ReferenceValue).IsNotNull(_ => "It doesn't matter");
 
-        context.ShouldHaveNoError();
-        check.IsShortCircuited.Should().BeFalse();
+        context.ShouldHaveNoErrors();
+        check.ShouldNotBeShortCircuited();
     }
 
     [Fact]
@@ -90,7 +90,7 @@ public static class IsNotNullForReferencesTests
                .ShortCircuit()
                .IsNotNull();
 
-        context.ShouldHaveNoError();
+        context.ShouldHaveNoErrors();
     }
 
     [Fact]
@@ -102,8 +102,8 @@ public static class IsNotNullForReferencesTests
         var check = context.Check(dto.ReferenceValue)
                            .IsNotNull(shortCircuitOnError: false);
 
-        check.IsShortCircuited.Should().BeFalse();
-        check.HasError.Should().BeTrue();
+        check.ShouldNotBeShortCircuited();
+        context.ShouldHaveErrors();
     }
 
     [Fact]
@@ -114,7 +114,8 @@ public static class IsNotNullForReferencesTests
         
         var check = context.Check(dto.ReferenceValue).IsNotNull(c => $"Damn you, {c.Key} is null!", false);
 
-        check.IsShortCircuited.Should().BeFalse();
+        context.ShouldHaveErrors();
+        check.ShouldNotBeShortCircuited();
     }
 
     private sealed class Dto

@@ -45,7 +45,7 @@ public static class IsEmailTests
 
         context.Check(dto.Value).IsEmail();
 
-        context.ShouldHaveNoError();
+        context.ShouldHaveNoErrors();
     }
 
     [Theory]
@@ -78,6 +78,6 @@ public static class IsEmailTests
 
         context.Check(dto.Value).IsEmail(_ => "Foo");
 
-        context.ShouldHaveNoError();
+        context.ShouldHaveNoErrors();
     }
 }

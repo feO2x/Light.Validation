@@ -43,7 +43,7 @@ public static class IsLessThanOrEqualToTests
 
         context.Check(dto.Value).IsLessThanOrEqualTo(comparativeValue);
 
-        context.ShouldHaveNoError();
+        context.ShouldHaveNoErrors();
     }
 
     [Theory]
@@ -74,6 +74,6 @@ public static class IsLessThanOrEqualToTests
 
         context.Check(dto.Value).IsLessThanOrEqualTo('G', (_, _) => "Foo");
 
-        context.ShouldHaveNoError();
+        context.ShouldHaveNoErrors();
     }
 }

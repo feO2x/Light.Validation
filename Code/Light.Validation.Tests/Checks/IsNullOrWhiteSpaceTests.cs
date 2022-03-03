@@ -43,7 +43,7 @@ public static class IsNullOrWhiteSpaceTests
 
         context.Check(dto.Value).IsNotNullOrWhiteSpace();
 
-        context.ShouldHaveNoError();
+        context.ShouldHaveNoErrors();
     }
 
     [Theory]
@@ -76,6 +76,6 @@ public static class IsNullOrWhiteSpaceTests
 
         context.Check(dto.Value).IsNotNullOrWhiteSpace(_ => "Foo");
 
-        context.ShouldHaveNoError();
+        context.ShouldHaveNoErrors();
     }
 }

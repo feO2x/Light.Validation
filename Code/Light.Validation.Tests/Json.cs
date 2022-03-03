@@ -4,7 +4,7 @@ namespace Light.Validation.Tests;
 
 public static class Json
 {
-    public static JsonSerializerOptions IndentedOptions { get; } = new ()
+    private static JsonSerializerOptions IndentedOptions { get; } = new ()
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         WriteIndented = true

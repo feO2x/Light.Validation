@@ -44,7 +44,7 @@ public static class IsGreaterThanOrEqualToTests
 
         context.Check(dto.Value).IsGreaterThanOrEqualTo(comparativeValue);
 
-        context.ShouldHaveNoError();
+        context.ShouldHaveNoErrors();
     }
 
     [Theory]
@@ -80,6 +80,6 @@ public static class IsGreaterThanOrEqualToTests
 
         context.Check(dto.Value).IsGreaterThanOrEqualTo(-19.5f, (_, _) => "Foo");
 
-        context.ShouldHaveNoError();
+        context.ShouldHaveNoErrors();
     }
 }
