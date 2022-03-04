@@ -42,9 +42,10 @@ public static class IsNotEqualToTests
     {
         var (dto, context) = Test.SetupDefault(value);
 
-        context.Check(dto.Value).IsNotEqualTo(value);
+        var check = context.Check(dto.Value).IsNotEqualTo(value);
 
         context.ShouldHaveSingleError("value", $"value must not be {Formatter.Format(value)}.");
+        check.ShouldNotBeShortCircuited();
     }
 
     [Theory]
@@ -53,9 +54,10 @@ public static class IsNotEqualToTests
     {
         var (dto, context) = Test.SetupDefault(value);
 
-        context.Check(dto.Value).IsNotEqualTo(comparativeValue);
+        var check = context.Check(dto.Value).IsNotEqualTo(comparativeValue);
 
         context.ShouldHaveNoErrors();
+        check.ShouldNotBeShortCircuited();
     }
 
     [Theory]
@@ -64,9 +66,36 @@ public static class IsNotEqualToTests
     {
         var (dto, context) = Test.SetupDefault(value);
 
-        context.Check(dto.Value).IsNotEqualTo(value, "WTF");
+        var check = context.Check(dto.Value).IsNotEqualTo(value, "WTF");
 
         context.ShouldHaveSingleError("value", "WTF");
+        check.ShouldNotBeShortCircuited();
+    }
+
+    [Theory]
+    [MemberData(nameof(InvalidValues))]
+    public static void ShortCircuit(short value)
+    {
+        var (dto, context) = Test.SetupDefault(value);
+
+        var check = context.Check(dto.Value).IsNotEqualTo(value, shortCircuitOnError: true);
+
+        context.ShouldHaveErrors();
+        check.ShouldBeShortCircuited();
+    }
+
+    [Theory]
+    [MemberData(nameof(InvalidValues))]
+    public static void NoErrorMessageForShortCircuitedCheck(short value)
+    {
+        var (dto, context) = Test.SetupDefault(value);
+
+        var check = context.Check(dto.Value)
+                           .ShortCircuit()
+                           .IsNotEqualTo(value);
+
+        context.ShouldHaveNoErrors();
+        check.ShouldBeShortCircuited();
     }
 
     [Theory]
@@ -75,9 +104,10 @@ public static class IsNotEqualToTests
     {
         var (dto, context) = Test.SetupDefault(value);
 
-        context.Check(dto.Value).IsNotEqualTo(comparativeValue, StringComparer.OrdinalIgnoreCase);
+        var check = context.Check(dto.Value).IsNotEqualTo(comparativeValue, StringComparer.OrdinalIgnoreCase);
 
         context.ShouldHaveSingleError("value", $"value must not be {Formatter.Format(comparativeValue)}.");
+        check.ShouldNotBeShortCircuited();
     }
 
     [Theory]
@@ -86,9 +116,10 @@ public static class IsNotEqualToTests
     {
         var (dto, context) = Test.SetupDefault(value);
 
-        context.Check(dto.Value).IsNotEqualTo(comparativeValue, StringComparer.OrdinalIgnoreCase);
+        var check = context.Check(dto.Value).IsNotEqualTo(comparativeValue, StringComparer.OrdinalIgnoreCase);
 
         context.ShouldHaveNoErrors();
+        check.ShouldNotBeShortCircuited();
     }
 
     [Theory]
@@ -97,9 +128,36 @@ public static class IsNotEqualToTests
     {
         var (dto, context) = Test.SetupDefault(value);
 
-        context.Check(dto.Value).IsNotEqualTo(comparativeValue, StringComparer.OrdinalIgnoreCase, "Errors.ValuesEqual");
+        var check = context.Check(dto.Value).IsNotEqualTo(comparativeValue, StringComparer.OrdinalIgnoreCase, "Errors.ValuesEqual");
 
         context.ShouldHaveSingleError("value", "Errors.ValuesEqual");
+        check.ShouldNotBeShortCircuited();
+    }
+
+    [Theory]
+    [MemberData(nameof(IgnoreCaseInvalidValues))]
+    public static void ShortCircuitWithCustomEqualityComparer(string value, string comparativeValue)
+    {
+        var (dto, context) = Test.SetupDefault(value);
+
+        var check = context.Check(dto.Value).IsNotEqualTo(comparativeValue, StringComparer.OrdinalIgnoreCase, shortCircuitOnError: true);
+
+        context.ShouldHaveErrors();
+        check.ShouldBeShortCircuited();
+    }
+
+    [Theory]
+    [MemberData(nameof(IgnoreCaseInvalidValues))]
+    public static void NoErrorsForShortCircuitedCheckWithCustomEqualityComparer(string value, string comparativeValue)
+    {
+        var (dto, context) = Test.SetupDefault(value);
+
+        var check = context.Check(dto.Value)
+                           .ShortCircuit()
+                           .IsNotEqualTo(comparativeValue, StringComparer.OrdinalIgnoreCase);
+
+        context.ShouldHaveNoErrors();
+        check.ShouldBeShortCircuited();
     }
 
     [Theory]
@@ -108,9 +166,10 @@ public static class IsNotEqualToTests
     {
         var (dto, context) = Test.SetupDefault(value);
 
-        context.Check(dto.Value).IsNotEqualTo(value, (c, o) => $"{c.Key} must be different than {Formatter.Format(o)}");
+        var check = context.Check(dto.Value).IsNotEqualTo(value, (c, o) => $"{c.Key} must be different than {Formatter.Format(o)}");
 
         context.ShouldHaveSingleError("value", $"value must be different than {Formatter.Format(value)}");
+        check.ShouldNotBeShortCircuited();
     }
 
     [Theory]
@@ -119,9 +178,10 @@ public static class IsNotEqualToTests
     {
         var (dto, context) = Test.SetupDefault(value);
 
-        context.Check(dto.Value).IsNotEqualTo(comparativeValue, (_, _) => "Foo");
+        var check = context.Check(dto.Value).IsNotEqualTo(comparativeValue, (_, _) => "Foo");
 
         context.ShouldHaveNoErrors();
+        check.ShouldNotBeShortCircuited();
     }
 
     [Theory]
@@ -130,12 +190,13 @@ public static class IsNotEqualToTests
     {
         var (dto, context) = Test.SetupDefault(value);
 
-        context.Check(dto.Value)
-               .IsNotEqualTo(comparativeValue,
-                             StringComparer.OrdinalIgnoreCase,
-                             (c, o) => $"{c.Key} must be different than {Formatter.Format(o)}");
+        var check = context.Check(dto.Value)
+                           .IsNotEqualTo(comparativeValue,
+                                         StringComparer.OrdinalIgnoreCase,
+                                         (c, o) => $"{c.Key} must be different than {Formatter.Format(o)}");
 
         context.ShouldHaveSingleError("value", $"value must be different than {Formatter.Format(comparativeValue)}");
+        check.ShouldNotBeShortCircuited();
     }
 
     [Theory]
@@ -144,11 +205,28 @@ public static class IsNotEqualToTests
     {
         var (dto, context) = Test.SetupDefault(value);
 
-        context.Check(dto.Value)
-               .IsNotEqualTo(comparativeValue,
-                             StringComparer.OrdinalIgnoreCase,
-                             (_, _) => "Foo");
+        var check = context.Check(dto.Value)
+                           .IsNotEqualTo(comparativeValue,
+                                         StringComparer.OrdinalIgnoreCase,
+                                         (_, _) => "Foo");
 
         context.ShouldHaveNoErrors();
+        check.ShouldNotBeShortCircuited();
+    }
+
+    [Theory]
+    [MemberData(nameof(IgnoreCaseInvalidValues))]
+    public static void NoErrorsForShortCircuitedCheckWithCustomMessageFactoryAndCustomEqualityComparer(string value, string comparativeValue)
+    {
+        var (dto, context) = Test.SetupDefault(value);
+
+        var check = context.Check(dto.Value)
+                           .ShortCircuit()
+                           .IsNotEqualTo(comparativeValue,
+                                         StringComparer.OrdinalIgnoreCase,
+                                         (_, _) => "Foo");
+
+        context.ShouldHaveNoErrors();
+        check.ShouldBeShortCircuited();
     }
 }
