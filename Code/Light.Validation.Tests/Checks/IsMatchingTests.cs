@@ -45,7 +45,7 @@ public static class IsMatchingTests
 
         context.Check(dto.Value).IsMatching(Regex);
 
-        context.ShouldHaveNoError();
+        context.ShouldHaveNoErrors();
     }
 
     [Theory]
@@ -78,6 +78,6 @@ public static class IsMatchingTests
 
         context.Check(dto.Value).IsMatching(Regex, (_, _) => "GG");
 
-        context.ShouldHaveNoError();
+        context.ShouldHaveNoErrors();
     }
 }

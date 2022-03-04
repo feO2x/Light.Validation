@@ -20,13 +20,21 @@ public static partial class Checks
     /// The error message that will be added to the context (optional). If null is provided, the default error
     /// message will be created from the error templates associated to the validation context.
     /// </param>
+    /// <param name="shortCircuitOnError">
+    /// The value indicating whether the check instance is short-circuited when validation fails.
+    /// Short-circuited instances will not perform any more checks.
+    /// </param>
     /// <typeparam name="T">The type of the value to be checked.</typeparam>
-    public static Check<T> IsNotNull<T>(this Check<T> check, string? message = null)
+    public static Check<T> IsNotNull<T>(this Check<T> check,
+                                        string? message = null,
+                                        bool shortCircuitOnError = true)
         where T : class
     {
-        if (check.IsValueNull)
-            check.AddNotNullError(message);
-        return check;
+        if (check.IsShortCircuited || !check.IsValueNull)
+            return check;
+        
+        check.AddNotNullError(message);
+        return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
     /// <summary>
@@ -35,14 +43,21 @@ public static partial class Checks
     /// </summary>
     /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
     /// <param name="errorMessageFactory">The delegate that is used to create the error message.</param>
+    /// <param name="shortCircuitOnError">
+    /// The value indicating whether the check instance is short-circuited when validation fails.
+    /// Short-circuited instances will not perform any more checks.
+    /// </param>
     /// <typeparam name="T">The type of the value to be checked.</typeparam>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="errorMessageFactory" /> is null.</exception>
-    public static Check<T> IsNotNull<T>(this Check<T> check, Func<Check<T>, string> errorMessageFactory)
+    public static Check<T> IsNotNull<T>(this Check<T> check,
+                                        Func<Check<T>, string> errorMessageFactory,
+                                        bool shortCircuitOnError = true)
         where T : class
     {
-        if (check.IsValueNull)
-            check.AddError(errorMessageFactory);
-        return check;
+        if (check.IsShortCircuited || !check.IsValueNull)
+            return check;
+        check.AddError(errorMessageFactory);
+        return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
     /// <summary>
@@ -54,13 +69,21 @@ public static partial class Checks
     /// The error message that will be added to the context (optional). If null is provided, the default error
     /// message will be created from the error templates associated to the validation context.
     /// </param>
+    /// <param name="shortCircuitOnError">
+    /// The value indicating whether the check instance is short-circuited when validation fails.
+    /// Short-circuited instances will not perform any more checks.
+    /// </param>
     /// <typeparam name="T">The type of the value to be checked.</typeparam>
-    public static Check<T?> IsNotNull<T>(this Check<T?> check, string? message = null)
+    public static Check<T?> IsNotNull<T>(this Check<T?> check,
+                                         string? message = null,
+                                         bool shortCircuitOnError = true)
         where T : struct
     {
-        if (check.IsValueNull)
-            check.AddNotNullError(message);
-        return check;
+        if (check.IsShortCircuited || !check.IsValueNull)
+            return check;
+        
+        check.AddNotNullError(message);
+        return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
     /// <summary>
@@ -69,14 +92,21 @@ public static partial class Checks
     /// </summary>
     /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
     /// <param name="errorMessageFactory">The delegate that is used to create the error message.</param>
+    /// <param name="shortCircuitOnError">
+    /// The value indicating whether the check instance is short-circuited when validation fails.
+    /// Short-circuited instances will not perform any more checks.
+    /// </param>
     /// <typeparam name="T">The type of the value to be checked.</typeparam>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="errorMessageFactory" /> is null.</exception>
-    public static Check<T?> IsNotNull<T>(this Check<T?> check, Func<Check<T?>, string> errorMessageFactory)
+    public static Check<T?> IsNotNull<T>(this Check<T?> check,
+                                         Func<Check<T?>, string> errorMessageFactory,
+                                         bool shortCircuitOnError = true)
         where T : struct
     {
-        if (check.IsValueNull)
-            check.AddError(errorMessageFactory);
-        return check;
+        if (check.IsShortCircuited || !check.IsValueNull)
+            return check;
+        check.AddError(errorMessageFactory);
+        return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
     /// <summary>
@@ -89,12 +119,21 @@ public static partial class Checks
     /// The error message that will be added to the context (optional). If null is provided, the default error
     /// message will be created from the error templates associated to the validation context.
     /// </param>
+    /// <param name="shortCircuitOnError">
+    /// The value indicating whether the check instance is short-circuited when validation fails.
+    /// Short-circuited instances will not perform any more checks.
+    /// </param>
     /// <typeparam name="T">The type of the value to be checked.</typeparam>
-    public static Check<T> IsEqualTo<T>(this Check<T> check, T comparativeValue, string? message = null)
+    public static Check<T> IsEqualTo<T>(this Check<T> check,
+                                        T comparativeValue,
+                                        string? message = null,
+                                        bool shortCircuitOnError = false)
     {
-        if (!EqualityComparer<T>.Default.Equals(check.Value, comparativeValue))
-            check.AddEqualToError(comparativeValue, message);
-        return check;
+        if (check.IsShortCircuited || EqualityComparer<T>.Default.Equals(check.Value, comparativeValue))
+            return check;
+
+        check.AddEqualToError(comparativeValue, message);
+        return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
     /// <summary>
@@ -107,19 +146,26 @@ public static partial class Checks
     /// <param name="message">
     /// The error message that will be added to the context (optional). If null is provided, the default error
     /// message will be created from the error templates associated to the validation context.
+    /// </param>
+    /// <param name="shortCircuitOnError">
+    /// The value indicating whether the check instance is short-circuited when validation fails.
+    /// Short-circuited instances will not perform any more checks.
     /// </param>
     /// <typeparam name="T">The type of the value to be checked.</typeparam>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="equalityComparer" /> is null.</exception>
     public static Check<T> IsEqualTo<T>(this Check<T> check,
                                         T comparativeValue,
                                         IEqualityComparer<T> equalityComparer,
-                                        string? message = null)
+                                        string? message = null,
+                                        bool shortCircuitOnError = false)
     {
         equalityComparer.MustNotBeNull();
 
-        if (!equalityComparer.Equals(check.Value, comparativeValue))
-            check.AddEqualToError(comparativeValue, message);
-        return check;
+        if (check.IsShortCircuited || equalityComparer.Equals(check.Value, comparativeValue))
+            return check;
+
+        check.AddEqualToError(comparativeValue, message);
+        return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
     /// <summary>
@@ -129,15 +175,22 @@ public static partial class Checks
     /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
     /// <param name="comparativeValue">The comparative value that is compared to the actual value.</param>
     /// <param name="errorMessageFactory">The delegate that is used to create the error message.</param>
+    /// <param name="shortCircuitOnError">
+    /// The value indicating whether the check instance is short-circuited when validation fails.
+    /// Short-circuited instances will not perform any more checks.
+    /// </param>
     /// <typeparam name="T">The type of the value to be checked.</typeparam>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="errorMessageFactory" /> is null.</exception>
     public static Check<T> IsEqualTo<T>(this Check<T> check,
                                         T comparativeValue,
-                                        Func<Check<T>, T, string> errorMessageFactory)
+                                        Func<Check<T>, T, string> errorMessageFactory,
+                                        bool shortCircuitOnError = false)
     {
-        if (!EqualityComparer<T>.Default.Equals(check.Value, comparativeValue))
-            check.AddError(errorMessageFactory, comparativeValue);
-        return check;
+        if (check.IsShortCircuited || EqualityComparer<T>.Default.Equals(check.Value, comparativeValue))
+            return check;
+        
+        check.AddError(errorMessageFactory, comparativeValue);
+        return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
     /// <summary>
@@ -148,6 +201,10 @@ public static partial class Checks
     /// <param name="comparativeValue">The comparative value that is compared to the actual value.</param>
     /// <param name="equalityComparer">The equality comparer that is used to compare the two values.</param>
     /// <param name="errorMessageFactory">The delegate that is used to create the error message.</param>
+    /// <param name="shortCircuitOnError">
+    /// The value indicating whether the check instance is short-circuited when validation fails.
+    /// Short-circuited instances will not perform any more checks.
+    /// </param>
     /// <typeparam name="T">The type of the value to be checked.</typeparam>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="equalityComparer" /> or <paramref name="errorMessageFactory" /> are null.
@@ -155,13 +212,16 @@ public static partial class Checks
     public static Check<T> IsEqualTo<T>(this Check<T> check,
                                         T comparativeValue,
                                         IEqualityComparer<T> equalityComparer,
-                                        Func<Check<T>, T, string> errorMessageFactory)
+                                        Func<Check<T>, T, string> errorMessageFactory,
+                                        bool shortCircuitOnError = false)
     {
         equalityComparer.MustNotBeNull();
 
-        if (!equalityComparer.Equals(check.Value, comparativeValue))
-            check.AddError(errorMessageFactory, comparativeValue);
-        return check;
+        if (check.IsShortCircuited || equalityComparer.Equals(check.Value, comparativeValue))
+            return check;
+
+        check.AddError(errorMessageFactory, comparativeValue);
+        return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
     /// <summary>

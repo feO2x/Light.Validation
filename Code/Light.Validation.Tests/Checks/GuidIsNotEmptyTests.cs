@@ -35,7 +35,7 @@ public static class GuidIsNotEmptyTests
 
         context.Check(dto.Id).IsNotEmpty();
 
-        context.ShouldHaveNoError();
+        context.ShouldHaveNoErrors();
     }
 
     [Fact]
@@ -69,7 +69,7 @@ public static class GuidIsNotEmptyTests
 
         context.Check(dto.Id).IsNotEmpty(_ => "whatever");
 
-        context.ShouldHaveNoError();
+        context.ShouldHaveNoErrors();
     }
 
     private sealed class Dto

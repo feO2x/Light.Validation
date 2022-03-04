@@ -11,9 +11,15 @@ public static class ValidationContextExtensions
         return context;
     }
 
-    public static ValidationContext ShouldHaveNoError(this ValidationContext context)
+    public static ValidationContext ShouldHaveNoErrors(this ValidationContext context)
     {
         context.Errors.Should().BeNull();
+        return context;
+    }
+
+    public static ValidationContext ShouldHaveErrors(this ValidationContext context)
+    {
+        context.HasErrors.Should().BeTrue();
         return context;
     }
 }

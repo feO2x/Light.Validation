@@ -48,7 +48,7 @@ public static class IsGreaterThanTests
 
         context.Check(dto.SomeValue).IsGreaterThan(comparativeValue);
 
-        context.ShouldHaveNoError();
+        context.ShouldHaveNoErrors();
     }
 
     [Theory]
@@ -82,7 +82,7 @@ public static class IsGreaterThanTests
 
         context.Check(dto.SomeValue).IsGreaterThan("z", (_, _) => "I don't care");
 
-        context.ShouldHaveNoError();
+        context.ShouldHaveNoErrors();
     }
     
     private sealed class Dto<T> where T : IComparable<T>

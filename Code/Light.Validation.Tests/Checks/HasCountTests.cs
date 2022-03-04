@@ -43,7 +43,7 @@ public static class HasCountTests
 
         context.Check(dto.Value).HasCount(list.Count);
 
-        context.ShouldHaveNoError();
+        context.ShouldHaveNoErrors();
     }
 
     [Fact]
@@ -53,7 +53,7 @@ public static class HasCountTests
 
         context.Check(dto.Value).HasCount(50);
 
-        context.ShouldHaveNoError();
+        context.ShouldHaveNoErrors();
     }
 
     [Theory]
@@ -86,6 +86,6 @@ public static class HasCountTests
 
         context.Check(dto.Value).HasCount(list.Count, (_, _) => "Foo");
 
-        context.ShouldHaveNoError();
+        context.ShouldHaveNoErrors();
     }
 }
