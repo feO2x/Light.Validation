@@ -21,9 +21,10 @@ public static class GuidIsNotEmptyTests
         var dto = new Dto();
         var context = new ValidationContext();
 
-        context.Check(dto.Id).IsNotEmpty();
+        var check = context.Check(dto.Id).IsNotEmpty();
 
         context.ShouldHaveSingleError("id", "id must not be an empty GUID.");
+        check.ShouldNotBeShortCircuited();
     }
 
     [Theory]
@@ -33,9 +34,36 @@ public static class GuidIsNotEmptyTests
         var dto = new Dto { Id = guid };
         var context = new ValidationContext();
 
-        context.Check(dto.Id).IsNotEmpty();
+        var check = context.Check(dto.Id).IsNotEmpty();
 
         context.ShouldHaveNoErrors();
+        check.ShouldNotBeShortCircuited();
+    }
+
+    [Fact]
+    public static void ShortCircuit()
+    {
+        var dto = new Dto();
+        var context = new ValidationContext();
+
+        var check = context.Check(dto.Id).IsNotEmpty(shortCircuitOnError: true);
+
+        context.ShouldHaveErrors();
+        check.ShouldBeShortCircuited();
+    }
+
+    [Fact]
+    public static void NoErrorOnShortCircuitedCheck()
+    {
+        var dto = new Dto();
+        var context = new ValidationContext();
+
+        var check = context.Check(dto.Id)
+                           .ShortCircuit()
+                           .IsNotEmpty();
+
+        context.ShouldHaveNoErrors();
+        check.ShouldBeShortCircuited();
     }
 
     [Fact]
@@ -44,9 +72,10 @@ public static class GuidIsNotEmptyTests
         var dto = new Dto();
         var context = new ValidationContext();
         
-        context.Check(dto.Id).IsNotEmpty("An empty GUID? Are you kidding?");
+        var check = context.Check(dto.Id).IsNotEmpty("An empty GUID? Are you kidding?");
 
         context.ShouldHaveSingleError("id", "An empty GUID? Are you kidding?");
+        check.ShouldNotBeShortCircuited();
     }
 
     [Fact]
@@ -55,9 +84,10 @@ public static class GuidIsNotEmptyTests
         var dto = new Dto();
         var context = new ValidationContext();
 
-        context.Check(dto.Id).IsNotEmpty(c => $"The {c.Key} is empty");
+        var check = context.Check(dto.Id).IsNotEmpty(c => $"The {c.Key} is empty");
 
         context.ShouldHaveSingleError("id", "The id is empty");
+        check.ShouldNotBeShortCircuited();
     }
 
     [Theory]
@@ -67,9 +97,36 @@ public static class GuidIsNotEmptyTests
         var dto = new Dto { Id = validGuid };
         var context = new ValidationContext();
 
-        context.Check(dto.Id).IsNotEmpty(_ => "whatever");
+        var check = context.Check(dto.Id).IsNotEmpty(_ => "whatever");
 
         context.ShouldHaveNoErrors();
+        check.ShouldNotBeShortCircuited();
+    }
+
+    [Fact]
+    public static void ShortCircuitWithCustomMessageFactory()
+    {
+        var dto = new Dto();
+        var context = new ValidationContext();
+
+        var check = context.Check(dto.Id).IsNotEmpty(c => $"{c.Key} must be a valid GUID", shortCircuitOnError: true);
+
+        context.ShouldHaveErrors();
+        check.ShouldBeShortCircuited();
+    }
+
+    [Fact]
+    public static void NoErrorForShortCircuitedCheckWithCustomMessageFactory()
+    {
+        var dto = new Dto();
+        var context = new ValidationContext();
+
+        var check = context.Check(dto.Id)
+                           .ShortCircuit()
+                           .IsNotEmpty(_ => "whatever");
+
+        context.ShouldHaveNoErrors();
+        check.ShouldBeShortCircuited();
     }
 
     private sealed class Dto
