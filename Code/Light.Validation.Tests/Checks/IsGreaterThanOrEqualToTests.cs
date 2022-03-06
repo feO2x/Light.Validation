@@ -30,10 +30,11 @@ public static class IsGreaterThanOrEqualToTests
     {
         var (dto, context) = Test.SetupDefault(value);
 
-        context.Check(dto.Value).IsGreaterThanOrEqualTo(comparativeValue);
+        var check = context.Check(dto.Value).IsGreaterThanOrEqualTo(comparativeValue);
 
         context.ShouldHaveSingleError(
             "value", $"value must be greater than or equal to {comparativeValue.ToString()}.");
+        check.ShouldNotBeShortCircuited();
     }
 
     [Theory]
@@ -42,9 +43,10 @@ public static class IsGreaterThanOrEqualToTests
     {
         var (dto, context) = Test.SetupDefault(value);
 
-        context.Check(dto.Value).IsGreaterThanOrEqualTo(comparativeValue);
+        var check = context.Check(dto.Value).IsGreaterThanOrEqualTo(comparativeValue);
 
         context.ShouldHaveNoErrors();
+        check.ShouldNotBeShortCircuited();
     }
 
     [Theory]
@@ -53,24 +55,52 @@ public static class IsGreaterThanOrEqualToTests
     {
         var (dto, context) = Test.SetupDefault(value);
 
-        context.Check(dto.Value).IsGreaterThanOrEqualTo(comparativeValue, "Errors.MustBeGreaterThanOrEqualTo");
+        var check = context.Check(dto.Value).IsGreaterThanOrEqualTo(comparativeValue, "Errors.MustBeGreaterThanOrEqualTo");
 
         context.ShouldHaveSingleError("value", "Errors.MustBeGreaterThanOrEqualTo");
+        check.ShouldNotBeShortCircuited();
+    }
+
+    [Theory]
+    [MemberData(nameof(InvalidValues))]
+    public static void NoErrorOnShortCircuitedCheck(int value, int comparativeValue)
+    {
+        var (dto, context) = Test.SetupDefault(value);
+
+        var check = context.Check(dto.Value)
+                           .ShortCircuit()
+                           .IsGreaterThanOrEqualTo(comparativeValue);
+
+        context.ShouldHaveNoErrors();
+        check.ShouldBeShortCircuited();
+    }
+
+    [Theory]
+    [MemberData(nameof(InvalidValues))]
+    public static void ShortCircuit(int value, int comparativeValue)
+    {
+        var (dto, context) = Test.SetupDefault(value);
+
+        var check = context.Check(dto.Value).IsGreaterThanOrEqualTo(comparativeValue, shortCircuitOnError: true);
+
+        context.ShouldHaveErrors();
+        check.ShouldBeShortCircuited();
     }
 
     [Fact]
     public static void CustomErrorMessageFactory()
     {
         var (dto, context) = Test.SetupDefault(42.055);
-        
-        context
-           .Check(dto.Value)
-           .IsGreaterThanOrEqualTo(
-                45.75,
-                (c, o) => $"{c.Key} must not be less than {o.ToString(CultureInfo.InvariantCulture)}"
-            );
+
+        var check = context
+                   .Check(dto.Value)
+                   .IsGreaterThanOrEqualTo(
+                        45.75,
+                        (c, o) => $"{c.Key} must not be less than {o.ToString(CultureInfo.InvariantCulture)}"
+                    );
 
         context.ShouldHaveSingleError("value", "value must not be less than 45.75");
+        check.ShouldNotBeShortCircuited();
     }
 
     [Fact]
@@ -78,8 +108,34 @@ public static class IsGreaterThanOrEqualToTests
     {
         var (dto, context) = Test.SetupDefault(-15f);
 
-        context.Check(dto.Value).IsGreaterThanOrEqualTo(-19.5f, (_, _) => "Foo");
+        var check = context.Check(dto.Value).IsGreaterThanOrEqualTo(-19.5f, (_, _) => "Foo");
 
         context.ShouldHaveNoErrors();
+        check.ShouldNotBeShortCircuited();
+    }
+
+    [Fact]
+    public static void ShortCircuitWithCustomMessageFactory()
+    {
+        var (dto, context) = Test.SetupDefault("a");
+
+        var check = context.Check(dto.Value)
+                           .IsGreaterThanOrEqualTo("c", (_, _) => "The error", true);
+
+        context.ShouldHaveErrors();
+        check.ShouldBeShortCircuited();
+    }
+
+    [Fact]
+    public static void NoErrorOnShortCircuitedCheckWithCustomMessageFactory()
+    {
+        var (dto, context) = Test.SetupDefault("Y");
+
+        var check = context.Check(dto.Value)
+                           .ShortCircuit()
+                           .IsGreaterThanOrEqualTo("Z", (_, _) => "whatever", true);
+
+        context.ShouldHaveNoErrors();
+        check.ShouldBeShortCircuited();
     }
 }
