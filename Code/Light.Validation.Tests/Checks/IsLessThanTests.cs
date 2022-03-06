@@ -33,9 +33,10 @@ public static class IsLessThanTests
         var dto = new Dto<double> { TheValue = value };
         var context = new ValidationContext();
 
-        context.Check(dto.TheValue).IsLessThan(comparativeValue);
+        var check = context.Check(dto.TheValue).IsLessThan(comparativeValue);
 
         context.ShouldHaveSingleError("theValue", $"theValue must be less than {comparativeValue.ToString(CultureInfo.InvariantCulture)}.");
+        check.ShouldNotBeShortCircuited();
     }
 
     [Theory]
@@ -45,9 +46,10 @@ public static class IsLessThanTests
         var dto = new Dto<int> { TheValue = value };
         var context = new ValidationContext();
 
-        context.Check(dto.TheValue).IsLessThan(comparativeValue);
+        var check = context.Check(dto.TheValue).IsLessThan(comparativeValue);
 
         context.ShouldHaveNoErrors();
+        check.ShouldNotBeShortCircuited();
     }
 
     [Theory]
@@ -57,9 +59,38 @@ public static class IsLessThanTests
         var dto = new Dto<double> { TheValue = value };
         var context = new ValidationContext();
 
-        context.Check(dto.TheValue).IsLessThan(comparativeValue, "Errors.LessThan");
+        var check = context.Check(dto.TheValue).IsLessThan(comparativeValue, "Errors.LessThan");
 
         context.ShouldHaveSingleError("theValue", "Errors.LessThan");
+        check.ShouldNotBeShortCircuited();
+    }
+
+    [Theory]
+    [MemberData(nameof(InvalidValues))]
+    public static void ShortCircuit(double value, double comparativeValue)
+    {
+        var dto = new Dto<double> { TheValue = value };
+        var context = new ValidationContext();
+
+        var check = context.Check(dto.TheValue).IsLessThan(comparativeValue, shortCircuitOnError: true);
+
+        context.ShouldHaveErrors();
+        check.ShouldBeShortCircuited();
+    }
+
+    [Theory]
+    [MemberData(nameof(InvalidValues))]
+    public static void NoErrorOnShortCircuitedCheck(double value, double comparativeValue)
+    {
+        var dto = new Dto<double> { TheValue = value };
+        var context = new ValidationContext();
+
+        var check = context.Check(dto.TheValue)
+                           .ShortCircuit()
+                           .IsLessThan(comparativeValue);
+
+        context.ShouldHaveNoErrors();
+        check.ShouldBeShortCircuited();
     }
 
     [Fact]
@@ -68,9 +99,10 @@ public static class IsLessThanTests
         var dto = new Dto<float> { TheValue = 42f };
         var context = new ValidationContext();
 
-        context.Check(dto.TheValue).IsLessThan(40f, (c, o) => $"{c.Key} must not be greater than or equal to {o.ToString(CultureInfo.InvariantCulture)}");
+        var check = context.Check(dto.TheValue).IsLessThan(40f, (c, o) => $"{c.Key} must not be greater than or equal to {o.ToString(CultureInfo.InvariantCulture)}");
 
         context.ShouldHaveSingleError("theValue", "theValue must not be greater than or equal to 40");
+        check.ShouldNotBeShortCircuited();
     }
 
     [Fact]
@@ -79,9 +111,37 @@ public static class IsLessThanTests
         var dto = new Dto<string> { TheValue = "a" };
         var context = new ValidationContext();
 
-        context.Check(dto.TheValue).IsLessThan("b", (_, _) => "Foo");
+        var check = context.Check(dto.TheValue).IsLessThan("b", (_, _) => "Foo");
 
         context.ShouldHaveNoErrors();
+        check.ShouldNotBeShortCircuited();
+    }
+
+    [Fact]
+    public static void ShortCircuitWithCustomFactory()
+    {
+        var dto = new Dto<int> { TheValue = 42 };
+        var context = new ValidationContext();
+
+        var check = context.Check(dto.TheValue)
+                           .IsLessThan(15, (_, _) => "I'm the error", true);
+
+        context.ShouldHaveErrors();
+        check.ShouldBeShortCircuited();
+    }
+
+    [Fact]
+    public static void NoErrorOnShortCircuitedCheckWithCustomFactory()
+    {
+        var dto = new Dto<int> { TheValue = 1503 };
+        var context = new ValidationContext();
+
+        var check = context.Check(dto.TheValue)
+                           .ShortCircuit()
+                           .IsLessThan(50, (_, _) => "Whatever");
+
+        context.ShouldHaveNoErrors();
+        check.ShouldBeShortCircuited();
     }
 
     private sealed class Dto<T> where T : IComparable<T>

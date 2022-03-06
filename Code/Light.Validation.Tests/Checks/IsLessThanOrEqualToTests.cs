@@ -30,9 +30,10 @@ public static class IsLessThanOrEqualToTests
     {
         var (dto, context) = Test.SetupDefault(value);
 
-        context.Check(dto.Value).IsLessThanOrEqualTo(comparativeValue);
+        var check = context.Check(dto.Value).IsLessThanOrEqualTo(comparativeValue);
 
         context.ShouldHaveSingleError("value", $"value must be less than or equal to {comparativeValue.ToString(CultureInfo.InvariantCulture)}.");
+        check.ShouldNotBeShortCircuited();
     }
 
     [Theory]
@@ -41,9 +42,10 @@ public static class IsLessThanOrEqualToTests
     {
         var (dto, context) = Test.SetupDefault(value);
 
-        context.Check(dto.Value).IsLessThanOrEqualTo(comparativeValue);
+        var check = context.Check(dto.Value).IsLessThanOrEqualTo(comparativeValue);
 
         context.ShouldHaveNoErrors();
+        check.ShouldNotBeShortCircuited();
     }
 
     [Theory]
@@ -52,9 +54,36 @@ public static class IsLessThanOrEqualToTests
     {
         var (dto, context) = Test.SetupDefault(value);
 
-        context.Check(dto.Value).IsLessThanOrEqualTo(comparativeValue, "Errors.LessThanOrEqualTo");
+        var check = context.Check(dto.Value).IsLessThanOrEqualTo(comparativeValue, "Errors.LessThanOrEqualTo");
 
         context.ShouldHaveSingleError("value", "Errors.LessThanOrEqualTo");
+        check.ShouldNotBeShortCircuited();
+    }
+
+    [Theory]
+    [MemberData(nameof(InvalidValues))]
+    public static void ShortCircuit(float value, float comparativeValue)
+    {
+        var (dto, context) = Test.SetupDefault(value);
+
+        var check = context.Check(dto.Value).IsLessThanOrEqualTo(comparativeValue, shortCircuitOnError: true);
+
+        context.ShouldHaveErrors();
+        check.ShouldBeShortCircuited();
+    }
+
+    [Theory]
+    [MemberData(nameof(InvalidValues))]
+    public static void NoErrorOnShortCircuitedCheck(float value, float comparativeValue)
+    {
+        var (dto, context) = Test.SetupDefault(value);
+
+        var check = context.Check(dto.Value)
+                           .ShortCircuit()
+                           .IsLessThanOrEqualTo(comparativeValue);
+
+        context.ShouldHaveNoErrors();
+        check.ShouldBeShortCircuited();
     }
 
     [Fact]
@@ -62,9 +91,10 @@ public static class IsLessThanOrEqualToTests
     {
         var (dto, context) = Test.SetupDefault(24.42);
 
-        context.Check(dto.Value).IsLessThanOrEqualTo(24.1, (c, o) => $"{c.Key} is too great ({o.ToString(CultureInfo.InvariantCulture)})");
+        var check = context.Check(dto.Value).IsLessThanOrEqualTo(24.1, (c, o) => $"{c.Key} is too great ({o.ToString(CultureInfo.InvariantCulture)})");
 
         context.ShouldHaveSingleError("value", "value is too great (24.1)");
+        check.ShouldNotBeShortCircuited();
     }
 
     [Fact]
@@ -72,8 +102,34 @@ public static class IsLessThanOrEqualToTests
     {
         var (dto, context) = Test.SetupDefault('G');
 
-        context.Check(dto.Value).IsLessThanOrEqualTo('G', (_, _) => "Foo");
+        var check = context.Check(dto.Value).IsLessThanOrEqualTo('G', (_, _) => "Foo");
 
         context.ShouldHaveNoErrors();
+        check.ShouldNotBeShortCircuited();
+    }
+
+    [Fact]
+    public static void ShortCircuitWithCustomFactory()
+    {
+        var (dto, context) = Test.SetupDefault('h');
+
+        var check = context.Check(dto.Value)
+                           .IsLessThanOrEqualTo('d', (_, _) => "Here's an error message", true);
+
+        context.ShouldHaveErrors();
+        check.ShouldBeShortCircuited();
+    }
+
+    [Fact]
+    public static void NoErrorOnShortCircuitedCheckWithCustomFactory()
+    {
+        var (dto, context) = Test.SetupDefault('Z');
+
+        var check = context.Check(dto.Value)
+                           .ShortCircuit()
+                           .IsLessThanOrEqualTo('X', (_, _) => "whatever");
+
+        context.ShouldHaveNoErrors();
+        check.ShouldBeShortCircuited();
     }
 }
