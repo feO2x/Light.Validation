@@ -19,10 +19,14 @@ public static partial class Checks
     /// and a new string will be allocated if necessary.
     /// </item>
     /// </list>
+    /// If the check is already short-circuited, nothing will be done.
     /// </summary>
     /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
     public static Check<string> Normalize(this Check<string> check)
     {
+        if (check.IsShortCircuited)
+            return check;
+
         if (check.IsValueNull)
             return check.WithNewValue(string.Empty);
 
@@ -44,12 +48,19 @@ public static partial class Checks
     /// The error message that will be added to the context (optional). If null is provided, the default error
     /// message will be created from the error templates associated to the validation context.
     /// </param>
-    public static Check<string> IsNotNullOrWhiteSpace(this Check<string> check, string? message = null)
+    /// <param name="shortCircuitOnError">
+    /// The value indicating whether the check instance is short-circuited when validation fails.
+    /// Short-circuited instances will not perform any more checks.
+    /// </param>
+    public static Check<string> IsNotNullOrWhiteSpace(this Check<string> check,
+                                                      string? message = null,
+                                                      bool shortCircuitOnError = false)
     {
-        if (check.Value.IsNullOrWhiteSpace())
-            check.AddNotNullOrWhiteSpaceError(message);
+        if (check.IsShortCircuited || !check.Value.IsNullOrWhiteSpace())
+            return check;
 
-        return check;
+        check.AddNotNullOrWhiteSpaceError(message);
+        return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
     /// <summary>
@@ -58,13 +69,20 @@ public static partial class Checks
     /// </summary>
     /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
     /// <param name="errorMessageFactory">The delegate that is used to create the error message.</param>
+    /// <param name="shortCircuitOnError">
+    /// The value indicating whether the check instance is short-circuited when validation fails.
+    /// Short-circuited instances will not perform any more checks.
+    /// </param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="errorMessageFactory" /> is null.</exception>
     public static Check<string> IsNotNullOrWhiteSpace(this Check<string> check,
-                                                      Func<Check<string>, string> errorMessageFactory)
+                                                      Func<Check<string>, string> errorMessageFactory,
+                                                      bool shortCircuitOnError = false)
     {
-        if (check.Value.IsNullOrWhiteSpace())
-            check.AddError(errorMessageFactory);
-        return check;
+        if (check.IsShortCircuited || !check.Value.IsNullOrWhiteSpace())
+            return check;
+
+        check.AddError(errorMessageFactory);
+        return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
     /// <summary>
