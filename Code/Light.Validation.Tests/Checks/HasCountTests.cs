@@ -7,9 +7,10 @@ namespace Light.Validation.Tests.Checks;
 
 public static class HasCountTests
 {
-    public static readonly TheoryData<int[], int> InvalidValues =
+    public static readonly TheoryData<int[]?, int> InvalidValues =
         new ()
         {
+            { null, 3 },
             { new []{ 1, 2, 3 }, 2 },
             { new []{ 1, 2, 3, 4 }, 1 },
             { new []{ 1, 2 }, 10 },
@@ -30,9 +31,10 @@ public static class HasCountTests
     {
         var (dto, context) = Test.SetupDefault(array);
 
-        context.Check(dto.Value).HasCount(count);
+        var check = context.Check(dto.Value).HasCount(count);
 
         context.ShouldHaveSingleError("value", $"value must have {count} {(count == 1 ? "item" : "items")}.");
+        check.ShouldNotBeShortCircuited();
     }
 
     [Theory]
@@ -41,19 +43,10 @@ public static class HasCountTests
     {
         var (dto, context) = Test.SetupDefault(list);
 
-        context.Check(dto.Value).HasCount(list.Count);
+        var check = context.Check(dto.Value).HasCount(list.Count);
 
         context.ShouldHaveNoErrors();
-    }
-
-    [Fact]
-    public static void NoErrorWhenNull()
-    {
-        var (dto, context) = Test.SetupDefault(default(IList<string>)!);
-
-        context.Check(dto.Value).HasCount(50);
-
-        context.ShouldHaveNoErrors();
+        check.ShouldNotBeShortCircuited();
     }
 
     [Theory]
@@ -62,9 +55,36 @@ public static class HasCountTests
     {
         var (dto, context) = Test.SetupDefault(array);
 
-        context.Check(dto.Value).HasCount(count, "Errors.InvalidCollectionCount");
+        var check = context.Check(dto.Value).HasCount(count, "Errors.InvalidCollectionCount");
 
         context.ShouldHaveSingleError("value", "Errors.InvalidCollectionCount");
+        check.ShouldNotBeShortCircuited();
+    }
+
+    [Theory]
+    [MemberData(nameof(InvalidValues))]
+    public static void ShortCircuit(int[] array, int count)
+    {
+        var (dto, context) = Test.SetupDefault(array);
+
+        var check = context.Check(dto.Value).HasCount(count, shortCircuitOnError: true);
+
+        context.ShouldHaveErrors();
+        check.ShouldBeShortCircuited();
+    }
+
+    [Theory]
+    [MemberData(nameof(InvalidValues))]
+    public static void NoErrorOnShortCircuitedCheck(int[] array, int count)
+    {
+        var (dto, context) = Test.SetupDefault(array);
+
+        var check = context.Check(dto.Value)
+                           .ShortCircuit()
+                           .HasCount(count);
+
+        context.ShouldHaveNoErrors();
+        check.ShouldBeShortCircuited();
     }
 
     [Theory]
@@ -73,9 +93,10 @@ public static class HasCountTests
     {
         var (dto, context) = Test.SetupDefault(array);
 
-        context.Check(dto.Value).HasCount(count, (c, l) => $"{c.Key} must have length {l}");
+        var check = context.Check(dto.Value).HasCount(count, (c, l) => $"{c.Key} must have length {l}");
 
         context.ShouldHaveSingleError("value", $"value must have length {count}");
+        check.ShouldNotBeShortCircuited();
     }
 
     [Theory]
@@ -84,8 +105,35 @@ public static class HasCountTests
     {
         var (dto, context) = Test.SetupDefault(list);
 
-        context.Check(dto.Value).HasCount(list.Count, (_, _) => "Foo");
+        var check = context.Check(dto.Value).HasCount(list.Count, (_, _) => "Foo");
 
         context.ShouldHaveNoErrors();
+        check.ShouldNotBeShortCircuited();
+    }
+
+    [Theory]
+    [MemberData(nameof(InvalidValues))]
+    public static void ShortCircuitWithCustomMessageFactory(int[] array, int count)
+    {
+        var (dto, context) = Test.SetupDefault(array);
+
+        var check = context.Check(dto.Value).HasCount(count, (_, _) => "My Error Message", true);
+
+        context.ShouldHaveErrors();
+        check.ShouldBeShortCircuited();
+    }
+
+    [Theory]
+    [MemberData(nameof(InvalidValues))]
+    public static void NoErrorOnShortCircuitedCheckWithCustomMessageFactory(int[] array, int count)
+    {
+        var (dto, context) = Test.SetupDefault(array);
+
+        var check = context.Check(dto.Value)
+                           .ShortCircuit()
+                           .HasCount(count, (_, _) => "whatever");
+
+        context.ShouldHaveNoErrors();
+        check.ShouldBeShortCircuited();
     }
 }
