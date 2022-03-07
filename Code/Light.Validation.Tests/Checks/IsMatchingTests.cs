@@ -7,9 +7,10 @@ namespace Light.Validation.Tests.Checks;
 
 public static class IsMatchingTests
 {
-    public static readonly TheoryData<string> InvalidValues =
+    public static readonly TheoryData<string?> InvalidValues =
         new ()
         {
+            null,
             "",
             "123456",
             "ABC",
@@ -32,9 +33,10 @@ public static class IsMatchingTests
     {
         var (dto, context) = Test.SetupDefault(invalidValue);
 
-        context.Check(dto.Value).IsMatching(Regex);
+        var check = context.Check(dto.Value).IsMatching(Regex);
 
         context.ShouldHaveSingleError("value", "value must match the required pattern.");
+        check.ShouldNotBeShortCircuited();
     }
 
     [Theory]
@@ -43,9 +45,10 @@ public static class IsMatchingTests
     {
         var (dto, context) = Test.SetupDefault(validValue);
 
-        context.Check(dto.Value).IsMatching(Regex);
+        var check = context.Check(dto.Value).IsMatching(Regex);
 
         context.ShouldHaveNoErrors();
+        check.ShouldNotBeShortCircuited();
     }
 
     [Theory]
@@ -54,9 +57,36 @@ public static class IsMatchingTests
     {
         var (dto, context) = Test.SetupDefault(invalidValue);
 
-        context.Check(dto.Value).IsMatching(Regex, "No match for you");
+        var check = context.Check(dto.Value).IsMatching(Regex, "No match for you");
 
         context.ShouldHaveSingleError("value", "No match for you");
+        check.ShouldNotBeShortCircuited();
+    }
+
+    [Theory]
+    [MemberData(nameof(InvalidValues))]
+    public static void ShortCircuit(string invalidValue)
+    {
+        var (dto, context) = Test.SetupDefault(invalidValue);
+
+        var check = context.Check(dto.Value).IsMatching(Regex, shortCircuitOnError: true);
+
+        context.ShouldHaveErrors();
+        check.ShouldBeShortCircuited();
+    }
+
+    [Theory]
+    [MemberData(nameof(InvalidValues))]
+    public static void NoErrorForShortCircuitedCheck(string invalidValue)
+    {
+        var (dto, context) = Test.SetupDefault(invalidValue);
+
+        var check = context.Check(dto.Value)
+                           .ShortCircuit()
+                           .IsMatching(Regex);
+
+        context.ShouldHaveNoErrors();
+        check.ShouldBeShortCircuited();
     }
 
     [Theory]
@@ -65,9 +95,10 @@ public static class IsMatchingTests
     {
         var (dto, context) = Test.SetupDefault(invalidValue);
 
-        context.Check(dto.Value).IsMatching(Regex, (c, r) => $"{c.Key} must match pattern \"{r}\".");
+        var check = context.Check(dto.Value).IsMatching(Regex, (c, r) => $"{c.Key} must match pattern \"{r}\".");
 
         context.ShouldHaveSingleError("value", "value must match pattern \"^\\w{4}$\".");
+        check.ShouldNotBeShortCircuited();
     }
 
     [Theory]
@@ -76,8 +107,36 @@ public static class IsMatchingTests
     {
         var (dto, context) = Test.SetupDefault(validValue);
 
-        context.Check(dto.Value).IsMatching(Regex, (_, _) => "GG");
+        var check = context.Check(dto.Value).IsMatching(Regex, (_, _) => "GG");
 
         context.ShouldHaveNoErrors();
+        check.ShouldNotBeShortCircuited();
+    }
+
+    [Theory]
+    [MemberData(nameof(InvalidValues))]
+    public static void ShortCircuitWithCustomMessageFactory(string invalidValue)
+    {
+        var (dto, context) = Test.SetupDefault(invalidValue);
+
+        var check = context.Check(dto.Value)
+                           .IsMatching(Regex, (_, _) => "Here's the error", true);
+
+        context.ShouldHaveErrors();
+        check.ShouldBeShortCircuited();
+    }
+
+    [Theory]
+    [MemberData(nameof(InvalidValues))]
+    public static void NoErrorOnShortCircuitedCheckWithCustomMessageFactory(string invalidValue)
+    {
+        var (dto, context) = Test.SetupDefault(invalidValue);
+
+        var check = context.Check(dto.Value)
+                           .ShortCircuit()
+                           .IsMatching(Regex, (_, _) => "whatever");
+
+        context.ShouldHaveNoErrors();
+        check.ShouldBeShortCircuited();
     }
 }

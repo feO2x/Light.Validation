@@ -86,8 +86,16 @@ public static partial class Checks
     }
 
     /// <summary>
+    /// <para>
     /// Checks if the specified string matches the specified regular expression, or otherwise
     /// adds an error message to the validation context.
+    /// </para>
+    /// <para>
+    /// This method calls <see cref="Regex.IsMatch(string)" /> only when the provided string value
+    /// is not null (to avoid null-reference-exceptions). If it is null, the error message
+    /// will be added to the validation context. You can prevent this behavior by short-circuiting the check
+    /// instance passed to this method beforehand.
+    /// </para>
     /// </summary>
     /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
     /// <param name="regex">The regular expression that is used to check the string.</param>
@@ -95,36 +103,59 @@ public static partial class Checks
     /// The error message that will be added to the context (optional). If null is provided, the default error
     /// message will be created from the error templates associated to the validation context.
     /// </param>
+    /// <param name="shortCircuitOnError">
+    /// The value indicating whether the check instance is short-circuited when validation fails.
+    /// Short-circuited instances will not perform any more checks.
+    /// </param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="regex" /> is null.</exception>
-    public static Check<string> IsMatching(this Check<string> check, Regex regex, string? message = null)
+    public static Check<string> IsMatching(this Check<string> check,
+                                           Regex regex,
+                                           string? message = null,
+                                           bool shortCircuitOnError = false)
     {
         regex.MustNotBeNull();
 
-        if (!check.IsValueNull && !regex.IsMatch(check.Value))
-            check.AddRegexMustMatchError(message);
+        if (check.IsShortCircuited || !check.IsValueNull && regex.IsMatch(check.Value))
+            return check;
 
-        return check;
+        check.AddRegexMustMatchError(message);
+        return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
     /// <summary>
+    /// <para>
     /// Checks if the specified string matches the specified regular expression, or otherwise adds the
     /// error message that was created by the specified factory to the validation context.
+    /// </para>
+    /// <para>
+    /// This method calls <see cref="Regex.IsMatch(string)" /> only when the provided string value
+    /// is not null (to avoid null-reference-exceptions). If it is null, the error message
+    /// will be added to the validation context. You can prevent this behavior by short-circuiting the check
+    /// instance passed to this method beforehand.
+    /// </para>
     /// </summary>
     /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
     /// <param name="regex">The regular expression that is used to check the string.</param>
     /// <param name="errorMessageFactory">The delegate that is used to create the error message.</param>
+    /// <param name="shortCircuitOnError">
+    /// The value indicating whether the check instance is short-circuited when validation fails.
+    /// Short-circuited instances will not perform any more checks.
+    /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="regex" /> or <paramref name="errorMessageFactory" /> are null.
     /// </exception>
     public static Check<string> IsMatching(this Check<string> check,
                                            Regex regex,
-                                           Func<Check<string>, Regex, string> errorMessageFactory)
+                                           Func<Check<string>, Regex, string> errorMessageFactory,
+                                           bool shortCircuitOnError = false)
     {
         regex.MustNotBeNull();
 
-        if (!check.IsValueNull && !regex.IsMatch(check.Value))
-            check.AddError(errorMessageFactory, regex);
-        return check;
+        if (check.IsShortCircuited || !check.IsValueNull && regex.IsMatch(check.Value))
+            return check;
+
+        check.AddError(errorMessageFactory, regex);
+        return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
     /// <summary>
