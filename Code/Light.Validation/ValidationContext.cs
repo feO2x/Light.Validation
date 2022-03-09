@@ -13,7 +13,7 @@ namespace Light.Validation;
 /// a dictionary. The dictionary will only be initialized when
 /// errors are actually added to avoid Garbage Collector pressure.
 /// </summary>
-public sealed class ValidationContext
+public class ValidationContext
 {
     /// <summary>
     /// Initializes a new instance of <see cref="ValidationContext" />.
@@ -188,8 +188,15 @@ public sealed class ValidationContext
     /// By default, the error key is automatically determined using the
     /// CallerArgumentExpressionAttribute and then normalized.
     /// You can change this by passing in <see cref="Options" /> with
-    /// NormalizeKeyOnCheck set to false and passing in a dedicated
-    /// value for the optional <paramref name="key" /> parameter.
+    /// NormalizeKeyOnCheck set to false or setting the NormalizeKey delegate, or by passing in a dedicated
+    /// value for the optional <paramref name="key" /> parameter. The default normalization algorithm will
+    /// take the substring after the last dot and convert it to lowerCamelCase if necessary.
+    /// </para>
+    /// <para>
+    /// When a string value is passed, this method will by default normalize it: null will
+    /// be replaced with an empty string, non-null strings will be trimmed. You can change
+    /// this behavior by passing in <see cref="Options" /> with IsNormalizingStringValues set
+    /// to false, or by providing a delegate that performs your custom normalization (NormalizeStringValue).
     /// </para>
     /// </summary>
     /// <param name="value">The value to be checked.</param>
@@ -197,11 +204,35 @@ public sealed class ValidationContext
     /// <typeparam name="T">The type of the value to be checked.</typeparam>
     public Check<T> Check<T>(T value, [CallerArgumentExpression("value")] string key = "")
     {
-        key.MustNotBeNull();
-        key = NormalizeKey(key, Options.NormalizeKeyOnCheck);
+        if (typeof(T) == typeof(string))
+        {
+            key.MustNotBeNull();
+            key = NormalizeKey(key, Options.NormalizeKeyOnCheck);
 
-        return new Check<T>(this, key, value);
+            if (!Options.IsNormalizingStringValues)
+                return new Check<T>(this, key, value);
+
+            var stringValue = Unsafe.As<T, string>(ref value);
+            stringValue = NormalizeStringValue(stringValue);
+            return new Check<T>(this, key, Unsafe.As<string, T>(ref stringValue));
+        }
+        else
+        {
+            key.MustNotBeNull();
+            key = NormalizeKey(key, Options.NormalizeKeyOnCheck);
+
+            if (value is string stringValue && Options.IsNormalizingStringValues)
+            {
+                stringValue = NormalizeStringValue(stringValue);
+                value = Unsafe.As<string, T>(ref stringValue);
+            }
+
+            return new Check<T>(this, key, value);
+        }
     }
+
+    private string NormalizeStringValue(string stringValue) =>
+        Options.NormalizeStringValue?.Invoke(stringValue) ?? stringValue.NormalizeString();
 
     /// <summary>
     /// Creates a validation result with the internal errors dictionary.
@@ -297,7 +328,7 @@ public sealed class ValidationContext
             foreach (var keyValuePair in currentErrors)
             {
                 stringBuilder.Append(keyValuePair.Key)
-                   .Append(": ");
+                             .Append(": ");
                 switch (keyValuePair.Value)
                 {
                     case string errorMessage:

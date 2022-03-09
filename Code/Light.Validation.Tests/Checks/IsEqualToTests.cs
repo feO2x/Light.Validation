@@ -34,8 +34,8 @@ public static class IsEqualToTests
         {
             { "one", "two" },
             { "", "\n" },
-            { null!, "" },
-            { "", null! },
+            { null!, "\t" },
+            { " ", null! },
             { "A very long input", "A very long comparison" }
         };
 
@@ -44,8 +44,7 @@ public static class IsEqualToTests
         {
             { "Similar", "Similar" },
             { "Equal", "EQUAL" },
-            { "", "" },
-            { null!, null! }
+            { "", "" }
         };
 
     [Theory]

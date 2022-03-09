@@ -24,8 +24,8 @@ public static class IsNotEqualToTests
             { "Foo", "Bar" },
             { "BAZ", "qux" },
             { "", "\t" },
-            { "", null! },
-            { null!, "" }
+            { " ", null! },
+            { null!, "\t" }
         };
 
     public static readonly TheoryData<string, string> IgnoreCaseInvalidValues =

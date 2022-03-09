@@ -104,4 +104,20 @@ public readonly record struct Check<T> : ICheck
     /// Gets the value indicating whether <see cref="Value" /> is null.
     /// </summary>
     public bool IsValueNull => Value is null;
+
+    /// <summary>
+    /// Casts the validation context to the specified subtype and returns
+    /// it. If casting is not possible, an <see cref="InvalidCastException" />
+    /// will be thrown.
+    /// </summary>
+    /// <typeparam name="TValidationContext">The subtype of the validation context.</typeparam>
+    /// <exception cref="InvalidCastException">Thrown when <see cref="Context" /> cannot be cast to type TValidationContext.</exception>
+    public TValidationContext GetContextAs<TValidationContext>()
+        where TValidationContext : ValidationContext
+    {
+        if (Context is TValidationContext subContext)
+            return subContext;
+
+        throw new InvalidCastException($"The validation context cannot be cast to type \"{typeof(TValidationContext)}\".");
+    }
 }

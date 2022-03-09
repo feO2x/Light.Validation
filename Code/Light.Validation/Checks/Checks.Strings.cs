@@ -8,36 +8,29 @@ namespace Light.Validation.Checks;
 public static partial class Checks
 {
     /// <summary>
+    /// <para>
     /// Normalizes the specified string. This is done by performing two steps:
     /// <list type="number">
     /// <item>
-    /// Checking for null. If the string is actually null, a check with an
+    /// Checking for null: If the string is actually null, a check with an
     /// empty string will be returned so that consecutive checks will not throw.
     /// </item>
     /// <item>
-    /// Trimming the string. White space at the beginning and end will be removed
+    /// Trimming the string: white space at the beginning and end will be removed
     /// and a new string will be allocated if necessary.
     /// </item>
     /// </list>
     /// If the check is already short-circuited, nothing will be done.
+    /// </para>
+    /// <para>
+    /// By default, you do not need to call this extension method. String values are automatically
+    /// normalized when calling <c>context.Check(dto.SomeString)</c> unless you set
+    /// <see cref="ValidationContextOptions.IsNormalizingStringValues" /> to false.
+    /// </para>
     /// </summary>
     /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
-    public static Check<string> Normalize(this Check<string> check)
-    {
-        if (check.IsShortCircuited)
-            return check;
-
-        if (check.IsValueNull)
-            return check.WithNewValue(string.Empty);
-
-        var readOnlySpan = check.Value.AsSpan().Trim();
-        if (readOnlySpan.IsEmpty)
-            return check.WithNewValue(string.Empty);
-
-        return readOnlySpan.Length == check.Value.Length ?
-            check :
-            check.WithNewValue(readOnlySpan.ToString());
-    }
+    public static Check<string> Normalize(this Check<string> check) =>
+        check.IsShortCircuited ? check : check.WithNewValue(check.Value.NormalizeString());
 
     /// <summary>
     /// Checks if the specified string is not null, empty, or contains only white space, or

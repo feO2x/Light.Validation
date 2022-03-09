@@ -1,5 +1,4 @@
-﻿using FluentAssertions;
-using Light.Validation.Checks;
+﻿using Light.Validation.Checks;
 using Light.Validation.Tests.TestHelpers;
 using Xunit;
 
@@ -18,11 +17,16 @@ public static class IsNotNullForReferencesTests
             "\t\r\n"
         };
 
+    private static ValidationContextOptions Options { get; } =
+        ValidationContextOptions.Default with { IsNormalizingStringValues = false };
+
+    private static ValidationContext CreateValidationContext() => new (Options);
+
     [Fact]
     public static void ValueIsNull()
     {
         var dto = new Dto();
-        var context = new ValidationContext();
+        var context = CreateValidationContext();
 
         var check = context.Check(dto.ReferenceValue).IsNotNull();
 
@@ -35,7 +39,7 @@ public static class IsNotNullForReferencesTests
     public static void NotNull(string validString)
     {
         var dto = new Dto { ReferenceValue = validString };
-        var context = new ValidationContext();
+        var context = CreateValidationContext();
 
         var check = context.Check(dto.ReferenceValue).IsNotNull();
 
@@ -47,7 +51,7 @@ public static class IsNotNullForReferencesTests
     public static void CustomErrorMessage()
     {
         var dto = new Dto();
-        var context = new ValidationContext();
+        var context = CreateValidationContext();
 
         var check = context.Check(dto.ReferenceValue).IsNotNull("How can you pass null?");
 
@@ -59,7 +63,7 @@ public static class IsNotNullForReferencesTests
     public static void CustomErrorMessageFactory()
     {
         var dto = new Dto();
-        var context = new ValidationContext();
+        var context = CreateValidationContext();
 
         var check = context.Check(dto.ReferenceValue).IsNotNull(c => $"Damn you, {c.Key} is null!");
 
@@ -72,7 +76,7 @@ public static class IsNotNullForReferencesTests
     public static void NoErrorWithCustomMessageFactory(string validValue)
     {
         var dto = new Dto { ReferenceValue = validValue };
-        var context = new ValidationContext();
+        var context = CreateValidationContext();
 
         var check = context.Check(dto.ReferenceValue).IsNotNull(_ => "It doesn't matter");
 
@@ -84,7 +88,7 @@ public static class IsNotNullForReferencesTests
     public static void NoErrorForShortCircuitedChecks()
     {
         var dto = new Dto();
-        var context = new ValidationContext();
+        var context = CreateValidationContext();
 
         context.Check(dto.ReferenceValue)
                .ShortCircuit()
@@ -97,7 +101,7 @@ public static class IsNotNullForReferencesTests
     public static void AvoidShortCircuitOnError()
     {
         var dto = new Dto();
-        var context = new ValidationContext();
+        var context = CreateValidationContext();
 
         var check = context.Check(dto.ReferenceValue)
                            .IsNotNull(shortCircuitOnError: false);
@@ -110,7 +114,7 @@ public static class IsNotNullForReferencesTests
     public static void AvoidShortCircuitOnCustomErrorMessage()
     {
         var dto = new Dto();
-        var context = new ValidationContext();
+        var context = CreateValidationContext();
         
         var check = context.Check(dto.ReferenceValue).IsNotNull(c => $"Damn you, {c.Key} is null!", false);
 

@@ -14,9 +14,6 @@ public static class Formatter
     /// </summary>
     public static string Format<T>(T value, CultureInfo cultureInfo)
     {
-        if (value is null)
-            return "null";
-
         if (typeof(T) == typeof(double))
             return Unsafe.As<T, double>(ref value).ToString(cultureInfo);
         if (typeof(T) == typeof(float))
@@ -24,7 +21,7 @@ public static class Formatter
         if (typeof(T) == typeof(decimal))
             return Unsafe.As<T, decimal>(ref value).ToString(cultureInfo);
 
-        return value.ToString();
+        return value is null ? "null" : value.ToString();
     }
 
     /// <summary>

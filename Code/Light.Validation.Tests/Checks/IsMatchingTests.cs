@@ -14,7 +14,7 @@ public static class IsMatchingTests
             "",
             "123456",
             "ABC",
-            "\tGrub"
+            "\tGrubs"
         };
 
     public static readonly TheoryData<string> ValidValues =

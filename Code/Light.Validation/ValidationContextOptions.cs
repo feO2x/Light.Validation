@@ -63,4 +63,18 @@ public record ValidationContextOptions
     /// with the "AppendWithNewLine" behavior. The default value is "\n".
     /// </summary>
     public string NewLine { get; init; } = "\n";
+
+    /// <summary>
+    /// Gets or sets the value indicating whether string values will be normalized
+    /// when <see cref="ValidationContext.Check{T}" /> is called. The default value is true.
+    /// </summary>
+    public bool IsNormalizingStringValues { get; init; } = true;
+
+    /// <summary>
+    /// Gets or sets the delegate that is used to normalize string values.
+    /// The default value is null. If no delegate is set, the default normalization
+    /// function <see cref="StringExtensions.NormalizeString" /> will be used which
+    /// converts null to empty strings and trims the value.
+    /// </summary>
+    public Func<string?, string>? NormalizeStringValue { get; init; }
 }

@@ -86,4 +86,31 @@ public static class StringExtensions
         var lastIndexOfAtSign = value.LastIndexOf('@');
         return indexOfAtSign == lastIndexOfAtSign;
     }
+
+    /// <summary>
+    /// Normalizes a string value. This is done by performing two steps:
+    /// <list type="number">
+    /// <item>
+    /// Checking for null: in this case, an empty string will be returned.
+    /// </item>
+    /// <item>
+    /// Trimming the string: white space at the beginning and end will be removed
+    /// and a new string will be allocated if necessary.
+    /// </item>
+    /// </list>
+    /// </summary>
+    /// <param name="value">The value to be normalized.</param>
+    public static string NormalizeString(this string? value)
+    {
+        if (value is null)
+            return string.Empty;
+
+        var trimmedSpan = value.AsSpan().Trim();
+        if (trimmedSpan.IsEmpty)
+            return string.Empty;
+
+        return trimmedSpan.Length == value.Length ?
+                   value :
+                   trimmedSpan.ToString();
+    }
 }
