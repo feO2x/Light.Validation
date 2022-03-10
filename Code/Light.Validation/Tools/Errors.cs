@@ -194,6 +194,27 @@ public static class Errors
     }
 
     /// <summary>
+    /// Adds the "Is In Range" error message to the context.
+    /// </summary>
+    /// <typeparam name="T">The type of the value.</typeparam>
+    /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
+    /// <param name="range">The range whose boundaries were violated.</param>
+    /// <param name="message">
+    /// The error message (optional). If null is provided, an error message will be
+    /// generated from the error templates associated with the context.
+    /// </param>
+    public static void AddIsInRangeError<T>(this Check<T> check, Range<T> range, string? message = null)
+        where T : IComparable<T>
+    {
+        message ??= string.Format(
+            check.Context.ErrorTemplates.IsInRange,
+            check.Key,
+            check.Context.ErrorTemplates.FormatRange(range)
+        );
+        check.AddError(message);
+    }
+
+    /// <summary>
     /// Adds the "Email" error message to the context.
     /// </summary>
     /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>

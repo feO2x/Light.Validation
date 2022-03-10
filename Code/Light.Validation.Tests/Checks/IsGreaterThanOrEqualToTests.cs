@@ -33,7 +33,7 @@ public static class IsGreaterThanOrEqualToTests
         var check = context.Check(dto.Value).IsGreaterThanOrEqualTo(comparativeValue);
 
         context.ShouldHaveSingleError(
-            "value", $"value must be greater than or equal to {comparativeValue.ToString()}.");
+            "value", $"value must be greater than or equal to {comparativeValue}.");
         check.ShouldNotBeShortCircuited();
     }
 

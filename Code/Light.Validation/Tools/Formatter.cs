@@ -20,7 +20,7 @@ public static class Formatter
             return Unsafe.As<T, float>(ref value).ToString(cultureInfo);
         if (typeof(T) == typeof(decimal))
             return Unsafe.As<T, decimal>(ref value).ToString(cultureInfo);
-
+        
         return value is null ? "null" : value.ToString();
     }
 
