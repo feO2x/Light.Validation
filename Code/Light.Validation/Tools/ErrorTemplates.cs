@@ -115,6 +115,17 @@ public record ErrorTemplates
     public string IsInRange { get; init; } = "{0} must be in range from {1}.";
 
     /// <summary>
+    /// Gets the template for the "Is In Range" error message.
+    /// The default value is "{0} must not be in range from {1}.".
+    /// This template takes two parameters:
+    /// <list type="bullet">
+    /// <item>{0} key</item>
+    /// <item>{1} the Range&lt;T&gt; instance where, by default, CreateRangeDescriptionText is called upon. You can override FormatRange to change this behavior.</item>
+    /// </list>
+    /// </summary>
+    public string IsNotInRange { get; init; } = "{0} must not be in range from {1}.";
+
+    /// <summary>
     /// Gets the template for the "Not Empty GUID" error message.
     /// The default value is "{0} must not be an empty GUID.".
     /// This template takes one parameter:
