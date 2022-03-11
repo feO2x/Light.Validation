@@ -276,7 +276,7 @@ public static partial class Checks
         if (check.IsShortCircuited || !check.IsValueNull && range.IsValueWithinRange(check.Value))
             return check;
 
-        check.AddIsInRangeError(range, message);
+        check.AddInRangeError(range, message);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
@@ -295,6 +295,7 @@ public static partial class Checks
     /// The value indicating whether the check instance is short-circuited when validation fails.
     /// Short-circuited instances will not perform any more checks.
     /// </param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="errorMessageFactory" /> is null.</exception>
     public static Check<T> IsIn<T>(this Check<T> check,
                                    Range<T> range,
                                    Func<Check<T>, Range<T>, string> errorMessageFactory,
@@ -309,8 +310,7 @@ public static partial class Checks
     }
 
     /// <summary>
-    /// Checks if the value is outside of the specified range, or otherwise adds the error message that was created
-    /// by the specified factory to the validation context.
+    /// Checks if the value is outside of the specified range, or otherwise adds an error message to the validation context.
     /// </summary>
     /// <typeparam name="T">The type of the value to be checked.</typeparam>
     /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
@@ -335,7 +335,7 @@ public static partial class Checks
         if (check.IsShortCircuited || !check.IsValueNull && !range.IsValueWithinRange(check.Value))
             return check;
 
-        check.AddIsNotInRangeError(range, message);
+        check.AddNotInRangeError(range, message);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
@@ -354,6 +354,7 @@ public static partial class Checks
     /// The value indicating whether the check instance is short-circuited when validation fails.
     /// Short-circuited instances will not perform any more checks.
     /// </param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="errorMessageFactory" /> is null.</exception>
     public static Check<T> IsNotIn<T>(this Check<T> check,
                                       Range<T> range,
                                       Func<Check<T>, Range<T>, string> errorMessageFactory,

@@ -112,7 +112,7 @@ public record ErrorTemplates
     /// <item>{1} the Range&lt;T&gt; instance where, by default, CreateRangeDescriptionText is called upon. You can override FormatRange to change this behavior.</item>
     /// </list>
     /// </summary>
-    public string IsInRange { get; init; } = "{0} must be in range from {1}.";
+    public string InRange { get; init; } = "{0} must be in range from {1}.";
 
     /// <summary>
     /// Gets the template for the "Is In Range" error message.
@@ -123,7 +123,7 @@ public record ErrorTemplates
     /// <item>{1} the Range&lt;T&gt; instance where, by default, CreateRangeDescriptionText is called upon. You can override FormatRange to change this behavior.</item>
     /// </list>
     /// </summary>
-    public string IsNotInRange { get; init; } = "{0} must not be in range from {1}.";
+    public string NotInRange { get; init; } = "{0} must not be in range from {1}.";
 
     /// <summary>
     /// Gets the template for the "Not Empty GUID" error message.
@@ -164,6 +164,17 @@ public record ErrorTemplates
     /// </list>
     /// </summary>
     public string Email { get; init; } = "{0} must be an email address.";
+
+    /// <summary>
+    /// Gets the template for the "Longer Than" error message.
+    /// The default value is "{0} must be longer than {1}.".
+    /// This template takes two parameters:
+    /// <list type="bullet">
+    /// <item>{0} key</item>
+    /// <item>{1} the comparative length value</item>
+    /// </list>
+    /// </summary>
+    public string LongerThan { get; init; } = "{0} must be longer than {1}";
 
     /// <summary>
     /// Gets the template for the "Count Singular" error message.

@@ -203,11 +203,11 @@ public static class Errors
     /// The error message (optional). If null is provided, an error message will be
     /// generated from the error templates associated with the context.
     /// </param>
-    public static void AddIsInRangeError<T>(this Check<T> check, Range<T> range, string? message = null)
+    public static void AddInRangeError<T>(this Check<T> check, Range<T> range, string? message = null)
         where T : IComparable<T>
     {
         message ??= string.Format(
-            check.Context.ErrorTemplates.IsInRange,
+            check.Context.ErrorTemplates.InRange,
             check.Key,
             check.Context.ErrorTemplates.FormatRange(range)
         );
@@ -224,11 +224,11 @@ public static class Errors
     /// The error message (optional). If null is provided, an error message will be
     /// generated from the error templates associated with the context.
     /// </param>
-    public static void AddIsNotInRangeError<T>(this Check<T> check, Range<T> range, string? message = null)
+    public static void AddNotInRangeError<T>(this Check<T> check, Range<T> range, string? message = null)
         where T : IComparable<T>
     {
         message ??= string.Format(
-            check.Context.ErrorTemplates.IsNotInRange,
+            check.Context.ErrorTemplates.NotInRange,
             check.Key,
             check.Context.ErrorTemplates.FormatRange(range)
         );
@@ -253,8 +253,27 @@ public static class Errors
     }
 
     /// <summary>
-    /// Adds the "Count" error message to the context. Depending on the <paramref name="count"/>,
-    /// the <see cref="ErrorTemplates.CountSingular"/> or <see cref="ErrorTemplates.CountMultiple" />
+    /// Adds the "Longer than" error message to the context.
+    /// </summary>
+    /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
+    /// <param name="length">The comparative length value.</param>
+    /// <param name="message">
+    /// The error message (optional). If null is provided, an error message will be
+    /// generated from the error templates associated with the context.
+    /// </param>
+    public static void AddLongerThanError(this Check<string> check, int length, string? message = null)
+    {
+        message ??= string.Format(
+            check.Context.ErrorTemplates.LongerThan,
+            check.Key,
+            check.Context.ErrorTemplates.FormatParameter(length)
+        );
+        check.AddError(message);
+    }
+
+    /// <summary>
+    /// Adds the "Count" error message to the context. Depending on the <paramref name="count" />,
+    /// the <see cref="ErrorTemplates.CountSingular" /> or <see cref="ErrorTemplates.CountMultiple" />
     /// error template is chosen (if message is not null).
     /// </summary>
     /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
@@ -264,8 +283,8 @@ public static class Errors
     public static void AddCountError<T>(this Check<T> check, int count, string? message = null)
     {
         message ??= count == 1 ?
-            string.Format(check.Context.ErrorTemplates.CountSingular, check.Key) :
-            string.Format(check.Context.ErrorTemplates.CountMultiple, check.Key, count.ToString());
+                        string.Format(check.Context.ErrorTemplates.CountSingular, check.Key) :
+                        string.Format(check.Context.ErrorTemplates.CountMultiple, check.Key, count.ToString());
         check.AddError(message);
     }
 
