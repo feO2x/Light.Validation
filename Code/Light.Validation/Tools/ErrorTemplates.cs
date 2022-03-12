@@ -209,6 +209,16 @@ public record ErrorTemplates
     public string OnlyDigits { get; init; } = "{0} must contain only digits";
 
     /// <summary>
+    /// Gets the template for the "Only Letters and Digits" error message.
+    /// The default value is "{0} must contain only digits".
+    /// The template takes one parameter:
+    /// <list type="bullet">
+    /// <item>{0} key</item>
+    /// </list>
+    /// </summary>
+    public string OnlyLettersAndDigits { get; init; } = "{0} must contain only letters and digits";
+
+    /// <summary>
     /// Gets the template for the "Count Singular" error message.
     /// The default value is "{0} must have 1 item".
     /// This template takes one parameter:
