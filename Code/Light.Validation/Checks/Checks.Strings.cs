@@ -361,4 +361,74 @@ public static partial class Checks
         check.AddError(errorMessageFactory, range);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
+
+    /// <summary>
+    /// Checks if the specified string contains only digits,
+    /// or otherwise adds an error message to the validation context.
+    /// </summary>
+    /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
+    /// <param name="message">
+    /// The error message that will be added to the context (optional). If null is provided, the default error
+    /// message will be created from the error templates associated to the validation context.
+    /// </param>
+    /// <param name="shortCircuitOnError">
+    /// The value indicating whether the check instance is short-circuited when validation fails.
+    /// Short-circuited instances will not perform any more checks.
+    /// </param>
+    public static Check<string> ContainsOnlyDigits(this Check<string> check,
+                                                   string? message = null,
+                                                   bool shortCircuitOnError = false)
+    {
+        if (check.IsShortCircuited)
+            return check;
+
+        if (!check.IsValueNull && check.Value.Length > 0)
+        {
+            for (var i = 0; i < check.Value.Length; i++)
+            {
+                if (!check.Value[i].IsDigit())
+                    goto StringInvalid;
+            }
+
+            return check;
+        }
+
+        StringInvalid:
+        check.AddOnlyDigitsError(message);
+        return check.ShortCircuitIfNecessary(shortCircuitOnError);
+    }
+
+    /// <summary>
+    /// Checks if the specified string contains only digits,
+    /// or otherwise adds an error message to the validation context.
+    /// </summary>
+    /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
+    /// <param name="errorMessageFactory">The delegate that is used to create the error message.</param>
+    /// <param name="shortCircuitOnError">
+    /// The value indicating whether the check instance is short-circuited when validation fails.
+    /// Short-circuited instances will not perform any more checks.
+    /// </param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="errorMessageFactory" /> is null.</exception>
+    public static Check<string> ContainsOnlyDigits(this Check<string> check,
+                                                   Func<Check<string>, string> errorMessageFactory,
+                                                   bool shortCircuitOnError = false)
+    {
+        if (check.IsShortCircuited)
+            return check;
+
+        if (!check.IsValueNull && check.Value.Length > 0)
+        {
+            for (var i = 0; i < check.Value.Length; i++)
+            {
+                if (!check.Value[i].IsDigit())
+                    goto StringInvalid;
+            }
+
+            return check;
+        }
+
+        StringInvalid:
+        check.AddError(errorMessageFactory);
+        return check.ShortCircuitIfNecessary(shortCircuitOnError);
+    }
 }
