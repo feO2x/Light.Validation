@@ -1,5 +1,4 @@
-﻿using System.Runtime.InteropServices.ComTypes;
-using Light.Validation.Checks;
+﻿using Light.Validation.Checks;
 using Light.Validation.Tests.TestHelpers;
 using Light.Validation.Tools;
 using Xunit;
