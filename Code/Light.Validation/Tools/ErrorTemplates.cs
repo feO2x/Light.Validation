@@ -188,6 +188,17 @@ public record ErrorTemplates
     public string ShorterThan { get; init; } = "{0} must be shorter than {1}";
 
     /// <summary>
+    /// Gets the template for the "Length In Range" error message.
+    /// The default value is "{0} must have {1} characters".
+    /// This template takes two parameters:
+    /// <list type="bullet">
+    /// <item>{0} key</item>
+    /// <item>{1} the Range&lt;T&gt; instance where, by default, CreateRangeDescriptionText is called upon. You can override FormatRange to change this behavior.</item>
+    /// </list>
+    /// </summary>
+    public string LengthInRange { get; init; } = "{0} must have {1} characters";
+
+    /// <summary>
     /// Gets the template for the "Count Singular" error message.
     /// The default value is "{0} must have 1 item".
     /// This template takes one parameter:

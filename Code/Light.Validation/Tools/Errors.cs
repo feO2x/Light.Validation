@@ -291,6 +291,25 @@ public static class Errors
     }
 
     /// <summary>
+    /// Adds the "Length In Range" error message to the context.
+    /// </summary>
+    /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
+    /// <param name="range">The range whose boundaries were violated.</param>
+    /// <param name="message">
+    /// The error message (optional). If null is provided, an error message will be
+    /// generated from the error templates associated with the context.
+    /// </param>
+    public static void AddLengthInRangeError(this Check<string> check, Range<int> range, string? message = null)
+    {
+        message ??= string.Format(
+            check.Context.ErrorTemplates.LengthInRange,
+            check.Key,
+            check.Context.ErrorTemplates.FormatRange(range)
+        );
+        check.AddError(message);
+    }
+
+    /// <summary>
     /// Adds the "Count" error message to the context. Depending on the <paramref name="count" />,
     /// the <see cref="ErrorTemplates.CountSingular" /> or <see cref="ErrorTemplates.CountMultiple" />
     /// error template is chosen (if message is not null).
