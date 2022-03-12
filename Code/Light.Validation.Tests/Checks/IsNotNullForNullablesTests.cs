@@ -26,7 +26,7 @@ public static class IsNotNullForNullablesTests
 
         var check = context.Check(dto.NullableValue).IsNotNull();
 
-        context.ShouldHaveSingleError("nullableValue", "nullableValue must not be null.");
+        context.ShouldHaveSingleError("nullableValue", "nullableValue must not be null");
         check.ShouldBeShortCircuited();
     }
     

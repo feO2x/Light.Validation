@@ -32,7 +32,7 @@ public static class IsLessThanOrEqualToTests
 
         var check = context.Check(dto.Value).IsLessThanOrEqualTo(comparativeValue);
 
-        context.ShouldHaveSingleError("value", $"value must be less than or equal to {comparativeValue.ToString(CultureInfo.InvariantCulture)}.");
+        context.ShouldHaveSingleError("value", $"value must be less than or equal to {comparativeValue.ToString(CultureInfo.InvariantCulture)}");
         check.ShouldNotBeShortCircuited();
     }
 

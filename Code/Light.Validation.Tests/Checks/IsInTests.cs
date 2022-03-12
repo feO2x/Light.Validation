@@ -31,7 +31,7 @@ public static class IsInTests
 
         var check = context.Check(dto.Value).IsIn(range);
 
-        context.ShouldHaveSingleError("value", $"value must be in range from {range.CreateRangeDescriptionText()}.");
+        context.ShouldHaveSingleError("value", $"value must be in range from {range.CreateRangeDescriptionText()}");
         check.ShouldNotBeShortCircuited();
     }
 

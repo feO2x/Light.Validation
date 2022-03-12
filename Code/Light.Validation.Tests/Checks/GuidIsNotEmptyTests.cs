@@ -23,7 +23,7 @@ public static class GuidIsNotEmptyTests
 
         var check = context.Check(dto.Id).IsNotEmpty();
 
-        context.ShouldHaveSingleError("id", "id must not be an empty GUID.");
+        context.ShouldHaveSingleError("id", "id must not be an empty GUID");
         check.ShouldNotBeShortCircuited();
     }
 

@@ -33,7 +33,7 @@ public static class HasCountTests
 
         var check = context.Check(dto.Value).HasCount(count);
 
-        context.ShouldHaveSingleError("value", $"value must have {count} {(count == 1 ? "item" : "items")}.");
+        context.ShouldHaveSingleError("value", $"value must have {count} {(count == 1 ? "item" : "items")}");
         check.ShouldNotBeShortCircuited();
     }
 

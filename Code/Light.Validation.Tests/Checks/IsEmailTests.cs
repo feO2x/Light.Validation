@@ -34,7 +34,7 @@ public static class IsEmailTests
 
         var check = context.Check(dto.Value).IsEmail();
 
-        context.ShouldHaveSingleError("value", "value must be an email address.");
+        context.ShouldHaveSingleError("value", "value must be an email address");
         check.ShouldNotBeShortCircuited();
     }
 

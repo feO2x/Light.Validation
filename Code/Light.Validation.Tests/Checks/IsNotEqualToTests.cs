@@ -44,7 +44,7 @@ public static class IsNotEqualToTests
 
         var check = context.Check(dto.Value).IsNotEqualTo(value);
 
-        context.ShouldHaveSingleError("value", $"value must not be {Formatter.Format(value)}.");
+        context.ShouldHaveSingleError("value", $"value must not be {Formatter.Format(value)}");
         check.ShouldNotBeShortCircuited();
     }
 
@@ -106,7 +106,7 @@ public static class IsNotEqualToTests
 
         var check = context.Check(dto.Value).IsNotEqualTo(comparativeValue, StringComparer.OrdinalIgnoreCase);
 
-        context.ShouldHaveSingleError("value", $"value must not be {Formatter.Format(comparativeValue)}.");
+        context.ShouldHaveSingleError("value", $"value must not be {Formatter.Format(comparativeValue)}");
         check.ShouldNotBeShortCircuited();
     }
 

@@ -35,7 +35,7 @@ public static class IsMatchingTests
 
         var check = context.Check(dto.Value).IsMatching(Regex);
 
-        context.ShouldHaveSingleError("value", "value must match the required pattern.");
+        context.ShouldHaveSingleError("value", "value must match the required pattern");
         check.ShouldNotBeShortCircuited();
     }
 

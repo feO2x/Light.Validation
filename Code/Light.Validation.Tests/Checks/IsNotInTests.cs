@@ -31,7 +31,7 @@ public static class IsNotInTests
 
         var check = context.Check(dto.Value).IsNotIn(range);
 
-        context.ShouldHaveSingleError("value", $"value must not be in range from {range.CreateRangeDescriptionText()}.");
+        context.ShouldHaveSingleError("value", $"value must not be in range from {range.CreateRangeDescriptionText()}");
         check.ShouldNotBeShortCircuited();
     }
 

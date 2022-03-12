@@ -32,7 +32,7 @@ public static class IsNullOrWhiteSpaceTests
 
         context.Check(dto.Value).IsNotNullOrWhiteSpace();
 
-        context.ShouldHaveSingleError("value", "value must not be empty.");
+        context.ShouldHaveSingleError("value", "value must not be empty");
     }
 
     [Theory]

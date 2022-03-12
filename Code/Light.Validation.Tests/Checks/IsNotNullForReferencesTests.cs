@@ -30,7 +30,7 @@ public static class IsNotNullForReferencesTests
 
         var check = context.Check(dto.ReferenceValue).IsNotNull();
 
-        context.ShouldHaveSingleError("referenceValue", "referenceValue must not be null.");
+        context.ShouldHaveSingleError("referenceValue", "referenceValue must not be null");
         check.ShouldBeShortCircuited();
     }
 
