@@ -253,7 +253,7 @@ public static class Errors
     }
 
     /// <summary>
-    /// Adds the "Longer than" error message to the context.
+    /// Adds the "Longer Than" error message to the context.
     /// </summary>
     /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
     /// <param name="length">The comparative length value.</param>
@@ -265,6 +265,25 @@ public static class Errors
     {
         message ??= string.Format(
             check.Context.ErrorTemplates.LongerThan,
+            check.Key,
+            check.Context.ErrorTemplates.FormatParameter(length)
+        );
+        check.AddError(message);
+    }
+
+    /// <summary>
+    /// Adds the "Shorter Than" error message to the context.
+    /// </summary>
+    /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
+    /// <param name="length">The comparative length value.</param>
+    /// <param name="message">
+    /// The error message (optional). If null is provided, an error message will be
+    /// generated from the error templates associated with the context.
+    /// </param>
+    public static void AddShorterThanError(this Check<string> check, int length, string? message = null)
+    {
+        message ??= string.Format(
+            check.Context.ErrorTemplates.ShorterThan,
             check.Key,
             check.Context.ErrorTemplates.FormatParameter(length)
         );

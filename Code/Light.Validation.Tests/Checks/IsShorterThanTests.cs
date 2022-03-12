@@ -4,14 +4,14 @@ using Xunit;
 
 namespace Light.Validation.Tests.Checks;
 
-public static class IsLongerThanTests
+public static class IsShorterThanTests
 {
     public static readonly TheoryData<string, int> InvalidValues =
         new ()
         {
-            { "Hello", 5 },
-            { "This is pretty long", 25 },
-            { "But not long enough", 30 },
+            { "Hello World", 3 },
+            { "So short", 5 },
+            { "0", 1 },
             { "", 0 },
             { null!, 0 }
         };
@@ -19,30 +19,30 @@ public static class IsLongerThanTests
     public static readonly TheoryData<string, int> ValidValues =
         new ()
         {
-            { "Oh, shut up", 10 },
-            // ReSharper disable once StringLiteralTypo
-            { "Ideological? Why don't we call it putinilogical?", 20 }
+            { "One", 4 },
+            { "Long, but not long enough", 30 },
+            { "", 1 }
         };
 
     [Theory]
     [MemberData(nameof(InvalidValues))]
-    public static void StringNotLongEnough(string value, int length)
+    public static void StringNotShortEnough(string value, int length)
     {
         var (dto, context) = Test.SetupDefault(value);
 
-        var check = context.Check(dto.Value).IsLongerThan(length);
+        var check = context.Check(dto.Value).IsShorterThan(length);
 
-        context.ShouldHaveSingleError("value", $"value must be longer than {length}");
+        context.ShouldHaveSingleError("value", $"value must be shorter than {length}");
         check.ShouldNotBeShortCircuited();
     }
 
     [Theory]
     [MemberData(nameof(ValidValues))]
-    public static void StringLongEnough(string value, int length)
+    public static void StringShortEnough(string value, int length)
     {
         var (dto, context) = Test.SetupDefault(value);
 
-        var check = context.Check(dto.Value).IsLongerThan(length);
+        var check = context.Check(dto.Value).IsShorterThan(length);
 
         context.ShouldHaveNoErrors();
         check.ShouldNotBeShortCircuited();
@@ -54,7 +54,7 @@ public static class IsLongerThanTests
     {
         var (dto, context) = Test.SetupDefault(value);
 
-        var check = context.Check(dto.Value).IsLongerThan(length, "Custom Error Message");
+        var check = context.Check(dto.Value).IsShorterThan(length, "Custom Error Message");
 
         context.ShouldHaveSingleError("value", "Custom Error Message");
         check.ShouldNotBeShortCircuited();
@@ -66,7 +66,7 @@ public static class IsLongerThanTests
     {
         var (dto, context) = Test.SetupDefault(value);
 
-        var check = context.Check(dto.Value).IsLongerThan(length, shortCircuitOnError: true);
+        var check = context.Check(dto.Value).IsShorterThan(length, shortCircuitOnError: true);
 
         context.ShouldHaveErrors();
         check.ShouldBeShortCircuited();
@@ -80,7 +80,7 @@ public static class IsLongerThanTests
 
         var check = context.Check(dto.Value)
                            .ShortCircuit()
-                           .IsLongerThan(length);
+                           .IsShorterThan(length);
 
         context.ShouldHaveNoErrors();
         check.ShouldBeShortCircuited();
@@ -92,9 +92,9 @@ public static class IsLongerThanTests
     {
         var (dto, context) = Test.SetupDefault(value);
 
-        var check = context.Check(dto.Value).IsLongerThan(length, (c, l) => $"{c.Key} is too short ({l})");
+        var check = context.Check(dto.Value).IsShorterThan(length, (c, l) => $"{c.Key} is too long ({l})");
 
-        context.ShouldHaveSingleError("value", $"value is too short ({length})");
+        context.ShouldHaveSingleError("value", $"value is too long ({length})");
         check.ShouldNotBeShortCircuited();
     }
 
@@ -104,7 +104,7 @@ public static class IsLongerThanTests
     {
         var (dto, context) = Test.SetupDefault(value);
 
-        var check = context.Check(dto.Value).IsLongerThan(length, (_, _) => "whatever");
+        var check = context.Check(dto.Value).IsShorterThan(length, (_, _) => "whatever");
 
         context.ShouldHaveNoErrors();
         check.ShouldNotBeShortCircuited();
@@ -116,7 +116,7 @@ public static class IsLongerThanTests
     {
         var (dto, context) = Test.SetupDefault(value);
 
-        var check = context.Check(dto.Value).IsLongerThan(length, (_, _) => "My Custom Error", true);
+        var check = context.Check(dto.Value).IsShorterThan(length, (_, _) => "My Custom Error", true);
 
         context.ShouldHaveErrors();
         check.ShouldBeShortCircuited();
@@ -130,7 +130,7 @@ public static class IsLongerThanTests
 
         var check = context.Check(dto.Value)
                            .ShortCircuit()
-                           .IsLongerThan(length, (_, _) => "whatever");
+                           .IsShorterThan(length, (_, _) => "whatever");
 
         context.ShouldHaveNoErrors();
         check.ShouldBeShortCircuited();

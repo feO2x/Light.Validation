@@ -167,7 +167,7 @@ public record ErrorTemplates
 
     /// <summary>
     /// Gets the template for the "Longer Than" error message.
-    /// The default value is "{0} must be longer than {1}.".
+    /// The default value is "{0} must be longer than {1}".
     /// This template takes two parameters:
     /// <list type="bullet">
     /// <item>{0} key</item>
@@ -175,6 +175,17 @@ public record ErrorTemplates
     /// </list>
     /// </summary>
     public string LongerThan { get; init; } = "{0} must be longer than {1}";
+
+    /// <summary>
+    /// Gets the template for the "Shorter Than" error message.
+    /// The default value is "{0} must be shorter than {1}".
+    /// This template takes two parameters:
+    /// <list type="bullet">
+    /// <item>{0} key</item>
+    /// <item>{1} the comparative length value</item>
+    /// </list>
+    /// </summary>
+    public string ShorterThan { get; init; } = "{0} must be shorter than {1}";
 
     /// <summary>
     /// Gets the template for the "Count Singular" error message.
