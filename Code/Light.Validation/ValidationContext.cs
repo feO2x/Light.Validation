@@ -13,7 +13,7 @@ namespace Light.Validation;
 /// a dictionary. The dictionary will only be initialized when
 /// errors are actually added to avoid Garbage Collector pressure.
 /// </summary>
-public class ValidationContext
+public class ValidationContext : ExtensibleObject
 {
     /// <summary>
     /// Initializes a new instance of <see cref="ValidationContext" />.
@@ -25,11 +25,19 @@ public class ValidationContext
     /// <param name="errorTemplates">
     /// The error templates for this context (optional). These are
     /// used to format the error messages if a check fails. If null
-    /// is specified, <see cref="Tools.ErrorTemplates.Default" />
-    /// will be used.
+    /// is specified, <see cref="Tools.ErrorTemplates.Default" /> will be used.
+    /// </param>
+    /// <param name="attachedObjects">The dictionary that will be used as the internal storage for attached objects.</param>
+    /// <param name="disallowSettingAttachedObjects">
+    /// The value indicating whether <see cref="ExtensibleObject.SetAttachedObject" /> will throw an exception when being called.
+    /// If this value is set to true, the extensible object is immutable and the fully-filled dictionary of attached objects
+    /// must be passed as a parameter to the constructor. Using this feature makes instances of this class thread-safe.
     /// </param>
     public ValidationContext(ValidationContextOptions? options = null,
-                             ErrorTemplates? errorTemplates = null)
+                             ErrorTemplates? errorTemplates = null,
+                             Dictionary<string, object>? attachedObjects = null,
+                             bool disallowSettingAttachedObjects = false)
+        : base(attachedObjects, disallowSettingAttachedObjects)
     {
         Options = options ?? ValidationContextOptions.Default;
         ErrorTemplates = errorTemplates ?? ErrorTemplates.Default;
@@ -42,10 +50,10 @@ public class ValidationContext
     public Dictionary<string, object>? Errors { get; private set; }
 
     /// <summary>
-    /// Gets the options for this validation context. 
+    /// Gets the options for this validation context.
     /// </summary>
     public ValidationContextOptions Options { get; }
-    
+
     /// <summary>
     /// Gets the error templates for this context. These are
     /// used to format the error messages if a check fails.
@@ -97,7 +105,7 @@ public class ValidationContext
     /// or throws an <see cref="InvalidCastException" />.
     /// </summary>
     /// <typeparam name="T">The subtype the options should be cast into.</typeparam>
-    /// <exception cref="InvalidCastException">Thrown when <see cref="Options"/> cannot be cast to type T.</exception>
+    /// <exception cref="InvalidCastException">Thrown when <see cref="Options" /> cannot be cast to type T.</exception>
     public T GetOptionsAs<T>() where T : ValidationContextOptions
     {
         if (Options is T castOptions)
@@ -111,12 +119,12 @@ public class ValidationContext
     /// or throws an <see cref="InvalidCastException" />.
     /// </summary>
     /// <typeparam name="T">The subtype the error templates should be cast into.</typeparam>
-    /// <exception cref="InvalidCastException">Thrown when <see cref="Options"/> cannot be cast to type T.</exception>
+    /// <exception cref="InvalidCastException">Thrown when <see cref="Options" /> cannot be cast to type T.</exception>
     public T GetErrorTemplatesAs<T>() where T : ErrorTemplates
     {
         if (ErrorTemplates is T castErrorTemplates)
             return castErrorTemplates;
-        
+
         throw new InvalidCastException($"The error templates cannot be cast to type \"{typeof(T)}\"");
     }
 

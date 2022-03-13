@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 
 namespace Light.Validation.Tools;
@@ -11,22 +12,35 @@ namespace Light.Validation.Tools;
 /// You can instantiate this class and provide values for the different
 /// properties to enable localization for error messages. We recommend
 /// to provide this instance as a singleton. You can inject it in the
-/// constructor of your validation context. 
+/// constructor of your validation context.
 /// </para>
 /// </summary>
-public record ErrorTemplates
+public class ErrorTemplates : ExtensibleObject
 {
+    /// <summary>
+    /// Initializes a new instance of <see cref="ErrorTemplates" />.
+    /// </summary>
+    /// <param name="attachedObjects">The dictionary that will be used as the internal storage for attached objects.</param>
+    /// <param name="disallowSettingAttachedObjects">
+    /// The value indicating whether <see cref="ExtensibleObject.SetAttachedObject" /> will throw an exception when being called.
+    /// If this value is set to true, the extensible object is immutable and the fully-filled dictionary of attached objects
+    /// must be passed as a parameter to the constructor. Using this feature makes instances of this class thread-safe.
+    /// </param>
+    public ErrorTemplates(Dictionary<string, object>? attachedObjects = null,
+                          bool disallowSettingAttachedObjects = false)
+        : base(attachedObjects, disallowSettingAttachedObjects) { }
+
     /// <summary>
     /// Gets the default error templates.
     /// </summary>
     public static ErrorTemplates Default { get; } = new ();
-    
+
     /// <summary>
     /// Gets the culture info that is used to format parameters for string.Format.
     /// The default value is the invariant culture.
     /// </summary>
     public CultureInfo CultureInfo { get; init; } = CultureInfo.InvariantCulture;
-    
+
     /// <summary>
     /// Gets the template for the "Not Null" error message.
     /// The default value is "{0} must not be null".
@@ -144,7 +158,7 @@ public record ErrorTemplates
     /// </list>
     /// </summary>
     public string NotNullOrWhiteSpace { get; init; } = "{0} must not be empty";
-    
+
     /// <summary>
     /// Gets the template for the "Regex Must Match" error message.
     /// The default value is "{0} must match the required pattern".
@@ -238,7 +252,7 @@ public record ErrorTemplates
     /// </list>
     /// </summary>
     public string CountMultiple { get; init; } = "{0} must have {1} items";
-    
+
     /// <summary>
     /// Formats the specified parameter, potentially using the culture info attached to this error templates instance.
     /// </summary>

@@ -7,8 +7,21 @@ namespace Light.Validation;
 /// <summary>
 /// Represents options for the <see cref="ValidationContext" /> class.
 /// </summary>
-public record ValidationContextOptions
+public class ValidationContextOptions : ExtensibleObject
 {
+    /// <summary>
+    /// Initializes a new instance of <see cref="ValidationContextOptions" />.
+    /// </summary>
+    /// <param name="attachedObjects">The dictionary that will be used as the internal storage for attached objects.</param>
+    /// <param name="disallowSettingAttachedObjects">
+    /// The value indicating whether <see cref="ExtensibleObject.SetAttachedObject" /> will throw an exception when being called.
+    /// If this value is set to true, the extensible object is immutable and the fully-filled dictionary of attached objects
+    /// must be passed as a parameter to the constructor. Using this feature makes instances of this class thread-safe.
+    /// </param>
+    public ValidationContextOptions(Dictionary<string, object>? attachedObjects = null,
+                                    bool disallowSettingAttachedObjects = false)
+        : base(attachedObjects, disallowSettingAttachedObjects) { }
+
     /// <summary>
     /// Gets the default validation context options.
     /// </summary>
@@ -42,14 +55,14 @@ public record ValidationContextOptions
     /// <see cref="StringExtensions.NormalizeLastSectionToLowerCamelCase" />.
     /// </summary>
     public Func<string, string>? NormalizeKey { get; init; }
-    
+
     /// <summary>
     /// Gets or sets the comparer that is used to compare keys in
     /// the errors dictionary. The default value is null, thus the
     /// EqualityComparer&lt;string&gt;.Default is used by the internal
     /// errors dictionary, comparing strings with ordinal options.
     /// </summary>
-    public IEqualityComparer<string>? KeyComparer { get; init; } 
+    public IEqualityComparer<string>? KeyComparer { get; init; }
 
     /// <summary>
     /// Gets or sets the value indicating how multiple errors per key are

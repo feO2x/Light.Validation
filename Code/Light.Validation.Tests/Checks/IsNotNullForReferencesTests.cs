@@ -18,7 +18,7 @@ public static class IsNotNullForReferencesTests
         };
 
     private static ValidationContextOptions Options { get; } =
-        ValidationContextOptions.Default with { IsNormalizingStringValues = false };
+        new () { IsNormalizingStringValues = false };
 
     private static ValidationContext CreateValidationContext() => new (Options);
 

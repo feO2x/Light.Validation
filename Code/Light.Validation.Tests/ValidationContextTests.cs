@@ -45,7 +45,7 @@ public static class ValidationContextTests
         act.Should().Throw<InvalidCastException>();
     }
 
-    private sealed record MyOptions : ValidationContextOptions;
+    private sealed class MyOptions : ValidationContextOptions { }
 
-    private sealed record MyErrorTemplates : ErrorTemplates;
+    private sealed class MyErrorTemplates : ErrorTemplates { }
 }
