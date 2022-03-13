@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netstandard2.0</TargetFramework>
+        <TargetFrameworks>net6.0;netstandard2.0</TargetFrameworks>
         <Version>0.1.0</Version>
         <LangVersion>10.0</LangVersion>
         <Nullable>enable</Nullable>
@@ -9,7 +9,7 @@
         <TreatWarningsAsErrors Condition="'$(Configuration)' == 'Release'">true</TreatWarningsAsErrors>
     </PropertyGroup>
 
-    <ItemGroup>
+    <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
         <PackageReference Include="IsExternalInit" Version="1.0.2" PrivateAssets="all" />
         <PackageReference Include="System.Memory" Version="4.5.4" />
     </ItemGroup>

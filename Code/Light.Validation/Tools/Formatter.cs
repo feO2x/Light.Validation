@@ -21,7 +21,7 @@ public static class Formatter
         if (typeof(T) == typeof(decimal))
             return Unsafe.As<T, decimal>(ref value).ToString(cultureInfo);
         
-        return value is null ? "null" : value.ToString();
+        return value is null ? "null" : value.ToString()!;
     }
 
     /// <summary>

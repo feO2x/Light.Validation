@@ -5534,7 +5534,7 @@ namespace JetBrains.Annotations
         public bool ForceFullStates { get; private set; }
     }
 }
-
+#if NETSTANDARD2_0
 namespace System.Diagnostics.CodeAnalysis
 {
     /// <summary>
@@ -5734,3 +5734,4 @@ namespace System.Runtime.CompilerServices
         public string ParameterName { get; }
     }
 }
+#endif
