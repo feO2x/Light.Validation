@@ -12,11 +12,23 @@ namespace Light.Validation;
 public abstract class AsyncValidator<T>
 {
     /// <summary>
+    /// Initializes a new instance of <see cref="Validator{T}" />.
+    /// </summary>
+    /// <param name="createValidationContext">
+    /// The delegate that is used to create a new <see cref="ValidationContext" /> instance (optional).
+    /// If null is provided, the constructor of <see cref="ValidationContext" /> is called by default.
+    /// </param>
+    protected AsyncValidator(Func<ValidationContext>? createValidationContext = null) =>
+        CreateValidationContext = createValidationContext;
+
+    private Func<ValidationContext>? CreateValidationContext { get; }
+
+    /// <summary>
     /// Asynchronously validates the specified value and returns a structure containing
     /// the validation result.
     /// </summary>
     /// <param name="value">The value to be checked.</param>
-    public Task<ValidationResult> ValidateAsync(T value) => ValidateAsync(value, new ValidationContext());
+    public Task<ValidationResult> ValidateAsync(T value) => ValidateAsync(value, CreateContext());
 
     /// <summary>
     /// Asynchronously validates the specified value while reusing the specified validation context.
@@ -39,4 +51,6 @@ public abstract class AsyncValidator<T>
     /// <param name="context">The context that tracks errors in a dictionary.</param>
     /// <param name="value">The value to be checked.</param>
     protected abstract Task PerformValidationAsync(ValidationContext context, T value);
+
+    private ValidationContext CreateContext() => CreateValidationContext?.Invoke() ?? new ();
 }
