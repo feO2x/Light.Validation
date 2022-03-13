@@ -1,6 +1,7 @@
 ﻿using System;
 using Light.GuardClauses;
 using Light.Validation.Tools;
+using Range = Light.Validation.Tools.Range;
 
 namespace Light.Validation.Checks;
 
