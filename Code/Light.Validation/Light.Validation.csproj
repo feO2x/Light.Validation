@@ -31,6 +31,10 @@ Light.Validation 0.1.0
         </PackageReleaseNotes>
     </PropertyGroup>
 
+    <ItemGroup>
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="all" />
+    </ItemGroup>
+
     <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
         <PackageReference Include="IsExternalInit" Version="1.0.2" PrivateAssets="all" />
         <PackageReference Include="System.Memory" Version="4.5.4" />
