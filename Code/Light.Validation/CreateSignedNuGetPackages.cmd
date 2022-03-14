@@ -1,0 +1,1 @@
+dotnet pack Light.Validation.csproj -c Release /p:SignAssembly=true /p:AssemblyOriginatorKeyFile=bin/Light.Validation.snk /p:ContinuousIntegrationBuild=true

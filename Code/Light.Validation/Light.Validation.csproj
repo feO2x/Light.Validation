@@ -5,13 +5,39 @@
         <Version>0.1.0</Version>
         <LangVersion>10.0</LangVersion>
         <Nullable>enable</Nullable>
-        <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <TreatWarningsAsErrors Condition="'$(Configuration)' == 'Release'">true</TreatWarningsAsErrors>
+        <Authors>Kenny Pflug</Authors>
+        <Company>Kenny Pflug</Company>
+        <Copyright>Copyright © Kenny Pflug 2022</Copyright>
+        <IsPackable>true</IsPackable>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageIcon>light-logo.png</PackageIcon>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <PackageProjectUrl>https://github.com/feO2x/Light.Validation</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/feO2x/Light.Validation.git</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <PackageTags>Validation, Check, DTO, Data-Transfer-Object, HTTP, Web-Service, Web-API, Lightweight</PackageTags>
+        <PackageReleaseNotes>
+Light.Validation 0.1.0
+--------------------------------
+
+- initial release 🎈🎉🍨
+- simple use: instantiate a ValidationContext, then call context.Check(dto.SomeProperty) and afterwards any of the extensions methods that validate the value
+- read all docs at https://github.com/feO2x/Light.Validation
+        </PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
         <PackageReference Include="IsExternalInit" Version="1.0.2" PrivateAssets="all" />
         <PackageReference Include="System.Memory" Version="4.5.4" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="light-logo.png" Pack="true" PackagePath="\" />
     </ItemGroup>
 
 </Project>
