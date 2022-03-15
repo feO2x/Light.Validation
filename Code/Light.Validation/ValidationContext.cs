@@ -76,28 +76,32 @@ public class ValidationContext : ExtensibleObject
     /// NormalizeKeyOnAddError set to true.
     /// </para>
     /// <para>
-    /// When there already is an error associated with the given key, your new
+    /// When there already is an error message associated with the given key, your new
     /// error message will be appended with new line to the existing error message.
     /// You can change this behavior by passing in <see cref="Options" /> with
-    /// a different value for MultipleErrorsPerKeyBehavior.
+    /// a different value for MultipleErrorsPerKeyBehavior. If the given error is not
+    /// a string and there already is an error for the specified key, it will be replaced.
     /// </para>
     /// </summary>
     /// <param name="key">The key that identifies the error.</param>
-    /// <param name="errorMessage">The message associated with the error.</param>
+    /// <param name="error">The error that should be stored in the internal dictionary.</param>
     /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="key" /> or <paramref name="errorMessage" /> is null.
+    /// Thrown when <paramref name="key" /> or <paramref name="error" /> is null.
     /// </exception>
-    public void AddError(string key, string errorMessage)
+    public void AddError(string key, object error)
     {
         key.MustNotBeNull();
-        errorMessage.MustNotBeNull();
+        error.MustNotBeNull();
 
         key = NormalizeKey(key, Options.NormalizeKeyOnAddError);
 
-        if (TryAddFirstError(key, errorMessage))
+        if (TryAddFirstError(key, error))
             return;
 
-        InsertOrUpdateError(key, errorMessage, Options);
+        if (error is string errorMessage)
+            InsertOrUpdateErrorMessage(key, errorMessage);
+
+        Errors![key] = error;
     }
 
     /// <summary>
@@ -126,41 +130,6 @@ public class ValidationContext : ExtensibleObject
             return castErrorTemplates;
 
         throw new InvalidCastException($"The error templates cannot be cast to type \"{typeof(T)}\"");
-    }
-
-    /// <summary>
-    /// <para>
-    /// Adds the complex error to the errors dictionary using the specified key.
-    /// </para>
-    /// <para>
-    /// By default, the key is not normalized when calling this method.
-    /// You can change this by passing in <see cref="Options" /> with
-    /// NormalizeKeyOnAddError set to true.
-    /// </para>
-    /// <para>
-    /// When there already is an error for the specified key, it will be
-    /// replaced.
-    /// </para>
-    /// </summary>
-    /// <param name="key">The key that identifies the error.</param>
-    /// <param name="complexError">The dictionary that describes the complex error.</param>
-    /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="key" /> or <paramref name="complexError" /> is null.
-    /// </exception>
-    public void AddError(string key, Dictionary<string, object> complexError)
-    {
-        key.MustNotBeNull();
-        complexError.MustNotBeNull();
-
-        key = NormalizeKey(key, Options.NormalizeKeyOnAddError);
-
-        if (TryAddFirstError(key, complexError))
-            return;
-
-        if (Errors!.ContainsKey(key))
-            Errors[key] = complexError;
-        else
-            Errors.Add(key, complexError);
     }
 
     /// <summary>
@@ -282,9 +251,8 @@ public class ValidationContext : ExtensibleObject
         return true;
     }
 
-    private void InsertOrUpdateError(string key,
-                                     string errorMessage,
-                                     ValidationContextOptions options)
+    private void InsertOrUpdateErrorMessage(string key,
+                                            string errorMessage)
     {
         if (!Errors!.TryGetValue(key, out var existingError))
         {
@@ -295,7 +263,7 @@ public class ValidationContext : ExtensibleObject
         switch (existingError)
         {
             case string singleExistingError:
-                Errors[key] = TransformSingleError(singleExistingError, errorMessage, options);
+                Errors[key] = TransformSingleError(singleExistingError, errorMessage);
                 break;
             case List<string> errorList:
                 errorList.Add(errorMessage);
@@ -303,15 +271,14 @@ public class ValidationContext : ExtensibleObject
         }
     }
 
-    private static object TransformSingleError(string singleExistingError,
-                                               string errorMessage,
-                                               ValidationContextOptions options)
+    private object TransformSingleError(string singleExistingError,
+                                        string errorMessage)
     {
-        return options.MultipleErrorsPerKeyBehavior switch
+        return Options.MultipleErrorsPerKeyBehavior switch
         {
             MultipleErrorsPerKeyBehavior.ReplaceError => errorMessage,
             MultipleErrorsPerKeyBehavior.PlaceInList => new List<string>(2) { singleExistingError, errorMessage },
-            _ => singleExistingError + options.NewLine + errorMessage
+            _ => singleExistingError + Options.NewLine + errorMessage
         };
     }
 
