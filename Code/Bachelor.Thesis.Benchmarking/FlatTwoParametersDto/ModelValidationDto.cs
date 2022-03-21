@@ -2,7 +2,7 @@
 
 namespace Bachelor.Thesis.Benchmarking.FlatTwoParametersDto;
 
-public class ModelValidation
+public class ModelValidationDto
 {
     [Required]
     [Range(0, Int32.MaxValue)]
