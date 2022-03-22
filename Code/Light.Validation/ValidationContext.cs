@@ -208,7 +208,10 @@ public class ValidationContext : ExtensibleObject
         }
     }
 
-    private string NormalizeStringValue(string stringValue) =>
+    /// <summary>
+    /// Normalizes the specified string value.
+    /// </summary>
+    public string NormalizeStringValue(string stringValue) =>
         Options.NormalizeStringValue?.Invoke(stringValue) ?? stringValue.NormalizeString();
 
     /// <summary>
@@ -233,13 +236,19 @@ public class ValidationContext : ExtensibleObject
         return false;
     }
 
-    private string NormalizeKey(string key, bool condition)
-    {
-        if (!condition)
-            return key;
+    /// <summary>
+    /// Normalizes the specified key when the specified condition value is true.
+    /// </summary>
+    /// <param name="key">The potential key to be normalized.</param>
+    /// <param name="condition">The condition that determines if the key is normalized.</param>
+    public string NormalizeKey(string key, bool condition) =>
+        condition ? NormalizeKey(key) : key;
 
-        return Options.NormalizeKey?.Invoke(key) ?? key.NormalizeLastSectionToLowerCamelCase();
-    }
+    /// <summary>
+    /// Normalizes the specified key.
+    /// </summary>
+    public string NormalizeKey(string key) =>
+        Options.NormalizeKey?.Invoke(key) ?? key.NormalizeLastSectionToLowerCamelCase();
 
     private bool TryAddFirstError(string key, object error)
     {

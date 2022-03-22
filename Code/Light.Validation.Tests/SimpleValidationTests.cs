@@ -42,14 +42,15 @@ public sealed class SimpleValidationTests
 
         Output.WriteLine(Json.Serialize(errors));
         result.Should().BeTrue();
-        errors.Should().HaveCount(2);
-        CheckKeys(errors!, "id", "userName");
+        var errorDictionary = errors.MustBeOfType<Dictionary<string, object>>();
+        errorDictionary.Should().HaveCount(2);
+        CheckKeys(errorDictionary, "id", "userName");
     }
 
     [Fact]
     public async Task ValidateAsync()
     {
-        var session = new UpdateUserNameSessionMock() { DoesUserNameExist = true };
+        var session = new UpdateUserNameSessionMock { DoesUserNameExist = true };
         var sessionFactory = new SessionFactoryMock<IUpdateUserNameSession>(session);
         var controller = new UpdateUserNameController(sessionFactory);
         var dto = new UpdateUserNameDto { Id = 42, UserName = "Kevin" };
@@ -58,6 +59,18 @@ public sealed class SimpleValidationTests
 
         var badRequestResult = result.MustBeOfType<BadRequestObjectResult>();
         Output.WriteLine(Json.Serialize(badRequestResult.Value));
+    }
+
+    [Fact]
+    public static void ValidateNull()
+    {
+        UpdateUserNameDto dto = null!;
+        var validator = new DtoValidator();
+
+        var result = validator.CheckForErrors(dto, out var errors);
+
+        result.Should().BeTrue();
+        errors.MustBeOfType<string>().Should().Be("dto must not be null");
     }
 
     private sealed class UpdateUserNameController : ControllerBase

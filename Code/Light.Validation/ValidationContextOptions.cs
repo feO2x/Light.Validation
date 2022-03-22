@@ -49,6 +49,13 @@ public class ValidationContextOptions : ExtensibleObject
     public bool NormalizeKeyOnCheck { get; init; } = true;
 
     /// <summary>
+    /// Gets or sets the value indicating whether a key
+    /// is normalized when a validator performs an automatic null
+    /// check which fails validation. The default value is true.
+    /// </summary>
+    public bool NormalizeKeyOnValidatorNullCheck { get; init; } = true;
+
+    /// <summary>
     /// Gets or sets the delegate that is used to normalize the
     /// key. The default value is null. If no delegate is set,
     /// the default normalization function will be used which is
