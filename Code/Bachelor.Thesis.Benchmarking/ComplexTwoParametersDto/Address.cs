@@ -2,7 +2,7 @@
 
 public class Address
 {
-    public static Address Default = new ()
+    public static Address ValidAddress = new ()
     {
         Country = "Germany",
         City = "Regensburg",
@@ -11,13 +11,13 @@ public class Address
         Street = "Seybothstraße 2"
     };
 
-    public string? City { get; set; }
+    public string City { get; set; } = String.Empty;
 
-    public string? Country { get; set; }
+    public string Country { get; set; } = String.Empty;
 
-    public long PostalCode { get; set; }
+    public int PostalCode { get; set; }
 
-    public string? Region { get; set; }
+    public string Region { get; set; } = String.Empty;
 
-    public string? Street { get; set; }
+    public string Street { get; set; } = String.Empty;
 }
