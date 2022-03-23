@@ -2,7 +2,7 @@
 
 public class ComplexTwoParametersDto
 {
-    public List<string>? ListOfStrings { get; set; }
+    public List<string> ListOfStrings { get; set; } = new ();
 
-    public Address? Address { get; set; }
+    public Address Address { get; set; } = new ();
 }
