@@ -4,7 +4,7 @@ namespace Bachelor.Thesis.Benchmarking.ComplexTwoParametersDto;
 
 public class ModelValidationAddressDto
 {
-    public static Address ValidAddress = new()
+    public static ModelValidationAddressDto ValidAddress = new ()
     {
         Country = "Germany",
         City = "Regensburg",
@@ -15,11 +15,11 @@ public class ModelValidationAddressDto
 
     [Required]
     [MinLength(1)]
-    public string City { get; set; } = String.Empty;
+    public string City { get; set; } = string.Empty;
 
     [Required]
     [MinLength(1)]
-    public string Country { get; set; } = String.Empty;
+    public string Country { get; set; } = string.Empty;
 
     [Required]
     [Range(10000, 99999)]
@@ -27,9 +27,9 @@ public class ModelValidationAddressDto
 
     [Required]
     [MinLength(1)]
-    public string Region { get; set; } = String.Empty;
+    public string Region { get; set; } = string.Empty;
 
     [Required]
     [MinLength(1)]
-    public string Street { get; set; } = String.Empty;
+    public string Street { get; set; } = string.Empty;
 }
