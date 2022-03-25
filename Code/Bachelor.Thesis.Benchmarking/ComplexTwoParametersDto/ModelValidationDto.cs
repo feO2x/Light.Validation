@@ -5,7 +5,7 @@ namespace Bachelor.Thesis.Benchmarking.ComplexTwoParametersDto;
 public class ModelValidationDto
 {
     [Required]
-    [MinLength(1)]
+    [MinLength(2)]
     public List<string> Names { get; set; } = new();
 
     [Required]
