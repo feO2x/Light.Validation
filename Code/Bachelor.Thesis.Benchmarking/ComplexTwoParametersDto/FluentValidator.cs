@@ -9,7 +9,7 @@ public class FluentValidator : AbstractValidator<ComplexTwoParametersDto>
 {
     public FluentValidator()
     {
-        RuleFor(dto => dto.ListOfStrings.Count).GreaterThanOrEqualTo(1);
+        RuleFor(dto => dto.Names.Count).GreaterThanOrEqualTo(1);
 
         RuleFor(dto => dto.Address.Country).NotEmpty();
         RuleFor(dto => dto.Address.Region).NotEmpty();

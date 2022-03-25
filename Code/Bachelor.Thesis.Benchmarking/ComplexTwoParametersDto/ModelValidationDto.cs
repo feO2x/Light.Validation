@@ -6,7 +6,7 @@ public class ModelValidationDto
 {
     [Required]
     [MinLength(1)]
-    public List<string> ListOfStrings { get; set; } = new();
+    public List<string> Names { get; set; } = new();
 
     [Required]
     public ModelValidationAddress Address { get; set; } = new();

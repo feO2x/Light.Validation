@@ -9,7 +9,7 @@ public class LightValidator : Validator<ComplexTwoParametersDto>
 {
     protected override void PerformValidation(ValidationContext context, ComplexTwoParametersDto value)
     {
-        context.Check(value.ListOfStrings!.Count).IsGreaterThanOrEqualTo(1);
+        context.Check(value.Names!.Count).IsGreaterThanOrEqualTo(1);
 
         value.Address.Country = context.Check(value.Address.Country)
                                        .Normalize()
