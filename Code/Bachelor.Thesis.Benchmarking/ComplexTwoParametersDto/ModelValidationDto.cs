@@ -9,5 +9,5 @@ public class ModelValidationDto
     public List<string> ListOfStrings { get; set; } = new();
 
     [Required]
-    public ModelValidationAddressDto Address { get; set; } = new();
+    public ModelValidationAddress Address { get; set; } = new();
 }

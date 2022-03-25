@@ -2,9 +2,9 @@
 
 namespace Bachelor.Thesis.Benchmarking.ComplexTwoParametersDto;
 
-public class ModelValidationAddressDto
+public class ModelValidationAddress
 {
-    public static ModelValidationAddressDto ValidAddress = new ()
+    public static ModelValidationAddress ValidAddress = new ()
     {
         Country = "Germany",
         City = "Regensburg",
@@ -13,7 +13,7 @@ public class ModelValidationAddressDto
         Street = "Seybothstraße 2"
     };
 
-    public static ModelValidationAddressDto InvalidAddress = new()
+    public static ModelValidationAddress InvalidAddress = new()
     {
         Country = string.Empty,
         PostalCode = 1000,
