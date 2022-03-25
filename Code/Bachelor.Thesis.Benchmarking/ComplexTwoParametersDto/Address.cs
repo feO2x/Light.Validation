@@ -11,6 +11,14 @@ public class Address
         Street = "Seybothstraße 2"
     };
 
+    public static Address InvalidAddress = new()
+    {
+        Country = string.Empty,
+        PostalCode = 1000,
+        Region = string.Empty,
+        Street = string.Empty
+    };
+
     public string City { get; set; } = string.Empty;
 
     public string Country { get; set; } = string.Empty;
