@@ -11,13 +11,13 @@ public class Address
         Street = "Seybothstraße 2"
     };
 
-    public string City { get; set; } = String.Empty;
+    public string City { get; set; } = string.Empty;
 
-    public string Country { get; set; } = String.Empty;
+    public string Country { get; set; } = string.Empty;
 
     public int PostalCode { get; set; }
 
-    public string Region { get; set; } = String.Empty;
+    public string Region { get; set; } = string.Empty;
 
-    public string Street { get; set; } = String.Empty;
+    public string Street { get; set; } = string.Empty;
 }
