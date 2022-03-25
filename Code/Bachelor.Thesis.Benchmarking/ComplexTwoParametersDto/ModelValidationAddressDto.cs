@@ -13,6 +13,14 @@ public class ModelValidationAddressDto
         Street = "Seybothstraße 2"
     };
 
+    public static ModelValidationAddressDto InvalidAddress = new()
+    {
+        Country = string.Empty,
+        PostalCode = 1000,
+        Region = string.Empty,
+        Street = string.Empty
+    };
+
     [Required]
     [MinLength(1)]
     public string City { get; set; } = string.Empty;
