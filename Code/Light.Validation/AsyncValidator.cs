@@ -9,7 +9,7 @@ namespace Light.Validation;
 /// Represents the base class for validators that validate a single value which is usually a
 /// Data Transfer Object (DTO). This validator runs asynchronously.
 /// </summary>
-/// <typeparam name="T">The type of the value.</typeparam>
+/// <typeparam name="T">The type of the value to be validated.</typeparam>
 public abstract class AsyncValidator<T> : BaseValidator<T>
 {
     /// <summary>
@@ -24,9 +24,19 @@ public abstract class AsyncValidator<T> : BaseValidator<T>
     /// The default value is true. If enabled, the validator will automatically check if a value is
     /// null and then return the a error message that the value must not be null.
     /// </param>
+    /// <param name="continueOnCapturedContextAfterAwait">
+    /// The value indicating whether the continuation after the internal async validation should
+    /// be executed on the captured synchronization context (optional). The default value
+    /// is false. This is the boolean value passed to ConfigureAwait for the
+    /// PerformValidationAsync task. If you have no clue, just leave it to false.
+    /// </param>
     protected AsyncValidator(Func<ValidationContext>? createValidationContext = null,
-                             bool isNullCheckingEnabled = true)
-        : base(createValidationContext, isNullCheckingEnabled) { }
+                             bool isNullCheckingEnabled = true,
+                             bool continueOnCapturedContextAfterAwait = false)
+        : base(createValidationContext, isNullCheckingEnabled) =>
+        ContinueOnCapturedContextAfterAwait = continueOnCapturedContextAfterAwait;
+
+    private bool ContinueOnCapturedContextAfterAwait { get; }
 
     /// <summary>
     /// Asynchronously validates the specified value and returns a structure containing
@@ -34,11 +44,12 @@ public abstract class AsyncValidator<T> : BaseValidator<T>
     /// </summary>
     /// <param name="value">The value to be checked.</param>
     /// <param name="key">
-    /// The string that identifies the passed value (optional). You do not need to pass this value as
-    /// it is automatically obtained by the expression that is passed to <paramref name="value" />.
-    /// This value is used to
+    /// The string that identifies the corresponding errors in the internal dictionary of the validation context (optional).
+    /// You do not need to pass this value as it is automatically obtained by the expression that is passed to <paramref name="value" />
+    /// via the <see cref="CallerArgumentExpressionAttribute" />. This value is only relevant if this validator is
+    /// called by another validator.
     /// </param>
-    public Task<ValidationResult> ValidateAsync(T value, [CallerArgumentExpression("value")] string key = "") =>
+    public Task<ValidationResult<T>> ValidateAsync(T value, [CallerArgumentExpression("value")] string key = "") =>
         ValidateAsync(value, CreateContext(), key);
 
     /// <summary>
@@ -47,20 +58,23 @@ public abstract class AsyncValidator<T> : BaseValidator<T>
     /// <param name="value">The value to be checked</param>
     /// <param name="context">The validation context that manages the errors dictionary.</param>
     /// <param name="key">
-    /// The string that identifies the passed value (optional). You do not need to pass this value as
-    /// it is automatically obtained by the expression that is passed to <paramref name="value" />.
-    /// This value is used to
+    /// The string that identifies the corresponding errors in the internal dictionary of the validation context (optional).
+    /// You do not need to pass this value as it is automatically obtained by the expression that is passed to <paramref name="value" />
+    /// via the <see cref="CallerArgumentExpressionAttribute" />. This value is only relevant if this validator is
+    /// called by another validator.
     /// </param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="context" /> is null.</exception>
-    public async Task<ValidationResult> ValidateAsync(T value, ValidationContext context, [CallerArgumentExpression("value")] string key = "")
+    public async Task<ValidationResult<T>> ValidateAsync(T value,
+                                                         ValidationContext context,
+                                                         [CallerArgumentExpression("value")] string key = "")
     {
         context.MustNotBeNull();
 
         if (CheckForNull(value, context, key, out var error))
-            return new ValidationResult(error);
+            return new ValidationResult<T>(value, error);
 
-        await PerformValidationAsync(context, value).ConfigureAwait(false);
-        return context.CreateResult();
+        value = await PerformValidationAsync(context, value).ConfigureAwait(ContinueOnCapturedContextAfterAwait);
+        return new ValidationResult<T>(value, value);
     }
 
     /// <summary>
@@ -73,5 +87,5 @@ public abstract class AsyncValidator<T> : BaseValidator<T>
     /// </summary>
     /// <param name="context">The context that tracks errors in a dictionary.</param>
     /// <param name="value">The value to be checked.</param>
-    protected abstract Task PerformValidationAsync(ValidationContext context, T value);
+    protected abstract Task<T> PerformValidationAsync(ValidationContext context, T value);
 }

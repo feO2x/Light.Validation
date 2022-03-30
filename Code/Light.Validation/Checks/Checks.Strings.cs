@@ -74,7 +74,7 @@ public static partial class Checks
         if (check.IsShortCircuited || !check.Value.IsNullOrWhiteSpace())
             return check;
 
-        check.AddError(errorMessageFactory);
+        check.CreateAndAddError(errorMessageFactory);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
@@ -147,7 +147,7 @@ public static partial class Checks
         if (check.IsShortCircuited || !check.IsValueNull && regex.IsMatch(check.Value))
             return check;
 
-        check.AddError(errorMessageFactory, regex);
+        check.CreateAndAddError(errorMessageFactory, regex);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
@@ -202,7 +202,7 @@ public static partial class Checks
         if (check.IsShortCircuited || check.Value.IsEmail())
             return check;
 
-        check.AddError(errorMessageFactory);
+        check.CreateAndAddError(errorMessageFactory);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
@@ -252,7 +252,7 @@ public static partial class Checks
         if (check.IsShortCircuited || !check.IsValueNull && check.Value.Length > length)
             return check;
 
-        check.AddError(errorMessageFactory, length);
+        check.CreateAndAddError(errorMessageFactory, length);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
@@ -302,7 +302,7 @@ public static partial class Checks
         if (check.IsShortCircuited || !check.IsValueNull && check.Value.Length < length)
             return check;
 
-        check.AddError(errorMessageFactory, length);
+        check.CreateAndAddError(errorMessageFactory, length);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
@@ -358,7 +358,7 @@ public static partial class Checks
         if (check.IsShortCircuited || !check.IsValueNull && range.IsValueWithinRange(check.Value.Length))
             return check;
 
-        check.AddError(errorMessageFactory, range);
+        check.CreateAndAddError(errorMessageFactory, range);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
@@ -428,7 +428,7 @@ public static partial class Checks
         }
 
         StringInvalid:
-        check.AddError(errorMessageFactory);
+        check.CreateAndAddError(errorMessageFactory);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
@@ -500,7 +500,7 @@ public static partial class Checks
         }
 
         StringInvalid:
-        check.AddError(errorMessageFactory);
+        check.CreateAndAddError(errorMessageFactory);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 }

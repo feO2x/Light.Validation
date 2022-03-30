@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Light.GuardClauses;
 using Light.Validation.Tools;
 
@@ -56,7 +57,7 @@ public static partial class Checks
     {
         if (check.IsShortCircuited || !check.IsValueNull)
             return check;
-        check.AddError(errorMessageFactory);
+        check.CreateAndAddError(errorMessageFactory);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
@@ -105,7 +106,7 @@ public static partial class Checks
     {
         if (check.IsShortCircuited || !check.IsValueNull)
             return check;
-        check.AddError(errorMessageFactory);
+        check.CreateAndAddError(errorMessageFactory);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
@@ -189,7 +190,7 @@ public static partial class Checks
         if (check.IsShortCircuited || EqualityComparer<T>.Default.Equals(check.Value, comparativeValue))
             return check;
         
-        check.AddError(errorMessageFactory, comparativeValue);
+        check.CreateAndAddError(errorMessageFactory, comparativeValue);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
@@ -220,7 +221,7 @@ public static partial class Checks
         if (check.IsShortCircuited || equalityComparer.Equals(check.Value, comparativeValue))
             return check;
 
-        check.AddError(errorMessageFactory, comparativeValue);
+        check.CreateAndAddError(errorMessageFactory, comparativeValue);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
@@ -304,7 +305,7 @@ public static partial class Checks
         if (check.IsShortCircuited || !EqualityComparer<T>.Default.Equals(check.Value, comparativeValue))
             return check;
 
-        check.AddError(errorMessageFactory, comparativeValue);
+        check.CreateAndAddError(errorMessageFactory, comparativeValue);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
@@ -335,7 +336,7 @@ public static partial class Checks
         if (check.IsShortCircuited || !equalityComparer.Equals(check.Value, comparativeValue))
             return check;
 
-        check.AddError(errorMessageFactory, comparativeValue);
+        check.CreateAndAddError(errorMessageFactory, comparativeValue);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
@@ -381,7 +382,54 @@ public static partial class Checks
         if (check.IsShortCircuited || check.Value != Guid.Empty)
             return check;
 
-        check.AddError(errorMessageFactory);
+        check.CreateAndAddError(errorMessageFactory);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
+    }
+
+    /// <summary>
+    /// Validates the value with the specified validator. This method simply calls
+    /// the Validate method on the specified validator, passing in the value and the key.
+    /// </summary>
+    /// <typeparam name="T">The type of the value to be checked.</typeparam>
+    /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
+    /// <param name="validator">The validator that performs checks on the specified value.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="validator"/> is null.</exception>
+    public static Check<T> ValidateWith<T>(this Check<T> check, Validator<T> validator)
+    {
+        validator.MustNotBeNull();
+
+        var result = validator.Validate(check.Value, check.Key);
+        if (result.TryGetErrors(out var errors))
+            check.AddError(errors);
+
+        return check.WithNewValue(result.ValidatedValue);
+    }
+
+    /// <summary>
+    /// Validates the value with the specified validator. This method simply calls
+    /// the ValidateAsync method on the specified validator, passing in the value and the key.
+    /// </summary>
+    /// <typeparam name="T">The type of the value to be checked.</typeparam>
+    /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
+    /// <param name="validator">The validator that performs checks on the specified value.</param>
+    /// <param name="continueOnCapturedContext">
+    /// The value indicating whether the continuation after the internal async call in this method should
+    /// be executed on the captured synchronization context (optional). The default value
+    /// is false. This is the boolean value passed to ConfigureAwait for the
+    /// PerformValidationAsync task. If you have no clue, just leave it to false.
+    /// </param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="validator"/> is null.</exception>
+    public static async Task<Check<T>> ValidateWithAsync<T>(this Check<T> check,
+                                                            AsyncValidator<T> validator,
+                                                            bool continueOnCapturedContext = false)
+    {
+        validator.MustNotBeNull();
+
+        var result = await validator.ValidateAsync(check.Value, check.Key)
+                                    .ConfigureAwait(continueOnCapturedContext);
+        if (result.TryGetErrors(out var errors))
+            check.AddError(errors);
+
+        return check.WithNewValue(result.ValidatedValue);
     }
 }

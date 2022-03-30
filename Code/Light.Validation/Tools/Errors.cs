@@ -367,7 +367,7 @@ public static class Errors
     /// <param name="errorMessageFactory">The delegate that receives the check and creates an error message.</param>
     /// <typeparam name="T">The type of the value to be checked.</typeparam>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="errorMessageFactory" /> is null.</exception>
-    public static void AddError<T>(this Check<T> check, Func<Check<T>, string> errorMessageFactory)
+    public static void CreateAndAddError<T>(this Check<T> check, Func<Check<T>, string> errorMessageFactory)
     {
         errorMessageFactory.MustNotBeNull();
 
@@ -383,9 +383,9 @@ public static class Errors
     /// <param name="comparativeValue">A comparative value that was used to validate the value.</param>
     /// <typeparam name="T">The type of the value to be checked.</typeparam>
     /// <typeparam name="TParameter">The type of the comparative value.</typeparam>
-    public static void AddError<T, TParameter>(this Check<T> check,
-                                               Func<Check<T>, TParameter, string> errorMessageFactory,
-                                               TParameter comparativeValue)
+    public static void CreateAndAddError<T, TParameter>(this Check<T> check,
+                                                        Func<Check<T>, TParameter, string> errorMessageFactory,
+                                                        TParameter comparativeValue)
     {
         errorMessageFactory.MustNotBeNull();
 

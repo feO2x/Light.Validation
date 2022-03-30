@@ -36,9 +36,10 @@ public abstract class Validator<T> : BaseValidator<T>
     /// <param name="value">The value to be checked.</param>
     /// <param name="errors">The dictionary that will contain all errors.</param>
     /// <param name="key">
-    /// The string that identifies the passed value (optional). You do not need to pass this value as
-    /// it is automatically obtained by the expression that is passed to <paramref name="value" />.
-    /// This value is used to
+    /// The string that identifies the corresponding errors in the internal dictionary of the validation context (optional).
+    /// You do not need to pass this value as it is automatically obtained by the expression that is passed to <paramref name="value" />
+    /// via the <see cref="CallerArgumentExpressionAttribute" />. This value is only relevant if this validator is
+    /// called by another validator.
     /// </param>
     /// <returns>True if at least one error was found, else false.</returns>
     public bool CheckForErrors(T value,
@@ -55,9 +56,10 @@ public abstract class Validator<T> : BaseValidator<T>
     /// <param name="context">The validation context that manages the errors dictionary.</param>
     /// <param name="errors">The dictionary that will contain all errors.</param>
     /// <param name="key">
-    /// The string that identifies the passed value (optional). You do not need to pass this value as
-    /// it is automatically obtained by the expression that is passed to <paramref name="value" />.
-    /// This value is used to
+    /// The string that identifies the corresponding errors in the internal dictionary of the validation context (optional).
+    /// You do not need to pass this value as it is automatically obtained by the expression that is passed to <paramref name="value" />
+    /// via the <see cref="CallerArgumentExpressionAttribute" />. This value is only relevant if this validator is
+    /// called by another validator.
     /// </param>
     /// <returns>True if at least one error was found, else false.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="context" /> is null.</exception>
@@ -86,7 +88,13 @@ public abstract class Validator<T> : BaseValidator<T>
     /// Validates the specified value and returning a structure containing the validation results.
     /// </summary>
     /// <param name="value">The value to be checked.</param>
-    public ValidationResult Validate(T value) => Validate(value, CreateContext());
+    /// <param name="key">
+    /// The string that identifies the corresponding errors in the internal dictionary of the validation context (optional).
+    /// You do not need to pass this value as it is automatically obtained by the expression that is passed to <paramref name="value" />
+    /// via the <see cref="CallerArgumentExpressionAttribute" />. This value is only relevant if this validator is
+    /// called by another validator.
+    /// </param>
+    public ValidationResult<T> Validate(T value, [CallerArgumentExpression("value")] string key = "") => Validate(value, CreateContext(), key);
 
     /// <summary>
     /// Validates the specified value while performing error tracking with the specified context.
@@ -95,20 +103,21 @@ public abstract class Validator<T> : BaseValidator<T>
     /// <param name="value">The value to be checked.</param>
     /// <param name="context">The validation context that manages the errors dictionary.</param>
     /// <param name="key">
-    /// The string that identifies the passed value (optional). You do not need to pass this value as
-    /// it is automatically obtained by the expression that is passed to <paramref name="value" />.
-    /// This value is used to
+    /// The string that identifies the corresponding errors in the internal dictionary of the validation context (optional).
+    /// You do not need to pass this value as it is automatically obtained by the expression that is passed to <paramref name="value" />
+    /// via the <see cref="CallerArgumentExpressionAttribute" />. This value is only relevant if this validator is
+    /// called by another validator.
     /// </param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="context" /> is null.</exception>
-    public ValidationResult Validate(T value, ValidationContext context, [CallerArgumentExpression("value")] string key = "")
+    public ValidationResult<T> Validate(T value, ValidationContext context, [CallerArgumentExpression("value")] string key = "")
     {
         context.MustNotBeNull();
 
         if (CheckForNull(value, context, key, out var error))
-            return new ValidationResult(error);
+            return new ValidationResult<T>(value, error);
 
-        PerformValidation(context, value);
-        return context.CreateResult();
+        value = PerformValidation(context, value);
+        return new ValidationResult<T>(value, context.Errors);
     }
 
     /// <summary>
@@ -121,5 +130,5 @@ public abstract class Validator<T> : BaseValidator<T>
     /// </summary>
     /// <param name="context">The context that tracks errors in a dictionary.</param>
     /// <param name="value">The value to be checked.</param>
-    protected abstract void PerformValidation(ValidationContext context, T value);
+    protected abstract T PerformValidation(ValidationContext context, T value);
 }

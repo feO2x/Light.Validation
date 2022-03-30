@@ -100,8 +100,8 @@ public class ValidationContext : ExtensibleObject
 
         if (error is string errorMessage)
             InsertOrUpdateErrorMessage(key, errorMessage);
-
-        Errors![key] = error;
+        else
+            Errors![key] = error;
     }
 
     /// <summary>
@@ -177,16 +177,28 @@ public class ValidationContext : ExtensibleObject
     /// </para>
     /// </summary>
     /// <param name="value">The value to be checked.</param>
-    /// <param name="key">The key that will identify the error (optional).</param>
+    /// <param name="normalizeValue">
+    /// The value indicating whether strings should be normalized. The default value is null.
+    /// If you set this value to true or false, it will take precedence over
+    /// <see cref="ValidationContextOptions.IsNormalizingStringValues" /> (which is true by default).
+    /// If the passed in value is no string, setting this parameter has no effect.
+    /// </param>
+    /// <param name="key">
+    /// The string that identifies the corresponding errors in the internal dictionary of the validation context (optional).
+    /// You do not need to pass this value as it is automatically obtained by the expression that is passed to <paramref name="value" />
+    /// via the <see cref="CallerArgumentExpressionAttribute" />.
+    /// </param>
     /// <typeparam name="T">The type of the value to be checked.</typeparam>
-    public Check<T> Check<T>(T value, [CallerArgumentExpression("value")] string key = "")
+    public Check<T> Check<T>(T value,
+                             bool? normalizeValue = null,
+                             [CallerArgumentExpression("value")] string key = "")
     {
         if (typeof(T) == typeof(string))
         {
             key.MustNotBeNull();
             key = NormalizeKey(key, Options.NormalizeKeyOnCheck);
 
-            if (!Options.IsNormalizingStringValues)
+            if (!DetermineBooleanSetting(normalizeValue, Options.IsNormalizingStringValues))
                 return new Check<T>(this, key, value);
 
             var stringValue = Unsafe.As<T, string>(ref value);
@@ -198,7 +210,7 @@ public class ValidationContext : ExtensibleObject
             key.MustNotBeNull();
             key = NormalizeKey(key, Options.NormalizeKeyOnCheck);
 
-            if (value is string stringValue && Options.IsNormalizingStringValues)
+            if (value is string stringValue && DetermineBooleanSetting(normalizeValue, Options.IsNormalizingStringValues))
             {
                 stringValue = NormalizeStringValue(stringValue);
                 value = Unsafe.As<string, T>(ref stringValue);
@@ -208,16 +220,13 @@ public class ValidationContext : ExtensibleObject
         }
     }
 
+    private static bool DetermineBooleanSetting(bool? methodParameter, bool optionValue) => methodParameter ?? optionValue;
+
     /// <summary>
     /// Normalizes the specified string value.
     /// </summary>
     public string NormalizeStringValue(string stringValue) =>
         Options.NormalizeStringValue?.Invoke(stringValue) ?? stringValue.NormalizeString();
-
-    /// <summary>
-    /// Creates a validation result with the internal errors dictionary.
-    /// </summary>
-    public ValidationResult CreateResult() => new (Errors);
 
     /// <summary>
     /// Tries to retrieve the errors that were tracked by this context.

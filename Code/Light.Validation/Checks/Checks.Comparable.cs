@@ -64,7 +64,7 @@ public static partial class Checks
         if (check.IsShortCircuited || check.IsValueNull || check.Value.CompareTo(comparativeValue) > 0)
             return check;
 
-        check.AddError(errorMessageFactory, comparativeValue);
+        check.CreateAndAddError(errorMessageFactory, comparativeValue);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
@@ -125,7 +125,7 @@ public static partial class Checks
         if (check.IsShortCircuited || check.IsValueNull || check.Value.CompareTo(comparativeValue) >= 0)
             return check;
 
-        check.AddError(errorMessageFactory, comparativeValue);
+        check.CreateAndAddError(errorMessageFactory, comparativeValue);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
@@ -186,7 +186,7 @@ public static partial class Checks
         if (check.IsShortCircuited || check.IsValueNull || check.Value.CompareTo(comparativeValue) < 0)
             return check;
 
-        check.AddError(errorMessageFactory, comparativeValue);
+        check.CreateAndAddError(errorMessageFactory, comparativeValue);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
@@ -247,7 +247,7 @@ public static partial class Checks
         if (check.IsShortCircuited || check.IsValueNull || check.Value.CompareTo(comparativeValue) <= 0)
             return check;
 
-        check.AddError(errorMessageFactory, comparativeValue);
+        check.CreateAndAddError(errorMessageFactory, comparativeValue);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
@@ -306,7 +306,7 @@ public static partial class Checks
         if (check.IsShortCircuited || !check.IsValueNull && range.IsValueWithinRange(check.Value))
             return check;
 
-        check.AddError(errorMessageFactory, range);
+        check.CreateAndAddError(errorMessageFactory, range);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
@@ -365,7 +365,7 @@ public static partial class Checks
         if (check.IsShortCircuited || !check.IsValueNull && !range.IsValueWithinRange(check.Value))
             return check;
 
-        check.AddError(errorMessageFactory, range);
+        check.CreateAndAddError(errorMessageFactory, range);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 }

@@ -7,8 +7,12 @@ namespace Light.Validation;
 /// <summary>
 /// Represents the result of a validation run.
 /// </summary>
+/// <param name="ValidatedValue">
+/// The value that was validated. This value might not be the original value that was received
+/// as normalization might occur before validation.
+/// </param>
 /// <param name="Errors">The dictionary that contains all errors of the validation run.</param>
-public readonly record struct ValidationResult(object? Errors)
+public readonly record struct ValidationResult<T>(T ValidatedValue, object? Errors)
 {
     /// <summary>
     /// Gets the value indicating if <see cref="Errors" /> is null or contains no entries.
