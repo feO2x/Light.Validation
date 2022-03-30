@@ -2,7 +2,7 @@
 A lightweight library for validating incoming data in .NET HTTP services
 
 [![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](https://github.com/feO2x/Light.Validation/blob/master/LICENSE)
-[![NuGet](https://img.shields.io/badge/NuGet-0.1.0-blue.svg?style=for-the-badge)](https://www.nuget.org/packages/Light.Validation/)
+[![NuGet](https://img.shields.io/badge/NuGet-0.2.0-blue.svg?style=for-the-badge)](https://www.nuget.org/packages/Light.Validation/)
 [![Documentation](https://img.shields.io/badge/Docs-Wiki-yellowgreen.svg?style=for-the-badge)](https://github.com/feO2x/Light.Validation/wiki)
 [![Documentation](https://img.shields.io/badge/Docs-Changelog-yellowgreen.svg?style=for-the-badge)](https://github.com/feO2x/Light.Validation/releases)
 
