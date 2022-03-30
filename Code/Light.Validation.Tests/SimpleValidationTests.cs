@@ -26,10 +26,11 @@ public sealed class SimpleValidationTests
 
         var result = invalidDto.CheckForErrors(context, out var errors);
 
+        var errorsDictionary = errors.MustBeOfType<Dictionary<string, object>>();
         Output.WriteLine(Json.Serialize(errors));
         result.Should().BeTrue();
-        errors.Should().HaveCount(2);
-        CheckKeys(errors!, "id", "userName");
+        errorsDictionary.Should().HaveCount(2);
+        CheckKeys(errorsDictionary, "id", "userName");
     }
 
     [Fact]
@@ -115,7 +116,7 @@ public sealed class SimpleValidationTests
         public int Id { get; init; }
         public string UserName { get; set; } = string.Empty;
 
-        public bool CheckForErrors(ValidationContext context, out Dictionary<string, object>? errors)
+        public bool CheckForErrors(ValidationContext context, out object? errors)
         {
             context.Check(Id).IsGreaterThan(0);
             UserName = context.Check(UserName).IsNotNullOrWhiteSpace().Value;

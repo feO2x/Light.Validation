@@ -233,7 +233,7 @@ public class ValidationContext : ExtensibleObject
     /// </summary>
     /// <param name="errors">The dictionary that contains the errors.</param>
     /// <returns>True if errors were added to this context, else false.</returns>
-    public bool TryGetErrors([NotNullWhen(true)] out Dictionary<string, object>? errors)
+    public bool TryGetErrors([NotNullWhen(true)] out object? errors)
     {
         if (Errors is { Count: > 0 })
         {
