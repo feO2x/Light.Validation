@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <TargetFrameworks>net6.0;netstandard2.0</TargetFrameworks>
-        <Version>0.1.0</Version>
+        <Version>0.2.0</Version>
         <LangVersion>10.0</LangVersion>
         <Nullable>enable</Nullable>
         <TreatWarningsAsErrors Condition="'$(Configuration)' == 'Release'">true</TreatWarningsAsErrors>
@@ -22,11 +22,13 @@
         <EmbedUntrackedSources>true</EmbedUntrackedSources>
         <PackageTags>Validation, Check, DTO, Data-Transfer-Object, HTTP, Web-Service, Web-API, Lightweight</PackageTags>
         <PackageReleaseNotes>
-Light.Validation 0.1.0
+Light.Validation 0.2.0
 --------------------------------
 
-- initial release 🎈🎉🍨
-- simple use: instantiate a ValidationContext, then call context.Check(dto.SomeProperty) and afterwards any of the extensions methods that validate the value
+- validators now perform automatic null checks
+- validators can now be composed more easily with the ValidateWith and ValidateWithAsync extensions methods for the Check&lt;T&gt; struct
+- added extension methods for rounding doubles, floats, and decimals
+- breaking change: there is only one AddError method on ValidationContext which takes an object. TryGetErrors also returns an object now.
 - read all docs at https://github.com/feO2x/Light.Validation
         </PackageReleaseNotes>
     </PropertyGroup>
