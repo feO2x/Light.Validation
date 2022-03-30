@@ -39,7 +39,11 @@ public static class RoundTests
     [MemberData(nameof(DecimalData))]
     public static void RoundDecimal(decimal value, int digits, decimal expectedValue)
     {
-        
+        var context = new ValidationContext();
+
+        var roundedValue = context.Check(value).Round(digits).Value;
+
+        roundedValue.Should().Be(expectedValue);
     }
 
     public static readonly TheoryData<decimal, int, decimal> DecimalData =
@@ -47,7 +51,7 @@ public static class RoundTests
         {
             { 45.45692m, 2, 45.46m },
             { 1592.234m, 1, 1592.2m },
-            { -19.44m, 1, -19.3m },
+            { -19.44m, 1, -19.4m },
             { 5.00000909m, 5, 5.00001m },
             { 15.24m, 4, 15.24m }
         };
