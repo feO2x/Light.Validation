@@ -53,7 +53,8 @@ public sealed class SimpleValidationTests
     {
         var session = new UpdateUserNameSessionMock { DoesUserNameExist = true };
         var sessionFactory = new SessionFactoryMock<IUpdateUserNameSession>(session);
-        var controller = new UpdateUserNameController(sessionFactory);
+        var validator = new DtoValidator();
+        var controller = new UpdateUserNameController(sessionFactory, validator);
         var dto = new UpdateUserNameDto { Id = 42, UserName = "Kevin" };
 
         var result = await controller.UpdateUserName(dto);
@@ -76,15 +77,20 @@ public sealed class SimpleValidationTests
 
     private sealed class UpdateUserNameController : ControllerBase
     {
-        public UpdateUserNameController(ISessionFactory<IUpdateUserNameSession> sessionFactory) =>
+        public UpdateUserNameController(ISessionFactory<IUpdateUserNameSession> sessionFactory,
+                                        DtoValidator validator)
+        {
             SessionFactory = sessionFactory;
+            Validator = validator;
+        }
 
         private ISessionFactory<IUpdateUserNameSession> SessionFactory { get; }
+        private DtoValidator Validator { get; }
 
-        public async Task<IActionResult> UpdateUserName(UpdateUserNameDto dto)
+        public async Task<IActionResult> UpdateUserName(UpdateUserNameDto? dto)
         {
             var context = new ValidationContext();
-            if (dto.CheckForErrors(context, out var errors))
+            if (Validator.CheckForErrors(dto, context, out var errors))
                 return BadRequest(errors);
 
             await using var session = await SessionFactory.OpenSessionAsync();

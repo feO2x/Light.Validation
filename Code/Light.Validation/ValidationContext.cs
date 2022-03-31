@@ -93,7 +93,7 @@ public class ValidationContext : ExtensibleObject
         key.MustNotBeNull();
         error.MustNotBeNull();
 
-        key = NormalizeKey(key, Options.NormalizeKeyOnAddError);
+        key = NormalizeKey(key, Options.IsNormalizingKeyOnAddError);
 
         if (TryAddFirstError(key, error))
             return;
@@ -148,7 +148,7 @@ public class ValidationContext : ExtensibleObject
     {
         key.MustNotBeNull();
 
-        key = NormalizeKey(key, Options.NormalizeKeyOnRemoveError);
+        key = NormalizeKey(key, Options.IsNormalizingKeyOnRemoveError);
         return Errors?.Remove(key) ?? false;
     }
 
@@ -196,7 +196,7 @@ public class ValidationContext : ExtensibleObject
         if (typeof(T) == typeof(string))
         {
             key.MustNotBeNull();
-            key = NormalizeKey(key, Options.NormalizeKeyOnCheck);
+            key = NormalizeKey(key, Options.IsNormalizingKeyOnCheck);
 
             if (!DetermineBooleanSetting(normalizeValue, Options.IsNormalizingStringValues))
                 return new Check<T>(this, key, value);
@@ -208,7 +208,7 @@ public class ValidationContext : ExtensibleObject
         else
         {
             key.MustNotBeNull();
-            key = NormalizeKey(key, Options.NormalizeKeyOnCheck);
+            key = NormalizeKey(key, Options.IsNormalizingKeyOnCheck);
 
             if (value is string stringValue && DetermineBooleanSetting(normalizeValue, Options.IsNormalizingStringValues))
             {
@@ -218,6 +218,35 @@ public class ValidationContext : ExtensibleObject
 
             return new Check<T>(this, key, value);
         }
+    }
+
+    /// <summary>
+    /// Checks if the specified value is null. If yes, the <paramref name="error" />
+    /// will be set and true will be returned. Otherwise, false will be returned and
+    /// value is ensured to not be null.
+    /// </summary>
+    /// <param name="value">The value to be checked.</param>
+    /// <param name="error">The error message that will be set when <paramref name="value"/> is null.</param>
+    /// <param name="key">
+    /// The string that identifies the corresponding errors in the internal dictionary of the validation context (optional).
+    /// You do not need to pass this value as it is automatically obtained by the expression that is passed to <paramref name="value" />
+    /// via the <see cref="CallerArgumentExpressionAttribute" />.
+    /// </param>
+    public bool CheckForNull<T>([NotNullWhen(false)] T? value,
+                                [NotNullWhen(true)] out object? error,
+                                [CallerArgumentExpression("value")] string key = "")
+    {
+        if (value is null)
+        {
+            error = string.Format(
+                ErrorTemplates.NotNull,
+                NormalizeKey(key, Options.IsNormalizingKeyOnCheckForNull)
+            );
+            return true;
+        }
+
+        error = default;
+        return false;
     }
 
     private static bool DetermineBooleanSetting(bool? methodParameter, bool optionValue) => methodParameter ?? optionValue;

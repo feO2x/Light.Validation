@@ -49,7 +49,8 @@ public abstract class AsyncValidator<T> : BaseValidator<T>
     /// via the <see cref="CallerArgumentExpressionAttribute" />. This value is only relevant if this validator is
     /// called by another validator.
     /// </param>
-    public Task<ValidationResult<T>> ValidateAsync(T value, [CallerArgumentExpression("value")] string key = "") =>
+    public Task<ValidationResult<T>> ValidateAsync([ValidatedNotNull] T? value,
+                                                   [CallerArgumentExpression("value")] string key = "") =>
         ValidateAsync(value, CreateContext(), key);
 
     /// <summary>
@@ -64,16 +65,16 @@ public abstract class AsyncValidator<T> : BaseValidator<T>
     /// called by another validator.
     /// </param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="context" /> is null.</exception>
-    public async Task<ValidationResult<T>> ValidateAsync(T value,
+    public async Task<ValidationResult<T>> ValidateAsync([ValidatedNotNull] T? value,
                                                          ValidationContext context,
                                                          [CallerArgumentExpression("value")] string key = "")
     {
         context.MustNotBeNull();
 
-        if (CheckForNull(value, context, key, out var error))
-            return new ValidationResult<T>(value, error);
+        if (TryCheckForNull(value, context, key, out var error))
+            return new ValidationResult<T>(value!, error);
 
-        value = await PerformValidationAsync(context, value).ConfigureAwait(ContinueOnCapturedContextAfterAwait);
+        value = await PerformValidationAsync(context, value!).ConfigureAwait(ContinueOnCapturedContextAfterAwait);
         return new ValidationResult<T>(value, value);
     }
 

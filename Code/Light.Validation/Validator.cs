@@ -42,7 +42,7 @@ public abstract class Validator<T> : BaseValidator<T>
     /// called by another validator.
     /// </param>
     /// <returns>True if at least one error was found, else false.</returns>
-    public bool CheckForErrors(T value,
+    public bool CheckForErrors([NotNullWhen(false)] T? value,
                                [NotNullWhen(true)] out object? errors,
                                [CallerArgumentExpression("value")] string key = "") =>
         CheckForErrors(value, CreateContext(), out errors, key);
@@ -63,14 +63,14 @@ public abstract class Validator<T> : BaseValidator<T>
     /// </param>
     /// <returns>True if at least one error was found, else false.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="context" /> is null.</exception>
-    public bool CheckForErrors(T value,
+    public bool CheckForErrors([NotNullWhen(false)] T? value,
                                ValidationContext context,
                                [NotNullWhen(true)] out object? errors,
                                [CallerArgumentExpression("value")] string key = "")
     {
         context.MustNotBeNull();
 
-        if (CheckForNull(value, context, key, out errors))
+        if (TryCheckForNull(value, context, key, out errors))
             return true;
 
         PerformValidation(context, value);
@@ -94,7 +94,9 @@ public abstract class Validator<T> : BaseValidator<T>
     /// via the <see cref="CallerArgumentExpressionAttribute" />. This value is only relevant if this validator is
     /// called by another validator.
     /// </param>
-    public ValidationResult<T> Validate(T value, [CallerArgumentExpression("value")] string key = "") => Validate(value, CreateContext(), key);
+    public ValidationResult<T> Validate([ValidatedNotNull] T? value,
+                                        [CallerArgumentExpression("value")] string key = "") =>
+        Validate(value, CreateContext(), key);
 
     /// <summary>
     /// Validates the specified value while performing error tracking with the specified context.
@@ -109,12 +111,14 @@ public abstract class Validator<T> : BaseValidator<T>
     /// called by another validator.
     /// </param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="context" /> is null.</exception>
-    public ValidationResult<T> Validate(T value, ValidationContext context, [CallerArgumentExpression("value")] string key = "")
+    public ValidationResult<T> Validate([ValidatedNotNull] T? value,
+                                        ValidationContext context,
+                                        [CallerArgumentExpression("value")] string key = "")
     {
         context.MustNotBeNull();
 
-        if (CheckForNull(value, context, key, out var error))
-            return new ValidationResult<T>(value, error);
+        if (TryCheckForNull(value, context, key, out var error))
+            return new ValidationResult<T>(value!, error);
 
         value = PerformValidation(context, value);
         return new ValidationResult<T>(value, context.Errors);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using Light.GuardClauses;
 
 namespace Light.Validation;
 
@@ -50,21 +51,16 @@ public abstract class BaseValidator<T>
     /// <param name="context">The validation context that is used to assemble the error message.</param>
     /// <param name="key">The key that identifies the value.</param>
     /// <param name="error">The error message when the null-check fails.</param>
-    protected bool CheckForNull(T value,
-                                ValidationContext context,
-                                string key,
-                                [NotNullWhen(true)] out object? error)
+    protected bool TryCheckForNull([NotNullWhen(false)] T? value,
+                                   ValidationContext context,
+                                   string key,
+                                   [NotNullWhen(true)] out object? error)
     {
-        if (IsNullCheckingEnabled && value is null)
-        {
-            error = string.Format(
-                context.ErrorTemplates.NotNull,
-                context.NormalizeKey(key, context.Options.NormalizeKeyOnValidatorNullCheck)
-            );
-            return true;
-        }
+        context.MustNotBeNull();
+        if (IsNullCheckingEnabled)
+            return context.CheckForNull(value, out error, key);
 
-        error = null;
+        error = default;
         return false;
     }
 }
