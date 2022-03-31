@@ -87,9 +87,9 @@ public sealed class ContactDtoValidator : Validator<ContactDto>
 
     protected override ContactDto PerformValidation(ValidationContext context, ContactDto dto)
     {
-        dto.Name = context.Check(dto.Name).IsNotNullOrWhiteSpace().Value;
+        dto.Name = context.Check(dto.Name).IsNotNullOrWhiteSpace();
         context.Check(dto.DateOfBirth).IsGreaterThan(new DateTime(1900, 1, 1));
-        dto.Address = context.Check(dto.Address).ValidateWith(AddressValidator).Value;
+        dto.Address = context.Check(dto.Address).ValidateWith(AddressValidator);
         return dto;
     }
 }
@@ -98,12 +98,11 @@ public sealed class AddressDtoValidator : Validator<AddressDto>
 {
     protected override AddressDto PerformValidation(ValidationContext context, AddressDto dto)
     {
-        dto.Street = context.Check(dto.Street).IsNotNullOrWhiteSpace().Value;
+        dto.Street = context.Check(dto.Street).IsNotNullOrWhiteSpace();
         dto.ZipCode = context.Check(dto.ZipCode)
                              .HasLengthIn(Range.FromInclusive(4).ToInclusive(5))
-                             .ContainsOnlyDigits()
-                             .Value;
-        dto.Location = context.Check(dto.Location).IsNotNullOrWhiteSpace().Value;
+                             .ContainsOnlyDigits();
+        dto.Location = context.Check(dto.Location).IsNotNullOrWhiteSpace();
         return dto;
     }
 }

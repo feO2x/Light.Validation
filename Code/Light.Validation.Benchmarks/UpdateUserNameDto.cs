@@ -13,9 +13,7 @@ public sealed class UpdateUserNameDto
         var context = new ValidationContext();
         context.Check(Id).IsGreaterThan(0);
         UserName = context.Check(UserName)
-                          .Normalize()
-                          .IsNotNullOrWhiteSpace()
-                          .Value;
+                          .IsNotNullOrWhiteSpace();
         return context.TryGetErrors(out errors);
     }
 }

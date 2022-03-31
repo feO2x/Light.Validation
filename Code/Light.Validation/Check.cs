@@ -36,6 +36,11 @@ public readonly record struct Check<T> : ICheck
     }
 
     /// <summary>
+    /// Gets the value to be checked.
+    /// </summary>
+    public T Value { get; }
+
+    /// <summary>
     /// Gets the context that manages the errors dictionary.
     /// </summary>
     public ValidationContext Context { get; }
@@ -45,11 +50,6 @@ public readonly record struct Check<T> : ICheck
     /// </summary>
     public string Key { get; }
 
-    /// <summary>
-    /// Gets the value to be checked.
-    /// </summary>
-    public T Value { get; }
-    
     /// <summary>
     /// Gets the value indicating whether no further checks should
     /// be performed with this instance.
@@ -81,6 +81,11 @@ public readonly record struct Check<T> : ICheck
     }
 
     /// <summary>
+    /// Gets the value indicating whether <see cref="Value" /> is null.
+    /// </summary>
+    public bool IsValueNull => Value is null;
+
+    /// <summary>
     /// Initializes a new instance of <see cref="Check{T}" /> with the
     /// same context and key, but with the specified value.
     /// </summary>
@@ -101,11 +106,6 @@ public readonly record struct Check<T> : ICheck
     public Check<T> ShortCircuitIfNecessary(bool isShortCircuited) => new (Context, Key, Value, isShortCircuited);
 
     /// <summary>
-    /// Gets the value indicating whether <see cref="Value" /> is null.
-    /// </summary>
-    public bool IsValueNull => Value is null;
-
-    /// <summary>
     /// Casts the validation context to the specified subtype and returns
     /// it. If casting is not possible, an <see cref="InvalidCastException" />
     /// will be thrown.
@@ -120,4 +120,9 @@ public readonly record struct Check<T> : ICheck
 
         throw new InvalidCastException($"The validation context cannot be cast to type \"{typeof(TValidationContext)}\".");
     }
+
+    /// <summary>
+    /// Implicitly converts the check to its internal value.
+    /// </summary>
+    public static implicit operator T(Check<T> check) => check.Value;
 }
