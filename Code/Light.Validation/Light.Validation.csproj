@@ -26,6 +26,7 @@ Light.Validation 0.3.0
 --------------------------------
 
 - validators now accept nullable DTOs and support NRTs better
+- Check&lt;T&gt; now has an implicit conversion to T, thus you do not need chain .Value when reassigning to a DTO property
 - read all docs at https://github.com/feO2x/Light.Validation
         </PackageReleaseNotes>
     </PropertyGroup>
