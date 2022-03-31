@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <TargetFrameworks>net6.0;netstandard2.0</TargetFrameworks>
-        <Version>0.2.0</Version>
+        <Version>0.3.0</Version>
         <LangVersion>10.0</LangVersion>
         <Nullable>enable</Nullable>
         <TreatWarningsAsErrors Condition="'$(Configuration)' == 'Release'">true</TreatWarningsAsErrors>
@@ -22,13 +22,10 @@
         <EmbedUntrackedSources>true</EmbedUntrackedSources>
         <PackageTags>Validation, Check, DTO, Data-Transfer-Object, HTTP, Web-Service, Web-API, Lightweight</PackageTags>
         <PackageReleaseNotes>
-Light.Validation 0.2.0
+Light.Validation 0.3.0
 --------------------------------
 
-- validators now perform automatic null checks
-- validators can now be composed more easily with the ValidateWith and ValidateWithAsync extensions methods for the Check&lt;T&gt; struct
-- added extension methods for rounding doubles, floats, and decimals
-- breaking change: there is only one AddError method on ValidationContext which takes an object. TryGetErrors also returns an object now.
+- validators now accept nullable DTOs and support NRTs better
 - read all docs at https://github.com/feO2x/Light.Validation
         </PackageReleaseNotes>
     </PropertyGroup>
@@ -37,6 +34,8 @@ Light.Validation 0.2.0
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="all" />
     </ItemGroup>
 
+    <!-- TargetFramework is implicitely created by the TargetFrameworks property on MSBuild runs -->
+    <!-- ReSharper disable once UnknownProperty -->
     <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
         <PackageReference Include="IsExternalInit" Version="1.0.2" PrivateAssets="all" />
         <PackageReference Include="System.Memory" Version="4.5.4" />
