@@ -1,40 +1,51 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using Light.GuardClauses;
 
 namespace Light.Validation;
 
 /// <summary>
 /// Represents the result of a validation run.
 /// </summary>
+/// <param name="ValidatedValue">
+/// The value that was validated. This value might not be the original value that was received
+/// as normalization might occur before validation.
+/// </param>
 /// <param name="Errors">The dictionary that contains all errors of the validation run.</param>
-public readonly record struct ValidationResult(Dictionary<string, object>? Errors)
+public readonly record struct ValidationResult<T>(T ValidatedValue, object? Errors)
 {
     /// <summary>
-    /// Gets the value indicating if the errors dictionary is null or contains no entries.
+    /// Gets the value indicating if <see cref="Errors" /> is null or contains no entries.
     /// This property will always return the inverse Boolean value of <see cref="HasErrors" />.
     /// </summary>
-    public bool IsValid => Errors is null or { Count: 0 };
+    public bool IsValid =>
+        Errors switch
+        {
+            string errorMessage => errorMessage.IsNullOrWhiteSpace(),
+            Dictionary<string, object> { Count: > 0 } => false,
+            _ => true
+        };
 
     /// <summary>
     /// Gets the value indicating if the errors dictionary has at least one entry.
     /// This property will always return the inverse Boolean value of <see cref="IsValid" />.
     /// </summary>
-    public bool HasErrors => Errors is { Count: > 0 };
+    public bool HasErrors => !IsValid;
 
     /// <summary>
     /// Tries to get the errors dictionary. The out parameter will only be set
     /// when the errors dictionary has at least one entry.
     /// </summary>
     /// <returns>True if the errors dictionary has at least one entry, else false.</returns>
-    public bool TryGetErrors([NotNullWhen(true)] out Dictionary<string, object>? errors)
+    public bool TryGetErrors([NotNullWhen(true)] out object? errors)
     {
-        if (HasErrors)
+        if (IsValid)
         {
-            errors = Errors!;
-            return true;
+            errors = default;
+            return false;
         }
 
-        errors = default;
-        return false;
+        errors = Errors!;
+        return true;
     }
 }

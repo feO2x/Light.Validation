@@ -3,7 +3,7 @@
 /// <summary>
 /// Represents the different behaviors that are
 /// executed when multiple errors are added to the
-/// <see cref="ValidationContext" /> under the same
+/// <see cref="ValidationContext" /> with the same
 /// key. You can configure this behavior in
 /// <see cref="ValidationContextOptions.MultipleErrorsPerKeyBehavior" />.
 /// </summary>

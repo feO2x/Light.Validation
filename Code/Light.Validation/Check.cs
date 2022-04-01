@@ -36,6 +36,11 @@ public readonly record struct Check<T> : ICheck
     }
 
     /// <summary>
+    /// Gets the value to be checked.
+    /// </summary>
+    public T Value { get; }
+
+    /// <summary>
     /// Gets the context that manages the errors dictionary.
     /// </summary>
     public ValidationContext Context { get; }
@@ -45,11 +50,6 @@ public readonly record struct Check<T> : ICheck
     /// </summary>
     public string Key { get; }
 
-    /// <summary>
-    /// Gets the value to be checked.
-    /// </summary>
-    public T Value { get; }
-    
     /// <summary>
     /// Gets the value indicating whether no further checks should
     /// be performed with this instance.
@@ -67,18 +67,23 @@ public readonly record struct Check<T> : ICheck
     /// on this check instance. You can change this behavior by setting
     /// <paramref name="isRespectingShortCircuit" /> to false.
     /// </summary>
-    /// <param name="errorMessage">The message that should be added to the context.</param>
+    /// <param name="error">The error that should be added to the validation context.</param>
     /// <param name="isRespectingShortCircuit">
     /// When this value is set to true (which is the default value),
     /// the error message will only be added to the context
     /// when <see cref="IsShortCircuited" /> is false. If this value is set
     /// to false, the error message will always be added.
     /// </param>
-    public void AddError(string errorMessage, bool isRespectingShortCircuit = true)
+    public void AddError(object error, bool isRespectingShortCircuit = true)
     {
         if (!isRespectingShortCircuit || !IsShortCircuited)
-            Context.AddError(Key, errorMessage);
+            Context.AddError(Key, error);
     }
+
+    /// <summary>
+    /// Gets the value indicating whether <see cref="Value" /> is null.
+    /// </summary>
+    public bool IsValueNull => Value is null;
 
     /// <summary>
     /// Initializes a new instance of <see cref="Check{T}" /> with the
@@ -101,11 +106,6 @@ public readonly record struct Check<T> : ICheck
     public Check<T> ShortCircuitIfNecessary(bool isShortCircuited) => new (Context, Key, Value, isShortCircuited);
 
     /// <summary>
-    /// Gets the value indicating whether <see cref="Value" /> is null.
-    /// </summary>
-    public bool IsValueNull => Value is null;
-
-    /// <summary>
     /// Casts the validation context to the specified subtype and returns
     /// it. If casting is not possible, an <see cref="InvalidCastException" />
     /// will be thrown.
@@ -120,4 +120,9 @@ public readonly record struct Check<T> : ICheck
 
         throw new InvalidCastException($"The validation context cannot be cast to type \"{typeof(TValidationContext)}\".");
     }
+
+    /// <summary>
+    /// Implicitly converts the check to its internal value.
+    /// </summary>
+    public static implicit operator T(Check<T> check) => check.Value;
 }

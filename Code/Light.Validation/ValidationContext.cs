@@ -76,28 +76,32 @@ public class ValidationContext : ExtensibleObject
     /// NormalizeKeyOnAddError set to true.
     /// </para>
     /// <para>
-    /// When there already is an error associated with the given key, your new
+    /// When there already is an error message associated with the given key, your new
     /// error message will be appended with new line to the existing error message.
     /// You can change this behavior by passing in <see cref="Options" /> with
-    /// a different value for MultipleErrorsPerKeyBehavior.
+    /// a different value for MultipleErrorsPerKeyBehavior. If the given error is not
+    /// a string and there already is an error for the specified key, it will be replaced.
     /// </para>
     /// </summary>
     /// <param name="key">The key that identifies the error.</param>
-    /// <param name="errorMessage">The message associated with the error.</param>
+    /// <param name="error">The error that should be stored in the internal dictionary.</param>
     /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="key" /> or <paramref name="errorMessage" /> is null.
+    /// Thrown when <paramref name="key" /> or <paramref name="error" /> is null.
     /// </exception>
-    public void AddError(string key, string errorMessage)
+    public void AddError(string key, object error)
     {
         key.MustNotBeNull();
-        errorMessage.MustNotBeNull();
+        error.MustNotBeNull();
 
-        key = NormalizeKey(key, Options.NormalizeKeyOnAddError);
+        key = NormalizeKey(key, Options.IsNormalizingKeyOnAddError);
 
-        if (TryAddFirstError(key, errorMessage))
+        if (TryAddFirstError(key, error))
             return;
 
-        InsertOrUpdateError(key, errorMessage, Options);
+        if (error is string errorMessage)
+            InsertOrUpdateErrorMessage(key, errorMessage);
+        else
+            Errors![key] = error;
     }
 
     /// <summary>
@@ -130,41 +134,6 @@ public class ValidationContext : ExtensibleObject
 
     /// <summary>
     /// <para>
-    /// Adds the complex error to the errors dictionary using the specified key.
-    /// </para>
-    /// <para>
-    /// By default, the key is not normalized when calling this method.
-    /// You can change this by passing in <see cref="Options" /> with
-    /// NormalizeKeyOnAddError set to true.
-    /// </para>
-    /// <para>
-    /// When there already is an error for the specified key, it will be
-    /// replaced.
-    /// </para>
-    /// </summary>
-    /// <param name="key">The key that identifies the error.</param>
-    /// <param name="complexError">The dictionary that describes the complex error.</param>
-    /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="key" /> or <paramref name="complexError" /> is null.
-    /// </exception>
-    public void AddError(string key, Dictionary<string, object> complexError)
-    {
-        key.MustNotBeNull();
-        complexError.MustNotBeNull();
-
-        key = NormalizeKey(key, Options.NormalizeKeyOnAddError);
-
-        if (TryAddFirstError(key, complexError))
-            return;
-
-        if (Errors!.ContainsKey(key))
-            Errors[key] = complexError;
-        else
-            Errors.Add(key, complexError);
-    }
-
-    /// <summary>
-    /// <para>
     /// Removes the error with the specified key.
     /// </para>
     /// <para>
@@ -179,7 +148,7 @@ public class ValidationContext : ExtensibleObject
     {
         key.MustNotBeNull();
 
-        key = NormalizeKey(key, Options.NormalizeKeyOnRemoveError);
+        key = NormalizeKey(key, Options.IsNormalizingKeyOnRemoveError);
         return Errors?.Remove(key) ?? false;
     }
 
@@ -208,16 +177,28 @@ public class ValidationContext : ExtensibleObject
     /// </para>
     /// </summary>
     /// <param name="value">The value to be checked.</param>
-    /// <param name="key">The key that will identify the error (optional).</param>
+    /// <param name="normalizeValue">
+    /// The value indicating whether strings should be normalized. The default value is null.
+    /// If you set this value to true or false, it will take precedence over
+    /// <see cref="ValidationContextOptions.IsNormalizingStringValues" /> (which is true by default).
+    /// If the passed in value is no string, setting this parameter has no effect.
+    /// </param>
+    /// <param name="key">
+    /// The string that identifies the corresponding errors in the internal dictionary of the validation context (optional).
+    /// You do not need to pass this value as it is automatically obtained by the expression that is passed to <paramref name="value" />
+    /// via the <see cref="CallerArgumentExpressionAttribute" />.
+    /// </param>
     /// <typeparam name="T">The type of the value to be checked.</typeparam>
-    public Check<T> Check<T>(T value, [CallerArgumentExpression("value")] string key = "")
+    public Check<T> Check<T>(T value,
+                             bool? normalizeValue = null,
+                             [CallerArgumentExpression("value")] string key = "")
     {
         if (typeof(T) == typeof(string))
         {
             key.MustNotBeNull();
-            key = NormalizeKey(key, Options.NormalizeKeyOnCheck);
+            key = NormalizeKey(key, Options.IsNormalizingKeyOnCheck);
 
-            if (!Options.IsNormalizingStringValues)
+            if (!DetermineBooleanSetting(normalizeValue, Options.IsNormalizingStringValues))
                 return new Check<T>(this, key, value);
 
             var stringValue = Unsafe.As<T, string>(ref value);
@@ -227,9 +208,9 @@ public class ValidationContext : ExtensibleObject
         else
         {
             key.MustNotBeNull();
-            key = NormalizeKey(key, Options.NormalizeKeyOnCheck);
+            key = NormalizeKey(key, Options.IsNormalizingKeyOnCheck);
 
-            if (value is string stringValue && Options.IsNormalizingStringValues)
+            if (value is string stringValue && DetermineBooleanSetting(normalizeValue, Options.IsNormalizingStringValues))
             {
                 stringValue = NormalizeStringValue(stringValue);
                 value = Unsafe.As<string, T>(ref stringValue);
@@ -239,20 +220,49 @@ public class ValidationContext : ExtensibleObject
         }
     }
 
-    private string NormalizeStringValue(string stringValue) =>
-        Options.NormalizeStringValue?.Invoke(stringValue) ?? stringValue.NormalizeString();
+    /// <summary>
+    /// Checks if the specified value is null. If yes, the <paramref name="error" />
+    /// will be set and true will be returned. Otherwise, false will be returned and
+    /// value is ensured to not be null.
+    /// </summary>
+    /// <param name="value">The value to be checked.</param>
+    /// <param name="error">The error message that will be set when <paramref name="value"/> is null.</param>
+    /// <param name="key">
+    /// The string that identifies the corresponding errors in the internal dictionary of the validation context (optional).
+    /// You do not need to pass this value as it is automatically obtained by the expression that is passed to <paramref name="value" />
+    /// via the <see cref="CallerArgumentExpressionAttribute" />.
+    /// </param>
+    public bool CheckForNull<T>([NotNullWhen(false)] T? value,
+                                [NotNullWhen(true)] out object? error,
+                                [CallerArgumentExpression("value")] string key = "")
+    {
+        if (value is null)
+        {
+            error = string.Format(
+                ErrorTemplates.NotNull,
+                NormalizeKey(key, Options.IsNormalizingKeyOnCheckForNull)
+            );
+            return true;
+        }
+
+        error = default;
+        return false;
+    }
+
+    private static bool DetermineBooleanSetting(bool? methodParameter, bool optionValue) => methodParameter ?? optionValue;
 
     /// <summary>
-    /// Creates a validation result with the internal errors dictionary.
+    /// Normalizes the specified string value.
     /// </summary>
-    public ValidationResult CreateResult() => new (Errors);
+    public string NormalizeStringValue(string stringValue) =>
+        Options.NormalizeStringValue?.Invoke(stringValue) ?? stringValue.NormalizeString();
 
     /// <summary>
     /// Tries to retrieve the errors that were tracked by this context.
     /// </summary>
     /// <param name="errors">The dictionary that contains the errors.</param>
     /// <returns>True if errors were added to this context, else false.</returns>
-    public bool TryGetErrors([NotNullWhen(true)] out Dictionary<string, object>? errors)
+    public bool TryGetErrors([NotNullWhen(true)] out object? errors)
     {
         if (Errors is { Count: > 0 })
         {
@@ -264,13 +274,19 @@ public class ValidationContext : ExtensibleObject
         return false;
     }
 
-    private string NormalizeKey(string key, bool condition)
-    {
-        if (!condition)
-            return key;
+    /// <summary>
+    /// Normalizes the specified key when the specified condition value is true.
+    /// </summary>
+    /// <param name="key">The potential key to be normalized.</param>
+    /// <param name="condition">The condition that determines if the key is normalized.</param>
+    public string NormalizeKey(string key, bool condition) =>
+        condition ? NormalizeKey(key) : key;
 
-        return Options.NormalizeKey?.Invoke(key) ?? key.NormalizeLastSectionToLowerCamelCase();
-    }
+    /// <summary>
+    /// Normalizes the specified key.
+    /// </summary>
+    public string NormalizeKey(string key) =>
+        Options.NormalizeKey?.Invoke(key) ?? key.NormalizeLastSectionToLowerCamelCase();
 
     private bool TryAddFirstError(string key, object error)
     {
@@ -282,9 +298,8 @@ public class ValidationContext : ExtensibleObject
         return true;
     }
 
-    private void InsertOrUpdateError(string key,
-                                     string errorMessage,
-                                     ValidationContextOptions options)
+    private void InsertOrUpdateErrorMessage(string key,
+                                            string errorMessage)
     {
         if (!Errors!.TryGetValue(key, out var existingError))
         {
@@ -295,7 +310,7 @@ public class ValidationContext : ExtensibleObject
         switch (existingError)
         {
             case string singleExistingError:
-                Errors[key] = TransformSingleError(singleExistingError, errorMessage, options);
+                Errors[key] = TransformSingleError(singleExistingError, errorMessage);
                 break;
             case List<string> errorList:
                 errorList.Add(errorMessage);
@@ -303,15 +318,14 @@ public class ValidationContext : ExtensibleObject
         }
     }
 
-    private static object TransformSingleError(string singleExistingError,
-                                               string errorMessage,
-                                               ValidationContextOptions options)
+    private object TransformSingleError(string singleExistingError,
+                                        string errorMessage)
     {
-        return options.MultipleErrorsPerKeyBehavior switch
+        return Options.MultipleErrorsPerKeyBehavior switch
         {
             MultipleErrorsPerKeyBehavior.ReplaceError => errorMessage,
             MultipleErrorsPerKeyBehavior.PlaceInList => new List<string>(2) { singleExistingError, errorMessage },
-            _ => singleExistingError + options.NewLine + errorMessage
+            _ => singleExistingError + Options.NewLine + errorMessage
         };
     }
 

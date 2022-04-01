@@ -26,10 +26,11 @@ public sealed class SimpleValidationTests
 
         var result = invalidDto.CheckForErrors(context, out var errors);
 
+        var errorsDictionary = errors.MustBeOfType<Dictionary<string, object>>();
         Output.WriteLine(Json.Serialize(errors));
         result.Should().BeTrue();
-        errors.Should().HaveCount(2);
-        CheckKeys(errors!, "id", "userName");
+        errorsDictionary.Should().HaveCount(2);
+        CheckKeys(errorsDictionary, "id", "userName");
     }
 
     [Fact]
@@ -42,16 +43,18 @@ public sealed class SimpleValidationTests
 
         Output.WriteLine(Json.Serialize(errors));
         result.Should().BeTrue();
-        errors.Should().HaveCount(2);
-        CheckKeys(errors!, "id", "userName");
+        var errorDictionary = errors.MustBeOfType<Dictionary<string, object>>();
+        errorDictionary.Should().HaveCount(2);
+        CheckKeys(errorDictionary, "id", "userName");
     }
 
     [Fact]
     public async Task ValidateAsync()
     {
-        var session = new UpdateUserNameSessionMock() { DoesUserNameExist = true };
+        var session = new UpdateUserNameSessionMock { DoesUserNameExist = true };
         var sessionFactory = new SessionFactoryMock<IUpdateUserNameSession>(session);
-        var controller = new UpdateUserNameController(sessionFactory);
+        var validator = new DtoValidator();
+        var controller = new UpdateUserNameController(sessionFactory, validator);
         var dto = new UpdateUserNameDto { Id = 42, UserName = "Kevin" };
 
         var result = await controller.UpdateUserName(dto);
@@ -60,17 +63,34 @@ public sealed class SimpleValidationTests
         Output.WriteLine(Json.Serialize(badRequestResult.Value));
     }
 
+    [Fact]
+    public static void ValidateNull()
+    {
+        UpdateUserNameDto dto = null!;
+        var validator = new DtoValidator();
+
+        var result = validator.CheckForErrors(dto, out var errors);
+
+        result.Should().BeTrue();
+        errors.MustBeOfType<string>().Should().Be("dto must not be null");
+    }
+
     private sealed class UpdateUserNameController : ControllerBase
     {
-        public UpdateUserNameController(ISessionFactory<IUpdateUserNameSession> sessionFactory) =>
+        public UpdateUserNameController(ISessionFactory<IUpdateUserNameSession> sessionFactory,
+                                        DtoValidator validator)
+        {
             SessionFactory = sessionFactory;
+            Validator = validator;
+        }
 
         private ISessionFactory<IUpdateUserNameSession> SessionFactory { get; }
+        private DtoValidator Validator { get; }
 
-        public async Task<IActionResult> UpdateUserName(UpdateUserNameDto dto)
+        public async Task<IActionResult> UpdateUserName(UpdateUserNameDto? dto)
         {
             var context = new ValidationContext();
-            if (dto.CheckForErrors(context, out var errors))
+            if (Validator.CheckForErrors(dto, context, out var errors))
                 return BadRequest(errors);
 
             await using var session = await SessionFactory.OpenSessionAsync();
@@ -89,13 +109,11 @@ public sealed class SimpleValidationTests
 
     private sealed class DtoValidator : Validator<UpdateUserNameDto>
     {
-        protected override void PerformValidation(ValidationContext context, UpdateUserNameDto dto)
+        protected override UpdateUserNameDto PerformValidation(ValidationContext context, UpdateUserNameDto dto)
         {
             context.Check(dto.Id).IsGreaterThan(0);
-            dto.UserName = context.Check(dto.UserName)
-                                  .Normalize()
-                                  .IsNotNullOrWhiteSpace()
-                                  .Value;
+            dto.UserName = context.Check(dto.UserName).IsNotNullOrWhiteSpace();
+            return dto;
         }
     }
 
@@ -104,13 +122,10 @@ public sealed class SimpleValidationTests
         public int Id { get; init; }
         public string UserName { get; set; } = string.Empty;
 
-        public bool CheckForErrors(ValidationContext context, out Dictionary<string, object>? errors)
+        public bool CheckForErrors(ValidationContext context, out object? errors)
         {
             context.Check(Id).IsGreaterThan(0);
-            UserName = context.Check(UserName)
-                              .Normalize()
-                              .IsNotNullOrWhiteSpace()
-                              .Value;
+            UserName = context.Check(UserName).IsNotNullOrWhiteSpace();
             return context.TryGetErrors(out errors);
         }
     }

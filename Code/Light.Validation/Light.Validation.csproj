@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <TargetFrameworks>net6.0;netstandard2.0</TargetFrameworks>
-        <Version>0.1.0</Version>
+        <Version>0.3.0</Version>
         <LangVersion>10.0</LangVersion>
         <Nullable>enable</Nullable>
         <TreatWarningsAsErrors Condition="'$(Configuration)' == 'Release'">true</TreatWarningsAsErrors>
@@ -22,11 +22,11 @@
         <EmbedUntrackedSources>true</EmbedUntrackedSources>
         <PackageTags>Validation, Check, DTO, Data-Transfer-Object, HTTP, Web-Service, Web-API, Lightweight</PackageTags>
         <PackageReleaseNotes>
-Light.Validation 0.1.0
+Light.Validation 0.3.0
 --------------------------------
 
-- initial release 🎈🎉🍨
-- simple use: instantiate a ValidationContext, then call context.Check(dto.SomeProperty) and afterwards any of the extensions methods that validate the value
+- validators now accept nullable DTOs and support NRTs better
+- Check&lt;T&gt; now has an implicit conversion to T, thus you do not need chain .Value when reassigning to a DTO property
 - read all docs at https://github.com/feO2x/Light.Validation
         </PackageReleaseNotes>
     </PropertyGroup>
@@ -35,6 +35,8 @@ Light.Validation 0.1.0
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="all" />
     </ItemGroup>
 
+    <!-- TargetFramework is implicitely created by the TargetFrameworks property on MSBuild runs -->
+    <!-- ReSharper disable once UnknownProperty -->
     <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
         <PackageReference Include="IsExternalInit" Version="1.0.2" PrivateAssets="all" />
         <PackageReference Include="System.Memory" Version="4.5.4" />
