@@ -350,8 +350,10 @@ public static class Errors
     /// </summary>
     /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
     /// <param name="count">The count the collection was compared against.</param>
-    /// <param name="message"></param>
-    /// <typeparam name="T"></typeparam>
+    /// <param name="message">
+    /// The error message (optional). If null is provided, an error message will be
+    /// generated from the error templates associated with the context.
+    /// </param>
     public static void AddCountError<T>(this Check<T> check, int count, string? message = null)
     {
         message ??= count == 1 ?
@@ -368,7 +370,7 @@ public static class Errors
     /// The error message (optional). If null is provided, an error message will be
     /// generated from the error templates associated with the context.
     /// </param>
-    public static void AddTryParseToEnumError(this Check<string> check, string? message = null)
+    public static void AddTryParseToEnumError<T>(this Check<T> check, string? message = null)
     {
         message ??= string.Format(
             check.Context.ErrorTemplates.TryParseToEnum,
