@@ -254,6 +254,16 @@ public class ErrorTemplates : ExtensibleObject
     public string CountMultiple { get; init; } = "{0} must have {1} items";
 
     /// <summary>
+    /// Gets the template for the "Try Parse To Enum" error message.
+    /// The default value is "{0} is not one of the allowed values".
+    /// The template takes one parameter:
+    /// <list type="bullet">
+    /// <item>{0} key</item>
+    /// </list>
+    /// </summary>
+    public string TryParseToEnum { get; init; } = "{0} must be one of the allowed values";
+
+    /// <summary>
     /// Formats the specified parameter, potentially using the culture info attached to this error templates instance.
     /// </summary>
     public virtual string FormatParameter<T>(T value) => Formatter.Format(value, CultureInfo);

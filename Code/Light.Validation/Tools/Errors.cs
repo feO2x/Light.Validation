@@ -361,6 +361,23 @@ public static class Errors
     }
 
     /// <summary>
+    /// Adds the "Try Parse to Enum" error message to the context.
+    /// </summary>
+    /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
+    /// <param name="message">
+    /// The error message (optional). If null is provided, an error message will be
+    /// generated from the error templates associated with the context.
+    /// </param>
+    public static void AddTryParseToEnumError(this Check<string> check, string? message = null)
+    {
+        message ??= string.Format(
+            check.Context.ErrorTemplates.TryParseToEnum,
+            check.Key
+        );
+        check.AddError(message);
+    }
+
+    /// <summary>
     /// Adds the error message to the context, using the specified error message factory.
     /// </summary>
     /// <param name="check">The structure that encapsulates the value to be checked.</param>
