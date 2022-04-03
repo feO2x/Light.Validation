@@ -109,6 +109,7 @@ public static partial class Checks
             return true;
 
         check.AddTryParseToEnumError(message);
+        parsedEnumValue = default;
         return false;
     }
 
@@ -140,6 +141,7 @@ public static partial class Checks
             return true;
 
         check.CreateAndAddError(errorMessageFactory);
+        parsedEnumValue = default;
         return false;
     }
 
