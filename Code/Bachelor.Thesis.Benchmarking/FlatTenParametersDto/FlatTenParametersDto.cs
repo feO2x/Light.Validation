@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Bachelor.Thesis.Benchmarking.FlatEightParametersDto;
+namespace Bachelor.Thesis.Benchmarking.FlatTenParametersDto;
 
-public class FlatEightParametersDto
+public class FlatTenParametersDto
 {
     [Required]
     public Guid Id { get; set; }
