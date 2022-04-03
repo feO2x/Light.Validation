@@ -10,8 +10,6 @@ public class ValidDtoBenchmarks
     public FluentValidator FluentValidator = new ();
     public LightValidator LightValidator = new ();
 
-    public ModelValidationDto ModelValidationDto = new () { Names = new () { "John", "Doe" }, Address = ModelValidationAddress.ValidAddress };
-
     [Benchmark(Baseline = true)]
     public object? CheckViaLightValidator()
     {
@@ -27,7 +25,7 @@ public class ValidDtoBenchmarks
     public object CheckViaModelValidation()
     {
         var errors = new List<ValidationResult>();
-        Validator.TryValidateObject(ModelValidationDto, new ValidationContext(ModelValidationDto), errors, true);
+        Validator.TryValidateObject(Dto, new ValidationContext(Dto), errors, true);
         return errors;
     }
 }

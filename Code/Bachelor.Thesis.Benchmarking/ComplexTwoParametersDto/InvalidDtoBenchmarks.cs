@@ -5,12 +5,10 @@ namespace Bachelor.Thesis.Benchmarking.ComplexTwoParametersDto;
 
 public class InvalidDtoBenchmarks
 {
-    public ComplexTwoParametersDto Dto = new() { Names = new() { "John" }, Address = Address.InvalidAddress };
+    public ComplexTwoParametersDto Dto = new () { Names = new () { "John" }, Address = Address.InvalidAddress };
 
-    public FluentValidator FluentValidator = new();
-    public LightValidator LightValidator = new();
-
-    public ModelValidationDto ModelValidationDto = new() { Names = new() { "John" }, Address = ModelValidationAddress.InvalidAddress };
+    public FluentValidator FluentValidator = new ();
+    public LightValidator LightValidator = new ();
 
     [Benchmark(Baseline = true)]
     public object? CheckViaLightValidator()
@@ -27,7 +25,7 @@ public class InvalidDtoBenchmarks
     public object CheckViaModelValidation()
     {
         var errors = new List<ValidationResult>();
-        Validator.TryValidateObject(ModelValidationDto, new ValidationContext(ModelValidationDto), errors, true);
+        Validator.TryValidateObject(Dto, new ValidationContext(Dto), errors, true);
         return errors;
     }
 }

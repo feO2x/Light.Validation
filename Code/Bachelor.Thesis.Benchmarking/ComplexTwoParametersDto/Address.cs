@@ -1,4 +1,6 @@
-﻿namespace Bachelor.Thesis.Benchmarking.ComplexTwoParametersDto;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Bachelor.Thesis.Benchmarking.ComplexTwoParametersDto;
 
 public class Address
 {
@@ -19,13 +21,23 @@ public class Address
         Street = string.Empty
     };
 
+    [Required]
+    [MinLength(1)]
     public string City { get; set; } = string.Empty;
 
+    [Required]
+    [MinLength(1)]
     public string Country { get; set; } = string.Empty;
 
+    [Required]
+    [Range(10000, 99999)]
     public int PostalCode { get; set; }
 
+    [Required]
+    [MinLength(1)]
     public string Region { get; set; } = string.Empty;
 
+    [Required]
+    [MinLength(1)]
     public string Street { get; set; } = string.Empty;
 }

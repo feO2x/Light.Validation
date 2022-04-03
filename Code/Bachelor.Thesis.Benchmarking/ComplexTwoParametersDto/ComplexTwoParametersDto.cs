@@ -1,8 +1,13 @@
-﻿namespace Bachelor.Thesis.Benchmarking.ComplexTwoParametersDto;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Bachelor.Thesis.Benchmarking.ComplexTwoParametersDto;
 
 public class ComplexTwoParametersDto
 {
-    public List<string> Names { get; set; } = new ();
+    [Required]
+    [MinLength(2)]
+    public List<string> Names { get; set; } = new();
 
-    public Address Address { get; set; } = new ();
+    [Required]
+    public Address Address { get; set; } = new();
 }
