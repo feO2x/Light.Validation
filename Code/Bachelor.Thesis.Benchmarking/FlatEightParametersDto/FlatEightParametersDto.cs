@@ -1,14 +1,33 @@
-﻿namespace Bachelor.Thesis.Benchmarking.FlatEightParametersDto;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Bachelor.Thesis.Benchmarking.FlatEightParametersDto;
 
 public class FlatEightParametersDto
 {
-    public int Id { get; set; }
+    [Required]
+    public Guid Id { get; set; }
 
+    [Required]
     public string Name { get; set; } = string.Empty;
 
-    public string Description { get; set; } = string.Empty;
-
+    [Required]
     public bool Active { get; set; } = false;
 
-    public string Role { get; set; } = string.Empty;
+    [Required]
+    public short Role { get; set; }
+
+    [Required]
+    public int MonthlySalary { get; set; }
+
+    [Required]
+    public long PhoneNumber { get; set; }
+
+    [Required]
+    public char Department { get; set; }
+
+    [Required]
+    public float PerformanceRating { get; set; }
+
+    [Required]
+    public double HourlySalary { get; set; }
 }
