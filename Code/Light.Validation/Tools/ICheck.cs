@@ -38,7 +38,12 @@ public interface ICheck
     /// on this check instance. You can change this behavior by setting
     /// <paramref name="isRespectingShortCircuit" /> to false.
     /// </summary>
-    /// <param name="errorMessage">The message that should be added to the context.</param>
-    /// <param name="isRespectingShortCircuit"></param>
-    void AddError(string errorMessage, bool isRespectingShortCircuit = true);
+    /// <param name="error">The error that should be added to the validation context.</param>
+    /// <param name="isRespectingShortCircuit">
+    /// When this value is set to true (which is the default value),
+    /// the error message will only be added to the context
+    /// when <see cref="IsShortCircuited" /> is false. If this value is set
+    /// to false, the error message will always be added.
+    /// </param>
+    void AddError(object error, bool isRespectingShortCircuit = true);
 }

@@ -32,21 +32,30 @@ public class ValidationContextOptions : ExtensibleObject
     /// is normalized when any of the ValidationContext.AddError
     /// methods is called. The default value is false.
     /// </summary>
-    public bool NormalizeKeyOnAddError { get; init; } = false;
+    public bool IsNormalizingKeyOnAddError { get; init; } = false;
 
     /// <summary>
     /// Gets or sets the value indicating whether the key
     /// should be normalized when <see cref="ValidationContext.RemoveError" />
     /// is called. The default value is true.
     /// </summary>
-    public bool NormalizeKeyOnRemoveError { get; init; } = true;
+    public bool IsNormalizingKeyOnRemoveError { get; init; } = true;
 
     /// <summary>
     /// Gets or sets the value indicating whether the key
     /// is normalized when <see cref="ValidationContext.Check{T}" />
     /// is called. The default value is true.
     /// </summary>
-    public bool NormalizeKeyOnCheck { get; init; } = true;
+    public bool IsNormalizingKeyOnCheck { get; init; } = true;
+
+    /// <summary>
+    /// Gets or sets the value indicating whether a key
+    /// is normalized when a validator performs an automatic null
+    /// check or when <see cref="ValidationContext.CheckForNull{T}" />
+    /// is called. The key is normalized when this check fails validation.
+    /// The default value is true.
+    /// </summary>
+    public bool IsNormalizingKeyOnCheckForNull { get; init; } = true;
 
     /// <summary>
     /// Gets or sets the delegate that is used to normalize the
