@@ -5,7 +5,7 @@ namespace Bachelor.Thesis.Benchmarking.FlatTwoParametersDto;
 public class FlatTwoParametersDto
 {
     [Required]
-    [Range(0, Int32.MaxValue)]
+    [Range(0, int.MaxValue)]
     public int Id { get; set; }
 
     [Required]
