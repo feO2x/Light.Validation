@@ -6,7 +6,7 @@ using Xunit;
 
 namespace Light.Validation.Tests.Checks;
 
-public static class TryParseToEnumTests
+public static class TryParseToEnumForStringsTests
 {
     public static readonly TheoryData<string> InvalidValues =
         new ()
@@ -89,6 +89,21 @@ public static class TryParseToEnumTests
 
     [Theory]
     [MemberData(nameof(InvalidValues))]
+    public static void NoErrorOnShortCircuitedCheck(string invalidValue)
+    {
+        var (dto, context) = Test.SetupDefault(invalidValue);
+
+        var result = context.Check(dto.Value)
+                            .ShortCircuit()
+                            .TryParseToEnum<ConsoleModifiers>(out var parsedValue);
+
+        result.Should().BeFalse();
+        context.ShouldHaveNoErrors();
+        parsedValue.Should().Be(default);
+    }
+
+    [Theory]
+    [MemberData(nameof(InvalidValues))]
     public static void CustomMessageFactory(string invalidValue)
     {
         var (dto, context) = Test.SetupDefault(invalidValue);
@@ -124,6 +139,21 @@ public static class TryParseToEnumTests
 
         result.Should().BeFalse();
         context.ShouldHaveErrors();
+        parsedEnumValue.Should().Be(default);
+    }
+
+    [Theory]
+    [MemberData(nameof(CaseSensitiveInvalidValues))]
+    public static void NoErrorsOnShortCircuitedCheckWithCustomMessageFactory(string invalidValue)
+    {
+        var (dto, context) = Test.SetupDefault(invalidValue);
+
+        var result = context.Check(dto.Value)
+                            .ShortCircuit()
+                            .TryParseToEnum<ConsoleColor>(out var parsedEnumValue, _ => "whatever", false);
+
+        result.Should().BeFalse();
+        context.ShouldHaveNoErrors();
         parsedEnumValue.Should().Be(default);
     }
 }
