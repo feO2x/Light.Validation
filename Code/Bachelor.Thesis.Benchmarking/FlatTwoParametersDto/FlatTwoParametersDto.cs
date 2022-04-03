@@ -1,8 +1,14 @@
-﻿namespace Bachelor.Thesis.Benchmarking.FlatTwoParametersDto;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Bachelor.Thesis.Benchmarking.FlatTwoParametersDto;
 
 public class FlatTwoParametersDto
 {
+    [Required]
+    [Range(0, Int32.MaxValue)]
     public int Id { get; set; }
 
-    public string Name { get; set; } = string.Empty;
+    [Required]
+    [MinLength(1)]
+    public string Name { get; set; } = String.Empty;
 }
