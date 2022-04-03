@@ -10,5 +10,6 @@ public class FlatTwoParametersDto
 
     [Required]
     [MinLength(1)]
+    [MaxLength(80)]
     public string Name { get; set; } = String.Empty;
 }

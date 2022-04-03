@@ -11,7 +11,8 @@ public class LightValidator : Validator<FlatTwoParametersDto>
 
         value.Name = context.Check(value.Name)
                               .Normalize()
-                              .IsNotNullOrWhiteSpace();
+                              .IsNotNullOrWhiteSpace()
+                              .IsShorterThan(80);
 
         return value;
     }

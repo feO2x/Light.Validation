@@ -8,7 +8,7 @@ public class FluentValidator : AbstractValidator<FlatTwoParametersDto>
     public FluentValidator()
     {
         RuleFor(dto => dto.Id).GreaterThan(0);
-        RuleFor(dto => dto.Name).NotEmpty();
+        RuleFor(dto => dto.Name).NotEmpty().MaximumLength(80);
     }
 
     protected override bool PreValidate(ValidationContext<FlatTwoParametersDto> context, ValidationResult result)
