@@ -1,4 +1,5 @@
-﻿using Light.Validation;
+﻿using System.Text.RegularExpressions;
+using Light.Validation;
 using Light.Validation.Checks;
 using Range = Light.Validation.Tools.Range;
 
@@ -8,24 +9,37 @@ public class LightValidator : Validator<ComplexTwoParametersDto>
 {
     protected override ComplexTwoParametersDto PerformValidation(ValidationContext context, ComplexTwoParametersDto value)
     {
-        context.Check(value.Names.Count).IsGreaterThanOrEqualTo(2);
+        // TODO: check User and Address in own validator classes
+        value.User.UserName = context.Check(value.User.UserName)
+                                     .Normalize()
+                                     .IsLongerThan(8)
+                                     .IsShorterThan(30);
+        value.User.Password = context.Check(value.User.Password)
+                                     .Normalize()
+                                     .IsMatching(new Regex("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$"));
+        value.User.ForeName = context.Check(value.User.ForeName)
+                                     .Normalize()
+                                     .IsLongerThan(2)
+                                     .IsShorterThan(80);
+        value.User.LastName = context.Check(value.User.LastName)
+                                     .Normalize()
+                                     .IsLongerThan(2)
+                                     .IsShorterThan(80);
+        value.User.Age = context.Check(value.User.Age)
+                                .IsIn(Range.FromInclusive(18).ToInclusive(130));
 
         value.Address.Country = context.Check(value.Address.Country)
-                                         .Normalize()
-                                         .IsNotNullOrWhiteSpace();
-
+                                       .Normalize()
+                                       .IsNotNullOrWhiteSpace();
         value.Address.Region = context.Check(value.Address.Region)
-                                        .Normalize()
-                                        .IsNotNullOrWhiteSpace();
-
-        value.Address.City = context.Check(value.Address.City)
                                       .Normalize()
                                       .IsNotNullOrWhiteSpace();
-
+        value.Address.City = context.Check(value.Address.City)
+                                    .Normalize()
+                                    .IsNotNullOrWhiteSpace();
         value.Address.Street = context.Check(value.Address.Street)
-                                        .Normalize()
-                                        .IsNotNullOrWhiteSpace();
-
+                                      .Normalize()
+                                      .IsNotNullOrWhiteSpace();
         value.Address.PostalCode = context.Check(value.Address.PostalCode).IsIn(Range.FromInclusive(10000).ToInclusive(99999));
 
         return value;
