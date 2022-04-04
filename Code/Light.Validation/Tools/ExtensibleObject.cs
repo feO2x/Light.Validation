@@ -76,9 +76,6 @@ public abstract class ExtensibleObject
         @object.MustNotBeNull();
 
         AttachedObjects ??= new Dictionary<string, object>();
-        if (AttachedObjects.ContainsKey(name))
-            AttachedObjects[name] = @object;
-        else
-            AttachedObjects.Add(name, @object);
+        AttachedObjects[name] = @object;
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using Light.GuardClauses;
-using Light.Validation.Tools;
 
 namespace Light.Validation;
 
@@ -9,13 +8,14 @@ namespace Light.Validation;
 /// objects to validate a value.
 /// </summary>
 /// <typeparam name="T">The type of the value to be checked.</typeparam>
-public readonly record struct Check<T> : ICheck
+public readonly record struct Check<T>
 {
     /// <summary>
     /// Initializes a new instance of <see cref="Check{T}" />.
     /// </summary>
     /// <param name="context">The context that manages the errors dictionary.</param>
     /// <param name="key">The key that identifies errors for the value.</param>
+    /// <param name="isKeyNormalized">The value indicating whether the <paramref name="key"/> is normalized.</param>
     /// <param name="value">The value to be checked.</param>
     /// <param name="isShortCircuited">
     /// The value indicating whether no further checks should
@@ -26,11 +26,13 @@ public readonly record struct Check<T> : ICheck
     /// </exception>
     public Check(ValidationContext context,
                  string key,
+                 bool isKeyNormalized,
                  T value,
                  bool isShortCircuited = false)
     {
         Context = context.MustNotBeNull();
         Key = key.MustNotBeNull();
+        IsKeyNormalized = isKeyNormalized;
         Value = value;
         IsShortCircuited = isShortCircuited;
     }
@@ -49,6 +51,11 @@ public readonly record struct Check<T> : ICheck
     /// Gets the key that identifies errors for the value.
     /// </summary>
     public string Key { get; }
+
+    /// <summary>
+    /// Gets the value indicating whether the key has already been normalized.
+    /// </summary>
+    public bool IsKeyNormalized { get; }
 
     /// <summary>
     /// Gets the value indicating whether no further checks should
@@ -74,10 +81,11 @@ public readonly record struct Check<T> : ICheck
     /// when <see cref="IsShortCircuited" /> is false. If this value is set
     /// to false, the error message will always be added.
     /// </param>
-    public void AddError(object error, bool isRespectingShortCircuit = true)
+    public Check<T> AddError(object error, bool isRespectingShortCircuit = true)
     {
         if (!isRespectingShortCircuit || !IsShortCircuited)
             Context.AddError(Key, error);
+        return this;
     }
 
     /// <summary>
@@ -89,7 +97,7 @@ public readonly record struct Check<T> : ICheck
     /// Initializes a new instance of <see cref="Check{T}" /> with the
     /// same context and key, but with the specified value.
     /// </summary>
-    public Check<T> WithNewValue(T newValue) => new (Context, Key, newValue);
+    public Check<T> WithNewValue(T newValue) => new (Context, Key, IsKeyNormalized, newValue, IsShortCircuited);
 
     /// <summary>
     /// Initializes a new instance of <see cref="Check{T}" /> with the
@@ -103,7 +111,7 @@ public readonly record struct Check<T> : ICheck
     /// same context, key, and value, but with <see cref="IsShortCircuited" />
     /// set to the specified value.
     /// </summary>
-    public Check<T> ShortCircuitIfNecessary(bool isShortCircuited) => new (Context, Key, Value, isShortCircuited);
+    public Check<T> ShortCircuitIfNecessary(bool isShortCircuited) => new (Context, Key, IsKeyNormalized, Value, isShortCircuited);
 
     /// <summary>
     /// Casts the validation context to the specified subtype and returns
@@ -119,6 +127,19 @@ public readonly record struct Check<T> : ICheck
             return subContext;
 
         throw new InvalidCastException($"The validation context cannot be cast to type \"{typeof(TValidationContext)}\".");
+    }
+
+    /// <summary>
+    /// Normalizes the key if necessary. If the key is already normalized, the same instance will be
+    /// returned, or otherwise a new instance with the normalized key will be returned.
+    /// </summary>
+    public Check<T> NormalizeKeyIfNecessary()
+    {
+        if (IsKeyNormalized || !Context.Options.IsNormalizingKeys)
+            return this;
+
+        var key = Context.NormalizeKey(Key);
+        return new Check<T>(Context, key, true, Value, IsShortCircuited);
     }
 
     /// <summary>

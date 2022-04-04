@@ -16,12 +16,11 @@ public static class Errors
     /// The error message (optional). If null is provided, an error message will be
     /// generated from the error templates associated with the context.
     /// </param>
-    /// <typeparam name="TCheck">The struct type that implements <see cref="ICheck" />.</typeparam>
-    public static void AddNotNullError<TCheck>(this TCheck check, string? message = null)
-        where TCheck : struct, ICheck
+    public static Check<T> AddNotNullError<T>(this Check<T> check, string? message = null)
     {
+        check = check.NormalizeKeyIfNecessary();
         message ??= string.Format(check.Context.ErrorTemplates.NotNull, check.Key);
-        check.AddError(message);
+        return check.AddError(message);
     }
 
     /// <summary>
@@ -34,14 +33,15 @@ public static class Errors
     /// generated from the error templates associated with the context.
     /// </param>
     /// <typeparam name="T">The type of the value.</typeparam>
-    public static void AddEqualToError<T>(this Check<T> check, T comparativeValue, string? message = null)
+    public static Check<T> AddEqualToError<T>(this Check<T> check, T comparativeValue, string? message = null)
     {
+        check = check.NormalizeKeyIfNecessary();
         message ??= string.Format(
             check.Context.ErrorTemplates.EqualTo,
             check.Key,
             check.Context.ErrorTemplates.FormatParameter(comparativeValue)
         );
-        check.AddError(message);
+        return check.AddError(message);
     }
 
     /// <summary>
@@ -54,14 +54,15 @@ public static class Errors
     /// generated from the error templates associated with the context.
     /// </param>
     /// <typeparam name="T">The type of the value.</typeparam>
-    public static void AddNotEqualToError<T>(this Check<T> check, T comparativeValue, string? message = null)
+    public static Check<T> AddNotEqualToError<T>(this Check<T> check, T comparativeValue, string? message = null)
     {
+        check = check.NormalizeKeyIfNecessary();
         message ??= string.Format(
             check.Context.ErrorTemplates.NotEqualTo,
             check.Key,
             check.Context.ErrorTemplates.FormatParameter(comparativeValue)
         );
-        check.AddError(message);
+        return check.AddError(message);
     }
 
     /// <summary>
@@ -72,10 +73,11 @@ public static class Errors
     /// The error message (optional). If null is provided, an error message will be
     /// generated from the error templates associated with the context.
     /// </param>
-    public static void AddNotEmptyGuidError(this Check<Guid> check, string? message = null)
+    public static Check<Guid> AddNotEmptyGuidError(this Check<Guid> check, string? message = null)
     {
+        check = check.NormalizeKeyIfNecessary();
         message ??= string.Format(check.Context.ErrorTemplates.NotEmptyGuid, check.Key);
-        check.AddError(message);
+        return check.AddError(message);
     }
 
     /// <summary>
@@ -86,10 +88,11 @@ public static class Errors
     /// The error message (optional). If null is provided, an error message will be
     /// generated from the error templates associated with the context.
     /// </param>
-    public static void AddRegexMustMatchError(this Check<string> check, string? message = null)
+    public static Check<string> AddRegexMustMatchError(this Check<string> check, string? message = null)
     {
+        check = check.NormalizeKeyIfNecessary();
         message ??= string.Format(check.Context.ErrorTemplates.RegexMustMatch, check.Key);
-        check.AddError(message);
+        return check.AddError(message);
     }
 
     /// <summary>
@@ -100,13 +103,14 @@ public static class Errors
     /// The error message (optional). If null is provided, an error message will be
     /// generated from the error templates associated with the context.
     /// </param>
-    public static void AddNotNullOrWhiteSpaceError(this Check<string> check, string? message = null)
+    public static Check<string> AddNotNullOrWhiteSpaceError(this Check<string> check, string? message = null)
     {
+        check = check.NormalizeKeyIfNecessary();
         message ??= string.Format(
             check.Context.ErrorTemplates.NotNullOrWhiteSpace,
             check.Key
         );
-        check.AddError(message);
+        return check.AddError(message);
     }
 
     /// <summary>
@@ -119,15 +123,16 @@ public static class Errors
     /// generated from the error templates associated with the context.
     /// </param>
     /// <typeparam name="T">The type of the value.</typeparam>
-    public static void AddGreaterThanError<T>(this Check<T> check, T comparativeValue, string? message = null)
+    public static Check<T> AddGreaterThanError<T>(this Check<T> check, T comparativeValue, string? message = null)
         where T : IComparable<T>
     {
+        check = check.NormalizeKeyIfNecessary();
         message ??= string.Format(
             check.Context.ErrorTemplates.GreaterThan,
             check.Key,
             check.Context.ErrorTemplates.FormatParameter(comparativeValue)
         );
-        check.AddError(message);
+        return check.AddError(message);
     }
 
     /// <summary>
@@ -140,15 +145,16 @@ public static class Errors
     /// generated from the error templates associated with the context.
     /// </param>
     /// <typeparam name="T">The type of the value.</typeparam>
-    public static void AddGreaterThanOrEqualToError<T>(this Check<T> check, T comparativeValue, string? message = null)
+    public static Check<T> AddGreaterThanOrEqualToError<T>(this Check<T> check, T comparativeValue, string? message = null)
         where T : IComparable<T>
     {
+        check = check.NormalizeKeyIfNecessary();
         message ??= string.Format(
             check.Context.ErrorTemplates.GreaterThanOrEqualTo,
             check.Key,
             check.Context.ErrorTemplates.FormatParameter(comparativeValue)
         );
-        check.AddError(message);
+        return check.AddError(message);
     }
 
     /// <summary>
@@ -161,15 +167,16 @@ public static class Errors
     /// generated from the error templates associated with the context.
     /// </param>
     /// <typeparam name="T">The type of the value.</typeparam>
-    public static void AddLessThanError<T>(this Check<T> check, T comparativeValue, string? message = null)
+    public static Check<T> AddLessThanError<T>(this Check<T> check, T comparativeValue, string? message = null)
         where T : IComparable<T>
     {
+        check = check.NormalizeKeyIfNecessary();
         message ??= string.Format(
             check.Context.ErrorTemplates.LessThan,
             check.Key,
             check.Context.ErrorTemplates.FormatParameter(comparativeValue)
         );
-        check.AddError(message);
+        return check.AddError(message);
     }
 
     /// <summary>
@@ -182,15 +189,16 @@ public static class Errors
     /// generated from the error templates associated with the context.
     /// </param>
     /// <typeparam name="T">The type of the value.</typeparam>
-    public static void AddLessThanOrEqualToError<T>(this Check<T> check, T comparativeValue, string? message = null)
+    public static Check<T> AddLessThanOrEqualToError<T>(this Check<T> check, T comparativeValue, string? message = null)
         where T : IComparable<T>
     {
+        check = check.NormalizeKeyIfNecessary();
         message ??= string.Format(
             check.Context.ErrorTemplates.LessThanOrEqualTo,
             check.Key,
             check.Context.ErrorTemplates.FormatParameter(comparativeValue)
         );
-        check.AddError(message);
+        return check.AddError(message);
     }
 
     /// <summary>
@@ -203,15 +211,16 @@ public static class Errors
     /// The error message (optional). If null is provided, an error message will be
     /// generated from the error templates associated with the context.
     /// </param>
-    public static void AddInRangeError<T>(this Check<T> check, Range<T> range, string? message = null)
+    public static Check<T> AddInRangeError<T>(this Check<T> check, Range<T> range, string? message = null)
         where T : IComparable<T>
     {
+        check = check.NormalizeKeyIfNecessary();
         message ??= string.Format(
             check.Context.ErrorTemplates.InRange,
             check.Key,
             check.Context.ErrorTemplates.FormatRange(range)
         );
-        check.AddError(message);
+        return check.AddError(message);
     }
 
     /// <summary>
@@ -224,15 +233,16 @@ public static class Errors
     /// The error message (optional). If null is provided, an error message will be
     /// generated from the error templates associated with the context.
     /// </param>
-    public static void AddNotInRangeError<T>(this Check<T> check, Range<T> range, string? message = null)
+    public static Check<T> AddNotInRangeError<T>(this Check<T> check, Range<T> range, string? message = null)
         where T : IComparable<T>
     {
+        check = check.NormalizeKeyIfNecessary();
         message ??= string.Format(
             check.Context.ErrorTemplates.NotInRange,
             check.Key,
             check.Context.ErrorTemplates.FormatRange(range)
         );
-        check.AddError(message);
+        return check.AddError(message);
     }
 
     /// <summary>
@@ -243,13 +253,14 @@ public static class Errors
     /// The error message (optional). If null is provided, an error message will be
     /// generated from the error templates associated with the context.
     /// </param>
-    public static void AddEmailError(this Check<string> check, string? message = null)
+    public static Check<string> AddEmailError(this Check<string> check, string? message = null)
     {
+        check = check.NormalizeKeyIfNecessary();
         message ??= string.Format(
             check.Context.ErrorTemplates.Email,
             check.Key
         );
-        check.AddError(message);
+        return check.AddError(message);
     }
 
     /// <summary>
@@ -261,14 +272,15 @@ public static class Errors
     /// The error message (optional). If null is provided, an error message will be
     /// generated from the error templates associated with the context.
     /// </param>
-    public static void AddLongerThanError(this Check<string> check, int length, string? message = null)
+    public static Check<string> AddLongerThanError(this Check<string> check, int length, string? message = null)
     {
+        check = check.NormalizeKeyIfNecessary();
         message ??= string.Format(
             check.Context.ErrorTemplates.LongerThan,
             check.Key,
             check.Context.ErrorTemplates.FormatParameter(length)
         );
-        check.AddError(message);
+        return check.AddError(message);
     }
 
     /// <summary>
@@ -280,14 +292,15 @@ public static class Errors
     /// The error message (optional). If null is provided, an error message will be
     /// generated from the error templates associated with the context.
     /// </param>
-    public static void AddShorterThanError(this Check<string> check, int length, string? message = null)
+    public static Check<string> AddShorterThanError(this Check<string> check, int length, string? message = null)
     {
+        check = check.NormalizeKeyIfNecessary();
         message ??= string.Format(
             check.Context.ErrorTemplates.ShorterThan,
             check.Key,
             check.Context.ErrorTemplates.FormatParameter(length)
         );
-        check.AddError(message);
+        return check.AddError(message);
     }
 
     /// <summary>
@@ -299,14 +312,15 @@ public static class Errors
     /// The error message (optional). If null is provided, an error message will be
     /// generated from the error templates associated with the context.
     /// </param>
-    public static void AddLengthInRangeError(this Check<string> check, Range<int> range, string? message = null)
+    public static Check<string> AddLengthInRangeError(this Check<string> check, Range<int> range, string? message = null)
     {
+        check = check.NormalizeKeyIfNecessary();
         message ??= string.Format(
             check.Context.ErrorTemplates.LengthInRange,
             check.Key,
             check.Context.ErrorTemplates.FormatRange(range)
         );
-        check.AddError(message);
+        return check.AddError(message);
     }
 
     /// <summary>
@@ -317,13 +331,14 @@ public static class Errors
     /// The error message (optional). If null is provided, an error message will be
     /// generated from the error templates associated with the context.
     /// </param>
-    public static void AddOnlyDigitsError(this Check<string> check, string? message = null)
+    public static Check<string> AddOnlyDigitsError(this Check<string> check, string? message = null)
     {
+        check = check.NormalizeKeyIfNecessary();
         message ??= string.Format(
             check.Context.ErrorTemplates.OnlyDigits,
             check.Key
         );
-        check.AddError(message);
+        return check.AddError(message);
     }
 
     /// <summary>
@@ -334,13 +349,14 @@ public static class Errors
     /// The error message (optional). If null is provided, an error message will be
     /// generated from the error templates associated with the context.
     /// </param>
-    public static void AddOnlyLettersAndDigitsError(this Check<string> check, string? message = null)
+    public static Check<string> AddOnlyLettersAndDigitsError(this Check<string> check, string? message = null)
     {
+        check = check.NormalizeKeyIfNecessary();
         message ??= string.Format(
             check.Context.ErrorTemplates.OnlyLettersAndDigits,
             check.Key
         );
-        check.AddError(message);
+        return check.AddError(message);
     }
 
     /// <summary>
@@ -354,12 +370,13 @@ public static class Errors
     /// The error message (optional). If null is provided, an error message will be
     /// generated from the error templates associated with the context.
     /// </param>
-    public static void AddCountError<T>(this Check<T> check, int count, string? message = null)
+    public static Check<T> AddCountError<T>(this Check<T> check, int count, string? message = null)
     {
+        check = check.NormalizeKeyIfNecessary();
         message ??= count == 1 ?
                         string.Format(check.Context.ErrorTemplates.CountSingular, check.Key) :
                         string.Format(check.Context.ErrorTemplates.CountMultiple, check.Key, count.ToString());
-        check.AddError(message);
+        return check.AddError(message);
     }
 
     /// <summary>
@@ -370,13 +387,14 @@ public static class Errors
     /// The error message (optional). If null is provided, an error message will be
     /// generated from the error templates associated with the context.
     /// </param>
-    public static void AddTryParseToEnumError<T>(this Check<T> check, string? message = null)
+    public static Check<T> AddTryParseToEnumError<T>(this Check<T> check, string? message = null)
     {
+        check = check.NormalizeKeyIfNecessary();
         message ??= string.Format(
             check.Context.ErrorTemplates.TryParseToEnum,
             check.Key
         );
-        check.AddError(message);
+        return check.AddError(message);
     }
 
     /// <summary>
@@ -386,12 +404,13 @@ public static class Errors
     /// <param name="errorMessageFactory">The delegate that receives the check and creates an error message.</param>
     /// <typeparam name="T">The type of the value to be checked.</typeparam>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="errorMessageFactory" /> is null.</exception>
-    public static void CreateAndAddError<T>(this Check<T> check, Func<Check<T>, string> errorMessageFactory)
+    public static Check<T> CreateAndAddError<T>(this Check<T> check, Func<Check<T>, string> errorMessageFactory)
     {
         errorMessageFactory.MustNotBeNull();
 
+        check = check.NormalizeKeyIfNecessary();
         var message = errorMessageFactory(check);
-        check.AddError(message);
+        return check.AddError(message);
     }
 
     /// <summary>
@@ -402,13 +421,14 @@ public static class Errors
     /// <param name="comparativeValue">A comparative value that was used to validate the value.</param>
     /// <typeparam name="T">The type of the value to be checked.</typeparam>
     /// <typeparam name="TParameter">The type of the comparative value.</typeparam>
-    public static void CreateAndAddError<T, TParameter>(this Check<T> check,
+    public static Check<T> CreateAndAddError<T, TParameter>(this Check<T> check,
                                                         Func<Check<T>, TParameter, string> errorMessageFactory,
                                                         TParameter comparativeValue)
     {
         errorMessageFactory.MustNotBeNull();
 
+        check = check.NormalizeKeyIfNecessary();
         var message = errorMessageFactory(check, comparativeValue);
-        check.AddError(message);
+        return check.AddError(message);
     }
 }

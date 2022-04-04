@@ -34,7 +34,7 @@ public static partial class Checks
         if (check.IsShortCircuited || !check.IsValueNull)
             return check;
         
-        check.AddNotNullError(message);
+        check = check.AddNotNullError(message);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
@@ -57,7 +57,7 @@ public static partial class Checks
     {
         if (check.IsShortCircuited || !check.IsValueNull)
             return check;
-        check.CreateAndAddError(errorMessageFactory);
+        check = check.CreateAndAddError(errorMessageFactory);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
@@ -82,8 +82,8 @@ public static partial class Checks
     {
         if (check.IsShortCircuited || !check.IsValueNull)
             return check;
-        
-        check.AddNotNullError(message);
+
+        check = check.AddNotNullError(message);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
@@ -106,7 +106,7 @@ public static partial class Checks
     {
         if (check.IsShortCircuited || !check.IsValueNull)
             return check;
-        check.CreateAndAddError(errorMessageFactory);
+        check = check.CreateAndAddError(errorMessageFactory);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
@@ -133,7 +133,7 @@ public static partial class Checks
         if (check.IsShortCircuited || EqualityComparer<T>.Default.Equals(check.Value, comparativeValue))
             return check;
 
-        check.AddEqualToError(comparativeValue, message);
+        check = check.AddEqualToError(comparativeValue, message);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
@@ -165,7 +165,7 @@ public static partial class Checks
         if (check.IsShortCircuited || equalityComparer.Equals(check.Value, comparativeValue))
             return check;
 
-        check.AddEqualToError(comparativeValue, message);
+        check = check.AddEqualToError(comparativeValue, message);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
@@ -189,8 +189,8 @@ public static partial class Checks
     {
         if (check.IsShortCircuited || EqualityComparer<T>.Default.Equals(check.Value, comparativeValue))
             return check;
-        
-        check.CreateAndAddError(errorMessageFactory, comparativeValue);
+
+        check = check.CreateAndAddError(errorMessageFactory, comparativeValue);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
@@ -221,7 +221,7 @@ public static partial class Checks
         if (check.IsShortCircuited || equalityComparer.Equals(check.Value, comparativeValue))
             return check;
 
-        check.CreateAndAddError(errorMessageFactory, comparativeValue);
+        check = check.CreateAndAddError(errorMessageFactory, comparativeValue);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
@@ -248,7 +248,7 @@ public static partial class Checks
         if (check.IsShortCircuited || !EqualityComparer<T>.Default.Equals(check.Value, comparativeValue))
             return check;
 
-        check.AddNotEqualToError(comparativeValue, message);
+        check = check.AddNotEqualToError(comparativeValue, message);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
@@ -280,7 +280,7 @@ public static partial class Checks
         if (check.IsShortCircuited || !equalityComparer.Equals(check.Value, comparativeValue))
             return check;
 
-        check.AddNotEqualToError(comparativeValue, message);
+        check = check.AddNotEqualToError(comparativeValue, message);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
@@ -305,7 +305,7 @@ public static partial class Checks
         if (check.IsShortCircuited || !EqualityComparer<T>.Default.Equals(check.Value, comparativeValue))
             return check;
 
-        check.CreateAndAddError(errorMessageFactory, comparativeValue);
+        check = check.CreateAndAddError(errorMessageFactory, comparativeValue);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
@@ -336,7 +336,7 @@ public static partial class Checks
         if (check.IsShortCircuited || !equalityComparer.Equals(check.Value, comparativeValue))
             return check;
 
-        check.CreateAndAddError(errorMessageFactory, comparativeValue);
+        check = check.CreateAndAddError(errorMessageFactory, comparativeValue);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
@@ -360,7 +360,7 @@ public static partial class Checks
         if (check.IsShortCircuited || check.Value != Guid.Empty)
             return check;
 
-        check.AddNotEmptyGuidError(message);
+        check = check.AddNotEmptyGuidError(message);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
@@ -382,7 +382,7 @@ public static partial class Checks
         if (check.IsShortCircuited || check.Value != Guid.Empty)
             return check;
 
-        check.CreateAndAddError(errorMessageFactory);
+        check = check.CreateAndAddError(errorMessageFactory);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
@@ -400,7 +400,7 @@ public static partial class Checks
 
         var result = validator.Validate(check.Value, check.Key);
         if (result.TryGetErrors(out var errors))
-            check.AddError(errors);
+            check = check.AddError(errors);
 
         return check.WithNewValue(result.ValidatedValue);
     }
@@ -428,7 +428,7 @@ public static partial class Checks
         var result = await validator.ValidateAsync(check.Value, check.Key)
                                     .ConfigureAwait(continueOnCapturedContext);
         if (result.TryGetErrors(out var errors))
-            check.AddError(errors);
+            check = check.AddError(errors);
 
         return check.WithNewValue(result.ValidatedValue);
     }
