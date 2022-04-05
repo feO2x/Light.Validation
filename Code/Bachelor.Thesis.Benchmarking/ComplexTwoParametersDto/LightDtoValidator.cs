@@ -5,7 +5,7 @@ using Range = Light.Validation.Tools.Range;
 
 namespace Bachelor.Thesis.Benchmarking.ComplexTwoParametersDto;
 
-public class LightValidator : Validator<ComplexTwoParametersDto>
+public class LightDtoValidator : Validator<ComplexTwoParametersDto>
 {
     protected override ComplexTwoParametersDto PerformValidation(ValidationContext context, ComplexTwoParametersDto value)
     {

@@ -8,7 +8,7 @@ public class ValidDtoBenchmarks
     public ComplexTwoParametersDto Dto = new () { User = User.ValidUser, Address = Address.ValidAddress };
 
     public FluentValidator FluentValidator = new ();
-    public LightValidator LightValidator = new ();
+    public LightDtoValidator LightValidator = new ();
 
     [Benchmark(Baseline = true)]
     public object? CheckViaLightValidator()
