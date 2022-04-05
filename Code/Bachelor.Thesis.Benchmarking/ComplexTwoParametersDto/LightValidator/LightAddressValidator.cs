@@ -10,22 +10,22 @@ public class LightAddressValidator : Validator<Address>
     protected override Address PerformValidation(ValidationContext context, Address address)
     {
         address.City = context.Check(address.City)
-                              .IsLongerThan(1)
+                              .IsNotNullOrWhiteSpace()
                               .IsShorterThan(40);
 
         address.Country = context.Check(address.Country)
-                                 .IsLongerThan(1)
+                                 .IsNotNullOrWhiteSpace()
                                  .IsShorterThan(40);
 
         address.PostalCode = context.Check(address.PostalCode)
                                     .IsIn(Range.FromInclusive(10000).ToInclusive(99999));
 
         address.Region = context.Check(address.Region)
-                                .IsLongerThan(1)
+                                .IsNotNullOrWhiteSpace()
                                 .IsShorterThan(40);
 
         address.Street = context.Check(address.Street)
-                                .IsLongerThan(1)
+                                .IsNotNullOrWhiteSpace()
                                 .IsShorterThan(80);
 
         return address;
