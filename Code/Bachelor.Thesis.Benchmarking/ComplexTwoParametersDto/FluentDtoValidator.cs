@@ -5,9 +5,9 @@ using FluentValidation.Results;
 
 namespace Bachelor.Thesis.Benchmarking.ComplexTwoParametersDto;
 
-public class FluentValidator : AbstractValidator<ComplexTwoParametersDto>
+public class FluentDtoValidator : AbstractValidator<ComplexTwoParametersDto>
 {
-    public FluentValidator()
+    public FluentDtoValidator()
     {
         RuleFor(dto => dto.User.UserName).NotEmpty().MinimumLength(8).MaximumLength(30);
         RuleFor(dto => dto.User.Password).NotEmpty().Matches(new Regex("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$"));

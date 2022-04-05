@@ -7,7 +7,7 @@ public class InvalidDtoBenchmarks
 {
     public ComplexTwoParametersDto Dto = new () { User = User.InvalidUser, Address = Address.InvalidAddress };
 
-    public FluentValidator FluentValidator = new ();
+    public FluentDtoValidator FluentValidator = new ();
     public LightDtoValidator LightValidator = new ();
 
     [Benchmark(Baseline = true)]
