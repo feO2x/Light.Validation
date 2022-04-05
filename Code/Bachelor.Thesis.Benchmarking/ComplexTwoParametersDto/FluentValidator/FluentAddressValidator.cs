@@ -8,10 +8,10 @@ public class FluentAddressValidator : AbstractValidator<Address>
 {
     public FluentAddressValidator()
     {
-        RuleFor(address => address.Country).NotEmpty().MinimumLength(1).MaximumLength(40);
-        RuleFor(address => address.Region).NotEmpty().MinimumLength(1).MaximumLength(40);
-        RuleFor(address => address.City).NotEmpty().MinimumLength(1).MaximumLength(40);
-        RuleFor(address => address.Street).NotEmpty().MinimumLength(1).MaximumLength(80);
+        RuleFor(address => address.Country).NotEmpty().MaximumLength(40);
+        RuleFor(address => address.Region).NotEmpty().MaximumLength(40);
+        RuleFor(address => address.City).NotEmpty().MaximumLength(40);
+        RuleFor(address => address.Street).NotEmpty().MaximumLength(80);
         RuleFor(address => address.PostalCode).InclusiveBetween(10000, 99999);
     }
 
