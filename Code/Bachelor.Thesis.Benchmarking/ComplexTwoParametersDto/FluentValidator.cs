@@ -11,8 +11,8 @@ public class FluentValidator : AbstractValidator<ComplexTwoParametersDto>
     {
         RuleFor(dto => dto.User.UserName).NotEmpty().MinimumLength(8).MaximumLength(30);
         RuleFor(dto => dto.User.Password).NotEmpty().Matches(new Regex("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$"));
-        RuleFor(dto => dto.User.Name).NotEmpty().MinimumLength(2).MaximumLength(80);
-        RuleFor(dto => dto.User.Email).NotEmpty().MinimumLength(2).MaximumLength(80);
+        RuleFor(dto => dto.User.Name).NotEmpty().MinimumLength(2).MaximumLength(100);
+        RuleFor(dto => dto.User.Email).NotEmpty().EmailAddress();
         RuleFor(dto => dto.User.Age).InclusiveBetween(18, 130);
 
         // TODO: add additional rules

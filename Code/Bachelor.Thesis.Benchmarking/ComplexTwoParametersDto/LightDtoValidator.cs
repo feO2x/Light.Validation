@@ -11,28 +11,28 @@ public class LightDtoValidator : Validator<ComplexTwoParametersDto>
     {
         // TODO: check User and Address in own validator classes
         value.User.UserName = context.Check(value.User.UserName)
-                                     .IsLongerThan(8)
-                                     .IsShorterThan(30);
+                                       .IsLongerThan(8)
+                                       .IsShorterThan(30);
         value.User.Password = context.Check(value.User.Password)
-                                     .IsMatching(new Regex("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$"));
+                                       .IsMatching(new Regex("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$"));
         value.User.Name = context.Check(value.User.Name)
-                                     .IsLongerThan(2)
-                                     .IsShorterThan(80);
+                                   .IsLongerThan(2)
+                                   .IsShorterThan(100);
         value.User.Email = context.Check(value.User.Email)
-                                     .IsLongerThan(2)
-                                     .IsShorterThan(80);
+                                    .IsEmail();
         value.User.Age = context.Check(value.User.Age)
-                                .IsIn(Range.FromInclusive(18).ToInclusive(130));
+                                  .IsIn(Range.FromInclusive(18).ToInclusive(130));
 
         value.Address.Country = context.Check(value.Address.Country)
-                                       .IsNotNullOrWhiteSpace();
+                                         .IsNotNullOrWhiteSpace();
         value.Address.Region = context.Check(value.Address.Region)
-                                      .IsNotNullOrWhiteSpace();
+                                        .IsNotNullOrWhiteSpace();
         value.Address.City = context.Check(value.Address.City)
-                                    .IsNotNullOrWhiteSpace();
-        value.Address.Street = context.Check(value.Address.Street)
                                       .IsNotNullOrWhiteSpace();
-        value.Address.PostalCode = context.Check(value.Address.PostalCode).IsIn(Range.FromInclusive(10000).ToInclusive(99999));
+        value.Address.Street = context.Check(value.Address.Street)
+                                        .IsNotNullOrWhiteSpace();
+        value.Address.PostalCode = context.Check(value.Address.PostalCode)
+                                            .IsIn(Range.FromInclusive(10000).ToInclusive(99999));
 
         return value;
     }
