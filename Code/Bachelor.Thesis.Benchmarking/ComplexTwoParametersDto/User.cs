@@ -8,8 +8,8 @@ public class User
     {
         UserName = "JohnDoe1337",
         Password = "P4S$W0rD123",
-        ForeName = "John",
-        LastName = "Doe",
+        Name = "John Doe",
+        Email = "john.doe@example.com",
         Active = true,
         Age = 42
     };
@@ -18,8 +18,8 @@ public class User
     {
         UserName = "JohnDoe",
         Password = "P4S$W0r",
-        ForeName = "J",
-        LastName = "D",
+        Name = "J",
+        Email = "D",
         Age = 16
     };
 
@@ -35,13 +35,12 @@ public class User
 
     [Required]
     [MinLength(2)]
-    [MaxLength(80)]
-    public string ForeName { get; set; } = string.Empty;
+    [MaxLength(100)]
+    public string Name { get; set; } = string.Empty;
 
     [Required]
-    [MinLength(2)]
-    [MaxLength(80)]
-    public string LastName { get; set; } = string.Empty;
+    [EmailAddress]
+    public string Email { get; set; } = string.Empty;
 
     [Required]
     public bool Active { get; set; } = true;

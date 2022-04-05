@@ -15,10 +15,10 @@ public class LightDtoValidator : Validator<ComplexTwoParametersDto>
                                      .IsShorterThan(30);
         value.User.Password = context.Check(value.User.Password)
                                      .IsMatching(new Regex("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$"));
-        value.User.ForeName = context.Check(value.User.ForeName)
+        value.User.Name = context.Check(value.User.Name)
                                      .IsLongerThan(2)
                                      .IsShorterThan(80);
-        value.User.LastName = context.Check(value.User.LastName)
+        value.User.Email = context.Check(value.User.Email)
                                      .IsLongerThan(2)
                                      .IsShorterThan(80);
         value.User.Age = context.Check(value.User.Age)
