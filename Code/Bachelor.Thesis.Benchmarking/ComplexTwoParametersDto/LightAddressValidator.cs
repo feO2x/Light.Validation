@@ -21,11 +21,11 @@ public class LightAddressValidator : Validator<Address>
 
         address.Region = context.Check(address.Region)
                                 .IsLongerThan(1)
-                                .IsShorterThan(30);
+                                .IsShorterThan(40);
 
         address.Street = context.Check(address.Street)
                                 .IsLongerThan(1)
-                                .IsShorterThan(50);
+                                .IsShorterThan(80);
 
         return address;
     }

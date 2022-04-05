@@ -37,11 +37,11 @@ public class Address
 
     [Required]
     [MinLength(1)]
-    [MaxLength(30)]
+    [MaxLength(40)]
     public string Region { get; set; } = string.Empty;
 
     [Required]
     [MinLength(1)]
-    [MaxLength(50)]
+    [MaxLength(80)]
     public string Street { get; set; } = string.Empty;
 }
