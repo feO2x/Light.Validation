@@ -1,7 +1,7 @@
 ﻿using Light.Validation;
 using Light.Validation.Checks;
 
-namespace Bachelor.Thesis.Benchmarking.FlatTwoParametersDto;
+namespace Bachelor.Thesis.Benchmarking.FlatTwoParametersDto.Validators;
 
 public class LightValidator : Validator<FlatTwoParametersDto>
 {

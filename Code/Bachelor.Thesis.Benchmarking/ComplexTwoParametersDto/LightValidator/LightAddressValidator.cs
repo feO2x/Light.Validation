@@ -1,8 +1,9 @@
-﻿using Light.Validation;
+﻿using Bachelor.Thesis.Benchmarking.ComplexTwoParametersDto.Dto;
+using Light.Validation;
 using Light.Validation.Checks;
 using Range = Light.Validation.Tools.Range;
 
-namespace Bachelor.Thesis.Benchmarking.ComplexTwoParametersDto;
+namespace Bachelor.Thesis.Benchmarking.ComplexTwoParametersDto.LightValidator;
 
 public class LightAddressValidator : Validator<Address>
 {

@@ -1,8 +1,8 @@
 ﻿using FluentValidation;
 
-namespace Bachelor.Thesis.Benchmarking.ComplexTwoParametersDto;
+namespace Bachelor.Thesis.Benchmarking.ComplexTwoParametersDto.FluentValidator;
 
-public class FluentDtoValidator : AbstractValidator<ComplexTwoParametersDto>
+public class FluentDtoValidator : AbstractValidator<Dto.ComplexTwoParametersDto>
 {
     public FluentDtoValidator()
     {

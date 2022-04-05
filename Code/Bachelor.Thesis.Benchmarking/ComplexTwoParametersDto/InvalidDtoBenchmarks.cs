@@ -1,11 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Bachelor.Thesis.Benchmarking.ComplexTwoParametersDto.Dto;
+using Bachelor.Thesis.Benchmarking.ComplexTwoParametersDto.FluentValidator;
+using Bachelor.Thesis.Benchmarking.ComplexTwoParametersDto.LightValidator;
 using BenchmarkDotNet.Attributes;
 
 namespace Bachelor.Thesis.Benchmarking.ComplexTwoParametersDto;
 
 public class InvalidDtoBenchmarks
 {
-    public ComplexTwoParametersDto Dto = new () { User = User.InvalidUser, Address = Address.InvalidAddress };
+    public Dto.ComplexTwoParametersDto Dto = new () { User = User.InvalidUser, Address = Address.InvalidAddress };
 
     public FluentDtoValidator FluentValidator = new ();
     public LightDtoValidator LightValidator = new ();

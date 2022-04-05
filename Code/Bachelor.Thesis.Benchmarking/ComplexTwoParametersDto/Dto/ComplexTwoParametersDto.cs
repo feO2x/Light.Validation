@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Bachelor.Thesis.Benchmarking.ComplexTwoParametersDto;
+namespace Bachelor.Thesis.Benchmarking.ComplexTwoParametersDto.Dto;
 
 public class ComplexTwoParametersDto
 {
@@ -8,5 +8,5 @@ public class ComplexTwoParametersDto
     public User User { get; set; } = new ();
 
     [Required]
-    public Address Address { get; set; } = new();
+    public Address Address { get; set; } = new ();
 }

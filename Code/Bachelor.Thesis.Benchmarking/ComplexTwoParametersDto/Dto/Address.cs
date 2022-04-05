@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Bachelor.Thesis.Benchmarking.ComplexTwoParametersDto;
+namespace Bachelor.Thesis.Benchmarking.ComplexTwoParametersDto.Dto;
 
 public class Address
 {
@@ -13,7 +13,7 @@ public class Address
         Street = "Seybothstraße 2"
     };
 
-    public static Address InvalidAddress = new()
+    public static Address InvalidAddress = new ()
     {
         Country = string.Empty,
         PostalCode = 1000,
