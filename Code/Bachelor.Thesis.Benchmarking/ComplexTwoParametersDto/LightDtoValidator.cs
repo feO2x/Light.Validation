@@ -6,7 +6,6 @@ namespace Bachelor.Thesis.Benchmarking.ComplexTwoParametersDto;
 public class LightDtoValidator : Validator<ComplexTwoParametersDto>
 {
     private LightAddressValidator AddressValidator { get; } = new ();
-
     private LightUserValidator UserValidator { get; } = new ();
 
     protected override ComplexTwoParametersDto PerformValidation(ValidationContext context, ComplexTwoParametersDto dto)
