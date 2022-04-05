@@ -14,12 +14,11 @@ public class FluentValidator : AbstractValidator<ComplexTwoParametersDto>
         RuleFor(dto => dto.User.Name).NotEmpty().MinimumLength(2).MaximumLength(100);
         RuleFor(dto => dto.User.Email).NotEmpty().EmailAddress();
         RuleFor(dto => dto.User.Age).InclusiveBetween(18, 130);
-
-        // TODO: add additional rules
-        RuleFor(dto => dto.Address.Country).NotEmpty();
-        RuleFor(dto => dto.Address.Region).NotEmpty();
-        RuleFor(dto => dto.Address.City).NotEmpty();
-        RuleFor(dto => dto.Address.Street).NotEmpty();
+        
+        RuleFor(dto => dto.Address.Country).NotEmpty().MinimumLength(1).MaximumLength(40);
+        RuleFor(dto => dto.Address.Region).NotEmpty().MinimumLength(1).MaximumLength(40);
+        RuleFor(dto => dto.Address.City).NotEmpty().MinimumLength(1).MaximumLength(40);
+        RuleFor(dto => dto.Address.Street).NotEmpty().MinimumLength(1).MaximumLength(80);
         RuleFor(dto => dto.Address.PostalCode).InclusiveBetween(10000, 99999);
     }
 
