@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Mvc;
 
-namespace Bachelor.Thesis.Benchmarking.FlatTenParametersDto;
+namespace Bachelor.Thesis.Benchmarking.FlatEightParametersDto;
 
 public class Employee
 {
