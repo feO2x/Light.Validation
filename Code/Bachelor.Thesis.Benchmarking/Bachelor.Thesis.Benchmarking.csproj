@@ -5,6 +5,9 @@
 		<TargetFramework>net6.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
+		<Authors>Sebastian Mohr</Authors>
+		<Company>Sebastian Mohr</Company>
+		<Copyright>Copyright © Sebastian Mohr 2022</Copyright>
 	</PropertyGroup>
 
 	<ItemGroup>
