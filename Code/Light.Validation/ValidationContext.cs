@@ -69,11 +69,7 @@ public class ValidationContext : ExtensibleObject
     /// <summary>
     /// <para>
     /// Adds an error message to the errors dictionary using the specified key.
-    /// </para>
-    /// <para>
-    /// By default, the key is not normalized when calling this method.
-    /// You can change this by passing in <see cref="Options" /> with
-    /// NormalizeKeyOnAddError set to true.
+    /// The key is not normalized when calling this method.
     /// </para>
     /// <para>
     /// When there already is an error message associated with the given key, your new
@@ -131,14 +127,7 @@ public class ValidationContext : ExtensibleObject
     }
 
     /// <summary>
-    /// <para>
-    /// Removes the error with the specified key.
-    /// </para>
-    /// <para>
-    /// By default, the key is not normalized when calling this method.
-    /// You can change this by passing in <see cref="Options" /> with
-    /// NormalizeKeyOnRemoveError set to true.
-    /// </para>
+    /// Removes the error with the specified key. The key is not normalized when calling this method.
     /// </summary>
     /// <param name="key">The key that identifies the error.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="key" /> is null.</exception>
@@ -245,7 +234,7 @@ public class ValidationContext : ExtensibleObject
     /// <summary>
     /// Normalizes the specified string value.
     /// </summary>
-    public string NormalizeStringValue(string stringValue) =>
+    public string NormalizeStringValue(string? stringValue) =>
         Options.NormalizeStringValue?.Invoke(stringValue) ?? stringValue.NormalizeString();
 
     /// <summary>

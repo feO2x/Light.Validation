@@ -181,25 +181,25 @@ public class ErrorTemplates : ExtensibleObject
 
     /// <summary>
     /// Gets the template for the "Longer Than" error message.
-    /// The default value is "{0} must be longer than {1}".
+    /// The default value is "{0} must be longer than {1} characters".
     /// This template takes two parameters:
     /// <list type="bullet">
     /// <item>{0} key</item>
     /// <item>{1} the comparative length value</item>
     /// </list>
     /// </summary>
-    public string LongerThan { get; init; } = "{0} must be longer than {1}";
+    public string LongerThan { get; init; } = "{0} must be longer than {1} characters";
 
     /// <summary>
     /// Gets the template for the "Shorter Than" error message.
-    /// The default value is "{0} must be shorter than {1}".
+    /// The default value is "{0} must be shorter than {1} characters".
     /// This template takes two parameters:
     /// <list type="bullet">
     /// <item>{0} key</item>
     /// <item>{1} the comparative length value</item>
     /// </list>
     /// </summary>
-    public string ShorterThan { get; init; } = "{0} must be shorter than {1}";
+    public string ShorterThan { get; init; } = "{0} must be shorter than {1} characters";
 
     /// <summary>
     /// Gets the template for the "Length In Range" error message.

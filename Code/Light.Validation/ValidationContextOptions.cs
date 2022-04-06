@@ -28,14 +28,14 @@ public class ValidationContextOptions : ExtensibleObject
     public static ValidationContextOptions Default { get; } = new ();
 
     /// <summary>
-    /// The value indicating whether keys are normalized.
+    /// The value indicating whether keys are normalized when error messages are created.
     /// The default value is true.
     /// </summary>
     public bool IsNormalizingKeys { get; init; } = true;
 
     /// <summary>
-    /// Gets or sets the delegate that is used to normalize the
-    /// key. The default value is null. If no delegate is set,
+    /// Gets or sets the delegate that is used to normalize keys.
+    /// The default value is null. If no delegate is set,
     /// the default normalization function will be used which is
     /// <see cref="StringExtensions.NormalizeLastSectionToLowerCamelCase" />.
     /// </summary>
