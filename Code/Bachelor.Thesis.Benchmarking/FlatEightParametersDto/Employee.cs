@@ -22,8 +22,8 @@ public class Employee
     public int WeeklyWorkingHours { get; set; }
 
     [Required]
-    [Phone]
-    public long PhoneNumber { get; set; }
+    [Range(0, ulong.MaxValue)]
+    public ulong PhoneNumber { get; set; }
 
     [Required]
     [Range(float.MinValue, float.MaxValue)]
