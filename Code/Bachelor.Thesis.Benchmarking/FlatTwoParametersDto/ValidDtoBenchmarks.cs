@@ -1,9 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Bachelor.Thesis.Benchmarking.FlatTwoParametersDto.Validators;
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Configs;
 
 namespace Bachelor.Thesis.Benchmarking.FlatTwoParametersDto;
 
+[GroupBenchmarksBy(BenchmarkLogicalGroupRule.ByParams)]
+[CategoriesColumn]
 public class ValidDtoBenchmarks
 {
     public FluentValidator FluentValidator = new ();
@@ -12,7 +15,7 @@ public class ValidDtoBenchmarks
 
     [ParamsSource(nameof(ValuesForDto))]
     public FlatTwoParametersDto Dto { get; set; } = null!;
-
+    
     public static IEnumerable<FlatTwoParametersDto> ValuesForDto => new[]
     {
         FlatTwoParametersDto.ValidDto,
