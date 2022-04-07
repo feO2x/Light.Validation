@@ -6,11 +6,18 @@ namespace Bachelor.Thesis.Benchmarking.FlatTwoParametersDto;
 
 public class ValidDtoBenchmarks
 {
-    public FlatTwoParametersDto Dto = new () { Id = 42, Name = "John Doe" };
-
     public FluentValidator FluentValidator = new ();
 
     public LightValidator LightValidator = new ();
+
+    [ParamsSource(nameof(ValuesForDto))]
+    public FlatTwoParametersDto Dto { get; set; } = null!;
+
+    public IEnumerable<FlatTwoParametersDto> ValuesForDto => new[]
+    {
+        FlatTwoParametersDto.ValidDto,
+        FlatTwoParametersDto.InvalidDto
+    };
 
     [Benchmark(Baseline = true)]
     public object? CheckViaLightValidator()
