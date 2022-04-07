@@ -10,8 +10,14 @@ public class ValidDtoBenchmarks
 
     public LightValidator LightValidator = new ();
 
-    [Params(nameof(FlatTwoParametersDto.ValidDto), nameof(FlatTwoParametersDto.InvalidDto))]
+    [ParamsSource(nameof(ValuesForDto))]
     public FlatTwoParametersDto Dto { get; set; } = null!;
+
+    public static IEnumerable<FlatTwoParametersDto> ValuesForDto => new[]
+    {
+        FlatTwoParametersDto.ValidDto,
+        FlatTwoParametersDto.InvalidDto
+    };
 
     [Benchmark(Baseline = true)]
     public object? CheckViaLightValidator()
