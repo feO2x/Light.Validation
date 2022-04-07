@@ -13,7 +13,7 @@ public class ValidDtoBenchmarks
     [ParamsSource(nameof(ValuesForDto))]
     public FlatTwoParametersDto Dto { get; set; } = null!;
 
-    public IEnumerable<FlatTwoParametersDto> ValuesForDto => new[]
+    public static IEnumerable<FlatTwoParametersDto> ValuesForDto => new[]
     {
         FlatTwoParametersDto.ValidDto,
         FlatTwoParametersDto.InvalidDto
