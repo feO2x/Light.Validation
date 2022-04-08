@@ -2,9 +2,9 @@
 
 namespace Bachelor.Thesis.Benchmarking.FlatEightParametersDto;
 
-public class Employee
+public class EmployeeDto
 {
-    public static Employee ValidEmployee = new ()
+    public static EmployeeDto ValidEmployeeDto = new ()
     {
         Id = new (),
         Name = "John Doe",
@@ -15,7 +15,7 @@ public class Employee
         HourlySalary = new decimal(16.50)
     };
 
-    public static Employee InvalidEmployee = new ()
+    public static EmployeeDto InvalidEmployeeDto = new ()
     {
         Id = new (),
         Name = "   x     ",

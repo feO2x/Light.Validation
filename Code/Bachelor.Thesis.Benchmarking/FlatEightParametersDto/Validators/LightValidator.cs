@@ -4,26 +4,26 @@ using Range = Light.Validation.Tools.Range;
 
 namespace Bachelor.Thesis.Benchmarking.FlatEightParametersDto.Validators;
 
-public class LightValidator : Validator<Employee>
+public class LightValidator : Validator<EmployeeDto>
 {
-    protected override Employee PerformValidation(ValidationContext context, Employee employee)
+    protected override EmployeeDto PerformValidation(ValidationContext context, EmployeeDto employeeDto)
     {
-        employee.Id = context.Check(employee.Id)
+        employeeDto.Id = context.Check(employeeDto.Id)
                              .IsNotEmpty();
-        employee.Name = context.Check(employee.Name)
+        employeeDto.Name = context.Check(employeeDto.Name)
                                .IsNotNullOrWhiteSpace()
                                .HasLengthIn(Range.FromInclusive(2).ToInclusive(80));
-        employee.Department = context.Check(employee.Department)
+        employeeDto.Department = context.Check(employeeDto.Department)
                                      .IsIn(Range.FromInclusive((short) 100).ToInclusive(999));
-        employee.WeeklyWorkingHours = context.Check(employee.WeeklyWorkingHours)
+        employeeDto.WeeklyWorkingHours = context.Check(employeeDto.WeeklyWorkingHours)
                                              .IsIn(Range.FromInclusive(20).ToInclusive(48));
-        employee.PhoneNumber = context.Check(employee.PhoneNumber)
+        employeeDto.PhoneNumber = context.Check(employeeDto.PhoneNumber)
                                       .ContainsOnlyDigits();
-        employee.OvertimeWorked = context.Check(employee.OvertimeWorked)
+        employeeDto.OvertimeWorked = context.Check(employeeDto.OvertimeWorked)
                                          .IsIn(Range.FromInclusive(float.MinValue).ToInclusive(float.MaxValue));
-        employee.HourlySalary = context.Check(employee.HourlySalary)
+        employeeDto.HourlySalary = context.Check(employeeDto.HourlySalary)
                                        .IsIn(Range.FromInclusive(new decimal(12.0)).ToInclusive(new decimal(999.0)));
 
-        return employee;
+        return employeeDto;
     }
 }

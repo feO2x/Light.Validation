@@ -4,7 +4,7 @@ using FluentValidation.Results;
 
 namespace Bachelor.Thesis.Benchmarking.FlatEightParametersDto.Validators;
 
-public class FluentValidator : AbstractValidator<Employee>
+public class FluentValidator : AbstractValidator<EmployeeDto>
 {
     public FluentValidator()
     {
@@ -17,7 +17,7 @@ public class FluentValidator : AbstractValidator<Employee>
         RuleFor(employee => employee.HourlySalary).InclusiveBetween(new decimal(12.0), new decimal(999.0));
     }
 
-    protected override bool PreValidate(ValidationContext<Employee> context, ValidationResult result)
+    protected override bool PreValidate(ValidationContext<EmployeeDto> context, ValidationResult result)
     {
         context.InstanceToValidate.Name = context.InstanceToValidate.Name.Trim();
         return true;

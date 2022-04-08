@@ -6,7 +6,7 @@ namespace Bachelor.Thesis.Benchmarking.FlatEightParametersDto;
 
 public class InvalidDtoBenchmarks
 {
-    public Employee Employee = Employee.InvalidEmployee;
+    public EmployeeDto EmployeeDto = EmployeeDto.InvalidEmployeeDto;
 
     public FluentValidator FluentValidator = new();
 
@@ -15,19 +15,19 @@ public class InvalidDtoBenchmarks
     [Benchmark(Baseline = true)]
     public object? CheckViaLightValidator()
     {
-        LightValidator.CheckForErrors(Employee, out var errors);
+        LightValidator.CheckForErrors(EmployeeDto, out var errors);
         return errors;
     }
 
     [Benchmark]
     public object? CheckViaFluentValidator() =>
-        FluentValidator.Validate(Employee);
+        FluentValidator.Validate(EmployeeDto);
 
     [Benchmark]
     public object CheckViaModelValidation()
     {
         var errors = new List<ValidationResult>();
-        Validator.TryValidateObject(Employee, new ValidationContext(Employee), errors, true);
+        Validator.TryValidateObject(EmployeeDto, new ValidationContext(EmployeeDto), errors, true);
         return errors;
     }
 }
