@@ -6,7 +6,7 @@ namespace Bachelor.Thesis.Benchmarking.FlatTwoParametersDto;
 
 public class InvalidDtoBenchmarks
 {
-    public FlatTwoParametersDto Dto = new() { Id = -1, Name = String.Empty };
+    public UserDto Dto = new() { Id = -1, Name = String.Empty };
 
     public FluentValidator FluentValidator = new();
     public LightValidator LightValidator = new();

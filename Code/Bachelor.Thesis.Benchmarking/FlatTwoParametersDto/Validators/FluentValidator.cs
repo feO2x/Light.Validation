@@ -3,7 +3,7 @@ using FluentValidation.Results;
 
 namespace Bachelor.Thesis.Benchmarking.FlatTwoParametersDto.Validators;
 
-public class FluentValidator : AbstractValidator<FlatTwoParametersDto>
+public class FluentValidator : AbstractValidator<UserDto>
 {
     public FluentValidator()
     {
@@ -11,7 +11,7 @@ public class FluentValidator : AbstractValidator<FlatTwoParametersDto>
         RuleFor(dto => dto.Name).NotEmpty().MaximumLength(80);
     }
 
-    protected override bool PreValidate(ValidationContext<FlatTwoParametersDto> context, ValidationResult result)
+    protected override bool PreValidate(ValidationContext<UserDto> context, ValidationResult result)
     {
         context.InstanceToValidate.Name = context.InstanceToValidate.Name.Trim();
         return true;

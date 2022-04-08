@@ -2,10 +2,10 @@
 
 namespace Bachelor.Thesis.Benchmarking.FlatTwoParametersDto;
 
-public class FlatTwoParametersDto
+public class UserDto
 {
-    public static FlatTwoParametersDto ValidDto = new () { Id = 42, Name = "John Doe" };
-    public static FlatTwoParametersDto InvalidDto = new () { Id = -1, Name = "    J  " };
+    public static UserDto ValidDto = new () { Id = 42, Name = "John Doe" };
+    public static UserDto InvalidDto = new () { Id = -1, Name = "    J  " };
 
     [Required]
     [Range(0, int.MaxValue)]

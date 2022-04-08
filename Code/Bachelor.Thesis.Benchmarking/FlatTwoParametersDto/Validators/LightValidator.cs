@@ -3,9 +3,9 @@ using Light.Validation.Checks;
 
 namespace Bachelor.Thesis.Benchmarking.FlatTwoParametersDto.Validators;
 
-public class LightValidator : Validator<FlatTwoParametersDto>
+public class LightValidator : Validator<UserDto>
 {
-    protected override FlatTwoParametersDto PerformValidation(ValidationContext context, FlatTwoParametersDto value)
+    protected override UserDto PerformValidation(ValidationContext context, UserDto value)
     {
         value.Id = context.Check(value.Id).IsGreaterThan(0);
 
