@@ -2,7 +2,7 @@
 
 namespace Bachelor.Thesis.Benchmarking.ComplexTwoParametersDto.Dto;
 
-public class ComplexTwoParametersDto
+public class CustomerDto
 {
     [Required]
     public User User { get; set; } = new ();

@@ -18,7 +18,7 @@ public class LightValidator : Validator<Employee>
         employee.WeeklyWorkingHours = context.Check(employee.WeeklyWorkingHours)
                                              .IsIn(Range.FromInclusive(20).ToInclusive(48));
         employee.PhoneNumber = context.Check(employee.PhoneNumber)
-                                      .IsIn(Range.FromInclusive(0UL).ToInclusive(ulong.MaxValue));
+                                      .ContainsOnlyDigits();
         employee.OvertimeWorked = context.Check(employee.OvertimeWorked)
                                          .IsIn(Range.FromInclusive(float.MinValue).ToInclusive(float.MaxValue));
         employee.HourlySalary = context.Check(employee.HourlySalary)

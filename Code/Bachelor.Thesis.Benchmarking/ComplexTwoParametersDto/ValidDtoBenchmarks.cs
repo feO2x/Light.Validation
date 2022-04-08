@@ -8,7 +8,7 @@ namespace Bachelor.Thesis.Benchmarking.ComplexTwoParametersDto;
 
 public class ValidDtoBenchmarks
 {
-    public Dto.ComplexTwoParametersDto Dto = new () { User = User.ValidUser, Address = Address.ValidAddress };
+    public Dto.CustomerDto Dto = new () { User = User.ValidUser, Address = Address.ValidAddress };
 
     public FluentDtoValidator FluentValidator = new ();
     public LightDtoValidator LightValidator = new ();

@@ -2,7 +2,7 @@
 
 namespace Bachelor.Thesis.Benchmarking.ComplexTwoParametersDto.FluentValidator;
 
-public class FluentDtoValidator : AbstractValidator<Dto.ComplexTwoParametersDto>
+public class FluentDtoValidator : AbstractValidator<Dto.CustomerDto>
 {
     public FluentDtoValidator()
     {
