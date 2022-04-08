@@ -9,9 +9,9 @@ public class FluentUserValidator : AbstractValidator<User>
 {
     public FluentUserValidator()
     {
-        RuleFor(user => user.UserName).NotEmpty().MinimumLength(8).MaximumLength(30);
+        RuleFor(user => user.UserName).NotEmpty().Length(8, 30);
         RuleFor(user => user.Password).NotEmpty().Matches(new Regex("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$"));
-        RuleFor(user => user.Name).NotEmpty().MinimumLength(2).MaximumLength(100);
+        RuleFor(user => user.Name).NotEmpty().Length(2, 100);
         RuleFor(user => user.Email).NotEmpty().EmailAddress();
         RuleFor(user => user.Age).InclusiveBetween(18, 130);
     }
