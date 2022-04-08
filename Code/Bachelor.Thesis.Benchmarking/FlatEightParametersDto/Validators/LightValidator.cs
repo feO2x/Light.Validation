@@ -12,8 +12,7 @@ public class LightValidator : Validator<Employee>
                              .IsNotEmpty();
         employee.Name = context.Check(employee.Name)
                                .IsNotNullOrWhiteSpace()
-                               .IsLongerThan(2)
-                               .IsShorterThan(80);
+                               .HasLengthIn(Range.FromInclusive(2).ToInclusive(80));
         employee.Department = context.Check(employee.Department)
                                      .IsIn(Range.FromInclusive((short) 100).ToInclusive(999));
         employee.WeeklyWorkingHours = context.Check(employee.WeeklyWorkingHours)
