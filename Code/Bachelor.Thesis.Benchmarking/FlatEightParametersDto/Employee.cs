@@ -10,7 +10,7 @@ public class Employee
         Name = "John Doe",
         Department = 420,
         WeeklyWorkingHours = 40,
-        PhoneNumber = 123459876,
+        PhoneNumber = "0123459876",
         OvertimeWorked = 143.423f,
         HourlySalary = new decimal(16.50)
     };
@@ -41,8 +41,8 @@ public class Employee
     public int WeeklyWorkingHours { get; set; }
 
     [Required]
-    [Range(0, ulong.MaxValue)]
-    public ulong PhoneNumber { get; set; }
+    [RegularExpression(@"^[0-9]")]
+    public string PhoneNumber { get; set; } = string.Empty;
 
     [Required]
     [Range(float.MinValue, float.MaxValue)]
