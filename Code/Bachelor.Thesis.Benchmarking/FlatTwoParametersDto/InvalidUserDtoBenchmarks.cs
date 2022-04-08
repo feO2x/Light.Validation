@@ -4,7 +4,7 @@ using BenchmarkDotNet.Attributes;
 
 namespace Bachelor.Thesis.Benchmarking.FlatTwoParametersDto;
 
-public class InvalidDtoBenchmarks
+public class InvalidUserDtoBenchmarks
 {
     public UserDto Dto = new() { Id = -1, Name = String.Empty };
 

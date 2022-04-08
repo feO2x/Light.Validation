@@ -6,9 +6,9 @@ using BenchmarkDotNet.Attributes;
 
 namespace Bachelor.Thesis.Benchmarking.ComplexTwoParametersDto;
 
-public class ValidDtoBenchmarks
+public class InvalidCustomerDtoBenchmarks
 {
-    public Dto.CustomerDto Dto = new () { User = User.ValidUser, Address = Address.ValidAddress };
+    public Dto.CustomerDto Dto = new () { User = User.InvalidUser, Address = Address.InvalidAddress };
 
     public FluentDtoValidator FluentValidator = new ();
     public LightDtoValidator LightValidator = new ();

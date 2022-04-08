@@ -4,13 +4,13 @@ using BenchmarkDotNet.Attributes;
 
 namespace Bachelor.Thesis.Benchmarking.FlatEightParametersDto;
 
-public class InvalidDtoBenchmarks
+public class ValidEmployeeDtoBenchmarks
 {
-    public EmployeeDto EmployeeDto = EmployeeDto.InvalidEmployeeDto;
+    public EmployeeDto EmployeeDto = EmployeeDto.ValidEmployeeDto;
 
-    public FluentValidator FluentValidator = new();
+    public FluentValidator FluentValidator = new ();
 
-    public LightValidator LightValidator = new();
+    public LightValidator LightValidator = new ();
 
     [Benchmark(Baseline = true)]
     public object? CheckViaLightValidator()
