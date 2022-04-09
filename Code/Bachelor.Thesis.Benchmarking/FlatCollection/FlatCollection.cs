@@ -38,6 +38,10 @@ public class FlatCollection
             "John Doe 10"
         },
         Availability = new ()
+        {
+            {10001, false},
+            {10002, true}
+        }
     };
 
     [Required]
