@@ -32,7 +32,7 @@ public static class IsShorterThanTests
 
         var check = context.Check(dto.Value).IsShorterThan(length);
 
-        context.ShouldHaveSingleError("value", $"value must be shorter than {length}");
+        context.ShouldHaveSingleError("value", $"value must be shorter than {length} characters");
         check.ShouldNotBeShortCircuited();
     }
 

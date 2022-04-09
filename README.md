@@ -2,7 +2,7 @@
 A lightweight library for validating incoming data in .NET HTTP services
 
 [![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](https://github.com/feO2x/Light.Validation/blob/master/LICENSE)
-[![NuGet](https://img.shields.io/badge/NuGet-0.3.0-blue.svg?style=for-the-badge)](https://www.nuget.org/packages/Light.Validation/)
+[![NuGet](https://img.shields.io/badge/NuGet-0.4.0-blue.svg?style=for-the-badge)](https://www.nuget.org/packages/Light.Validation/)
 [![Documentation](https://img.shields.io/badge/Docs-Wiki-yellowgreen.svg?style=for-the-badge)](https://github.com/feO2x/Light.Validation/wiki)
 [![Documentation](https://img.shields.io/badge/Docs-Changelog-yellowgreen.svg?style=for-the-badge)](https://github.com/feO2x/Light.Validation/releases)
 
@@ -19,7 +19,7 @@ A lightweight library for validating incoming data in .NET HTTP services
 
 Light.Validation is built against .NET 6 and .NET Standard 2.0 and available on [NuGet](https://www.nuget.org/packages/Light.Validation/).
 
-- **Package Reference in csproj**: `<PackageReference Include="Light.Validation" Version="0.3.0" />`
+- **Package Reference in csproj**: `<PackageReference Include="Light.Validation" Version="0.4.0" />`
 - **dotnet CLI**: `dotnet add package Light.Validation`
 - **Visual Studio Package Manager Console**: `Install-Package Light.Validation`
 

@@ -52,7 +52,7 @@ public static partial class Checks
         if (check.IsShortCircuited || !check.Value.IsNullOrWhiteSpace())
             return check;
 
-        check.AddNotNullOrWhiteSpaceError(message);
+        check = check.AddNotNullOrWhiteSpaceError(message);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
@@ -74,7 +74,7 @@ public static partial class Checks
         if (check.IsShortCircuited || !check.Value.IsNullOrWhiteSpace())
             return check;
 
-        check.CreateAndAddError(errorMessageFactory);
+        check = check.CreateAndAddError(errorMessageFactory);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
@@ -111,7 +111,7 @@ public static partial class Checks
         if (check.IsShortCircuited || !check.IsValueNull && regex.IsMatch(check.Value))
             return check;
 
-        check.AddRegexMustMatchError(message);
+        check = check.AddRegexMustMatchError(message);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
@@ -147,7 +147,7 @@ public static partial class Checks
         if (check.IsShortCircuited || !check.IsValueNull && regex.IsMatch(check.Value))
             return check;
 
-        check.CreateAndAddError(errorMessageFactory, regex);
+        check = check.CreateAndAddError(errorMessageFactory, regex);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
@@ -175,7 +175,7 @@ public static partial class Checks
         if (check.IsShortCircuited || check.Value.IsEmail())
             return check;
 
-        check.AddEmailError(message);
+        check = check.AddEmailError(message);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
@@ -202,7 +202,7 @@ public static partial class Checks
         if (check.IsShortCircuited || check.Value.IsEmail())
             return check;
 
-        check.CreateAndAddError(errorMessageFactory);
+        check = check.CreateAndAddError(errorMessageFactory);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
@@ -228,7 +228,7 @@ public static partial class Checks
         if (check.IsShortCircuited || !check.IsValueNull && check.Value.Length > length)
             return check;
 
-        check.AddLongerThanError(length, message);
+        check = check.AddLongerThanError(length, message);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
@@ -252,7 +252,7 @@ public static partial class Checks
         if (check.IsShortCircuited || !check.IsValueNull && check.Value.Length > length)
             return check;
 
-        check.CreateAndAddError(errorMessageFactory, length);
+        check = check.CreateAndAddError(errorMessageFactory, length);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
@@ -278,7 +278,7 @@ public static partial class Checks
         if (check.IsShortCircuited || !check.IsValueNull && check.Value.Length < length)
             return check;
 
-        check.AddShorterThanError(length, message);
+        check = check.AddShorterThanError(length, message);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
@@ -302,7 +302,7 @@ public static partial class Checks
         if (check.IsShortCircuited || !check.IsValueNull && check.Value.Length < length)
             return check;
 
-        check.CreateAndAddError(errorMessageFactory, length);
+        check = check.CreateAndAddError(errorMessageFactory, length);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
@@ -313,7 +313,7 @@ public static partial class Checks
     /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
     /// <param name="range">
     /// The value describing the allowed lower and upper boundaries.
-    /// Use the static <see cref="Range" /> class to fluently create a <see cref="Range{T}" /> instance.
+    /// Use the static <see cref="Tools.Range" /> class to fluently create a <see cref="Range{T}" /> instance.
     /// </param>
     /// <param name="message">
     /// The error message that will be added to the context (optional). If null is provided, the default error
@@ -331,7 +331,7 @@ public static partial class Checks
         if (check.IsShortCircuited || !check.IsValueNull && range.IsValueWithinRange(check.Value.Length))
             return check;
 
-        check.AddLengthInRangeError(range, message);
+        check = check.AddLengthInRangeError(range, message);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
@@ -342,7 +342,7 @@ public static partial class Checks
     /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
     /// <param name="range">
     /// The value describing the allowed lower and upper boundaries.
-    /// Use the static <see cref="Range" /> class to fluently create a <see cref="Range{T}" /> instance.
+    /// Use the static <see cref="Tools.Range" /> class to fluently create a <see cref="Range{T}" /> instance.
     /// </param>
     /// <param name="errorMessageFactory">The delegate that is used to create the error message.</param>
     /// <param name="shortCircuitOnError">
@@ -358,7 +358,7 @@ public static partial class Checks
         if (check.IsShortCircuited || !check.IsValueNull && range.IsValueWithinRange(check.Value.Length))
             return check;
 
-        check.CreateAndAddError(errorMessageFactory, range);
+        check = check.CreateAndAddError(errorMessageFactory, range);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
@@ -394,13 +394,13 @@ public static partial class Checks
         }
 
         StringInvalid:
-        check.AddOnlyDigitsError(message);
+        check = check.AddOnlyDigitsError(message);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
     /// <summary>
     /// Checks if the specified string contains only digits,
-    /// or otherwise adds an error message to the validation context.
+    /// or otherwise adds the error message that was created by the specified factory to the validation context.
     /// </summary>
     /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
     /// <param name="errorMessageFactory">The delegate that is used to create the error message.</param>
@@ -428,7 +428,7 @@ public static partial class Checks
         }
 
         StringInvalid:
-        check.CreateAndAddError(errorMessageFactory);
+        check = check.CreateAndAddError(errorMessageFactory);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
@@ -465,13 +465,13 @@ public static partial class Checks
         }
 
         StringInvalid:
-        check.AddOnlyLettersAndDigitsError(message);
+        check = check.AddOnlyLettersAndDigitsError(message);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
     /// <summary>
     /// Checks if the specified string contains only letters and digits,
-    /// or otherwise adds an error message to the validation context.
+    /// or otherwise adds the error message that was created by the specified factory to the validation context.
     /// This method uses the <see cref="char.IsLetterOrDigit(char)" /> method internally.
     /// </summary>
     /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
@@ -500,7 +500,77 @@ public static partial class Checks
         }
 
         StringInvalid:
-        check.CreateAndAddError(errorMessageFactory);
+        check = check.CreateAndAddError(errorMessageFactory);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
+    }
+
+    /// <summary>
+    /// Tries to parse the string to a value of the specified enum,
+    /// or otherwise adds an error message to the validation context.
+    /// If the string is parsed successfully, true will be returned,
+    /// else false. This method will return false when the check is
+    /// already short-circuited.
+    /// </summary>
+    /// <typeparam name="TEnum">The enum type the string should be parsed to.</typeparam>
+    /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
+    /// <param name="parsedEnumValue">The parsed enum value if parsing was successful.</param>
+    /// <param name="ignoreCase">
+    /// The value indicating if parsing should occur in a case-sensitive or case-insensitive fashion.
+    /// </param>
+    /// <param name="message">
+    /// The error message that will be added to the context (optional). If null is provided, the default error
+    /// message will be created from the error templates associated to the validation context.
+    /// </param>
+    public static bool TryParseToEnum<TEnum>(this Check<string> check,
+                                             out TEnum parsedEnumValue,
+                                             bool ignoreCase = true,
+                                             string? message = null)
+        where TEnum : struct, Enum
+    {
+        if (check.IsShortCircuited)
+        {
+            parsedEnumValue = default;
+            return false;
+        }
+
+        if (Enum.TryParse(check.Value, ignoreCase, out parsedEnumValue))
+            return true;
+
+        check.AddTryParseToEnumError(message);
+        return false;
+    }
+
+    /// <summary>
+    /// Tries to parse the string to a value of the specified enum,
+    /// or otherwise adds the error message that was created by the specified factory to the validation context.
+    /// If the string is parsed successfully, true will be returned,
+    /// else false. This method will return false when the check is
+    /// already short-circuited.
+    /// </summary>
+    /// <typeparam name="TEnum">The enum type the string should be parsed to.</typeparam>
+    /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
+    /// <param name="parsedEnumValue">The parsed enum value if parsing was successful.</param>
+    /// <param name="errorMessageFactory">The delegate that is used to create the error message.</param>
+    /// <param name="ignoreCase">
+    /// The value indicating if parsing should occur in a case-sensitive or case-insensitive fashion.
+    /// </param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="errorMessageFactory" /> is null.</exception>
+    public static bool TryParseToEnum<TEnum>(this Check<string> check,
+                                             out TEnum parsedEnumValue,
+                                             Func<Check<string>, string> errorMessageFactory,
+                                             bool ignoreCase = true)
+        where TEnum : struct, Enum
+    {
+        if (check.IsShortCircuited)
+        {
+            parsedEnumValue = default;
+            return false;
+        }
+
+        if (Enum.TryParse(check.Value, ignoreCase, out parsedEnumValue))
+            return true;
+
+        check.CreateAndAddError(errorMessageFactory);
+        return false;
     }
 }

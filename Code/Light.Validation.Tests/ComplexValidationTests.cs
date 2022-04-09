@@ -38,8 +38,8 @@ public sealed class ComplexValidationTests
         new ()
         {
             new () { Name = "\t", DateOfBirth = new DateTime(1857, 3, 30) },
-            new () { Name = "Valid Name", DateOfBirth = new DateTime(2000, 5, 13), Address = new () { Location = "", Street = "\t\r", ZipCode = "Not a ZIP code"} },
-            new () { Name = "This name is OK", DateOfBirth = new DateTime(1879, 11, 14), Address = new () { Location = "Regensburg", ZipCode = "93049", Street = "University Street"} }
+            new () { Name = "Valid Name", DateOfBirth = new DateTime(2000, 5, 13), Address = new () { Location = "", Street = "\t\r", ZipCode = "Not a ZIP code" } },
+            new () { Name = "This name is OK", DateOfBirth = new DateTime(1879, 11, 14), Address = new () { Location = "Regensburg", ZipCode = "93049", Street = "University Street" } }
         };
 
     [Fact]
