@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using Light.GuardClauses;
 using Light.Validation.Tools;
 
@@ -78,5 +79,91 @@ public static partial class Checks
 
         var newValue = Math.Round(check.Value, decimals, mode);
         return check.WithNewValue(newValue);
+    }
+
+    /// <summary>
+    /// Tries to parse the number to a value of the specified enum,
+    /// or otherwise adds an error message to the validation context.
+    /// If the number is parsed successfully, true will be returned,
+    /// else false. This method will return false when the check is
+    /// already short-circuited.
+    /// </summary>
+    /// <typeparam name="TEnum">The enum type the number should be parsed to.</typeparam>
+    /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
+    /// <param name="parsedEnumValue">The parsed enum value if parsing was successful.</param>
+    /// <param name="message">
+    /// The error message that will be added to the context (optional). If null is provided, the default error
+    /// message will be created from the error templates associated to the validation context.
+    /// </param>
+    public static bool TryParseToEnum<TEnum>(this Check<int> check, out TEnum parsedEnumValue, string? message = null)
+        where TEnum : struct, Enum
+    {
+        if (check.IsShortCircuited)
+        {
+            parsedEnumValue = default;
+            return false;
+        }
+
+        parsedEnumValue = ConvertInt32ToEnum<TEnum>(check.Value);
+        if (parsedEnumValue.IsValidEnumValue())
+            return true;
+
+        check.AddTryParseToEnumError(message);
+        parsedEnumValue = default;
+        return false;
+    }
+
+    /// <summary>
+    /// Tries to parse the number to a value of the specified enum,
+    /// or otherwise adds an error message to the validation context.
+    /// If the number is parsed successfully, true will be returned,
+    /// else false. This method will return false when the check is
+    /// already short-circuited.
+    /// </summary>
+    /// <typeparam name="TEnum">The enum type the number should be parsed to.</typeparam>
+    /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
+    /// <param name="parsedEnumValue">The parsed enum value if parsing was successful.</param>
+    /// <param name="errorMessageFactory">The delegate that is used to create the error message.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="errorMessageFactory" /> is null.</exception>
+    public static bool TryParseToEnum<TEnum>(this Check<int> check,
+                                             out TEnum parsedEnumValue,
+                                             Func<Check<int>, string> errorMessageFactory)
+        where TEnum : struct, Enum
+    {
+        if (check.IsShortCircuited)
+        {
+            parsedEnumValue = default;
+            return false;
+        }
+
+        parsedEnumValue = ConvertInt32ToEnum<TEnum>(check.Value);
+        if (parsedEnumValue.IsValidEnumValue())
+            return true;
+
+        check.CreateAndAddError(errorMessageFactory);
+        parsedEnumValue = default;
+        return false;
+    }
+
+    private static TEnum ConvertInt32ToEnum<TEnum>(int value)
+        where TEnum : struct, Enum
+    {
+        var enumSize = Unsafe.SizeOf<TEnum>();
+        switch (enumSize)
+        {
+            case 1:
+                var byteValue = (byte)value;
+                return Unsafe.As<byte, TEnum>(ref byteValue);
+            case 2:
+                var shortValue = (short)value;
+                return Unsafe.As<short, TEnum>(ref shortValue);
+            case 4:
+                return Unsafe.As<int, TEnum>(ref value);
+            case 8:
+                long longValue = value;
+                return Unsafe.As<long, TEnum>(ref longValue);
+            default:
+                throw new InvalidOperationException($"The enum type \"{typeof(TEnum)}\" has an unknown size of {enumSize}.");
+        }
     }
 }

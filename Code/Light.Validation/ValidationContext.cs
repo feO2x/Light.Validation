@@ -69,11 +69,7 @@ public class ValidationContext : ExtensibleObject
     /// <summary>
     /// <para>
     /// Adds an error message to the errors dictionary using the specified key.
-    /// </para>
-    /// <para>
-    /// By default, the key is not normalized when calling this method.
-    /// You can change this by passing in <see cref="Options" /> with
-    /// NormalizeKeyOnAddError set to true.
+    /// The key is not normalized when calling this method.
     /// </para>
     /// <para>
     /// When there already is an error message associated with the given key, your new
@@ -92,8 +88,6 @@ public class ValidationContext : ExtensibleObject
     {
         key.MustNotBeNull();
         error.MustNotBeNull();
-
-        key = NormalizeKey(key, Options.IsNormalizingKeyOnAddError);
 
         if (TryAddFirstError(key, error))
             return;
@@ -133,24 +127,12 @@ public class ValidationContext : ExtensibleObject
     }
 
     /// <summary>
-    /// <para>
-    /// Removes the error with the specified key.
-    /// </para>
-    /// <para>
-    /// By default, the key is not normalized when calling this method.
-    /// You can change this by passing in <see cref="Options" /> with
-    /// NormalizeKeyOnRemoveError set to true.
-    /// </para>
+    /// Removes the error with the specified key. The key is not normalized when calling this method.
     /// </summary>
     /// <param name="key">The key that identifies the error.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="key" /> is null.</exception>
-    public bool RemoveError(string key)
-    {
-        key.MustNotBeNull();
-
-        key = NormalizeKey(key, Options.IsNormalizingKeyOnRemoveError);
-        return Errors?.Remove(key) ?? false;
-    }
+    public bool RemoveError(string key) =>
+        Errors?.Remove(key) ?? false;
 
     private Dictionary<string, object> CreateErrorsDictionary() => new (Options.KeyComparer);
 
@@ -196,19 +178,17 @@ public class ValidationContext : ExtensibleObject
         if (typeof(T) == typeof(string))
         {
             key.MustNotBeNull();
-            key = NormalizeKey(key, Options.IsNormalizingKeyOnCheck);
 
             if (!DetermineBooleanSetting(normalizeValue, Options.IsNormalizingStringValues))
-                return new Check<T>(this, key, value);
+                return new Check<T>(this, key, false, value);
 
             var stringValue = Unsafe.As<T, string>(ref value);
             stringValue = NormalizeStringValue(stringValue);
-            return new Check<T>(this, key, Unsafe.As<string, T>(ref stringValue));
+            return new Check<T>(this, key, false, Unsafe.As<string, T>(ref stringValue));
         }
         else
         {
             key.MustNotBeNull();
-            key = NormalizeKey(key, Options.IsNormalizingKeyOnCheck);
 
             if (value is string stringValue && DetermineBooleanSetting(normalizeValue, Options.IsNormalizingStringValues))
             {
@@ -216,7 +196,7 @@ public class ValidationContext : ExtensibleObject
                 value = Unsafe.As<string, T>(ref stringValue);
             }
 
-            return new Check<T>(this, key, value);
+            return new Check<T>(this, key, false, value);
         }
     }
 
@@ -240,7 +220,7 @@ public class ValidationContext : ExtensibleObject
         {
             error = string.Format(
                 ErrorTemplates.NotNull,
-                NormalizeKey(key, Options.IsNormalizingKeyOnCheckForNull)
+                NormalizeKey(key, Options.IsNormalizingKeys)
             );
             return true;
         }
@@ -254,7 +234,7 @@ public class ValidationContext : ExtensibleObject
     /// <summary>
     /// Normalizes the specified string value.
     /// </summary>
-    public string NormalizeStringValue(string stringValue) =>
+    public string NormalizeStringValue(string? stringValue) =>
         Options.NormalizeStringValue?.Invoke(stringValue) ?? stringValue.NormalizeString();
 
     /// <summary>

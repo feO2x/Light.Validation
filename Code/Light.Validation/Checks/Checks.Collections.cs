@@ -31,7 +31,7 @@ public static partial class Checks
         if (check.IsShortCircuited || !check.IsValueNull && check.Value.GetCount() == count)
             return check;
 
-        check.AddCountError(count, message);
+        check = check.AddCountError(count, message);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 
@@ -56,7 +56,7 @@ public static partial class Checks
     {
         if (check.IsShortCircuited || !check.IsValueNull && check.Value.GetCount() == count)
             return check;
-        check.CreateAndAddError(errorMessageFactory, count);
+        check = check.CreateAndAddError(errorMessageFactory, count);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
 

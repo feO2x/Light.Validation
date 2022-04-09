@@ -181,25 +181,25 @@ public class ErrorTemplates : ExtensibleObject
 
     /// <summary>
     /// Gets the template for the "Longer Than" error message.
-    /// The default value is "{0} must be longer than {1}".
+    /// The default value is "{0} must be longer than {1} characters".
     /// This template takes two parameters:
     /// <list type="bullet">
     /// <item>{0} key</item>
     /// <item>{1} the comparative length value</item>
     /// </list>
     /// </summary>
-    public string LongerThan { get; init; } = "{0} must be longer than {1}";
+    public string LongerThan { get; init; } = "{0} must be longer than {1} characters";
 
     /// <summary>
     /// Gets the template for the "Shorter Than" error message.
-    /// The default value is "{0} must be shorter than {1}".
+    /// The default value is "{0} must be shorter than {1} characters".
     /// This template takes two parameters:
     /// <list type="bullet">
     /// <item>{0} key</item>
     /// <item>{1} the comparative length value</item>
     /// </list>
     /// </summary>
-    public string ShorterThan { get; init; } = "{0} must be shorter than {1}";
+    public string ShorterThan { get; init; } = "{0} must be shorter than {1} characters";
 
     /// <summary>
     /// Gets the template for the "Length In Range" error message.
@@ -252,6 +252,16 @@ public class ErrorTemplates : ExtensibleObject
     /// </list>
     /// </summary>
     public string CountMultiple { get; init; } = "{0} must have {1} items";
+
+    /// <summary>
+    /// Gets the template for the "Try Parse To Enum" error message.
+    /// The default value is "{0} is not one of the allowed values".
+    /// The template takes one parameter:
+    /// <list type="bullet">
+    /// <item>{0} key</item>
+    /// </list>
+    /// </summary>
+    public string TryParseToEnum { get; init; } = "{0} must be one of the allowed values";
 
     /// <summary>
     /// Formats the specified parameter, potentially using the culture info attached to this error templates instance.

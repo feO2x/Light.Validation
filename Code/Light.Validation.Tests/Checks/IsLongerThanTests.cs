@@ -32,7 +32,7 @@ public static class IsLongerThanTests
 
         var check = context.Check(dto.Value).IsLongerThan(length);
 
-        context.ShouldHaveSingleError("value", $"value must be longer than {length}");
+        context.ShouldHaveSingleError("value", $"value must be longer than {length} characters");
         check.ShouldNotBeShortCircuited();
     }
 
