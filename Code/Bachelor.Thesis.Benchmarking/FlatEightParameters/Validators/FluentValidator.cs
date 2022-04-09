@@ -2,7 +2,7 @@
 using FluentValidation;
 using FluentValidation.Results;
 
-namespace Bachelor.Thesis.Benchmarking.FlatEightParametersDto.Validators;
+namespace Bachelor.Thesis.Benchmarking.FlatEightParameters.Validators;
 
 public class FluentValidator : AbstractValidator<EmployeeDto>
 {

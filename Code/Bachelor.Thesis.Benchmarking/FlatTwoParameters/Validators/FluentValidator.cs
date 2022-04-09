@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using FluentValidation.Results;
 
-namespace Bachelor.Thesis.Benchmarking.FlatTwoParametersDto.Validators;
+namespace Bachelor.Thesis.Benchmarking.FlatTwoParameters.Validators;
 
 public class FluentValidator : AbstractValidator<UserDto>
 {

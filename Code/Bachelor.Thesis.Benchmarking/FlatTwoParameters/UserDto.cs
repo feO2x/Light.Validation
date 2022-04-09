@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Bachelor.Thesis.Benchmarking.FlatTwoParametersDto;
+namespace Bachelor.Thesis.Benchmarking.FlatTwoParameters;
 
 public class UserDto
 {

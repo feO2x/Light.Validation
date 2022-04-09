@@ -2,7 +2,7 @@
 using Light.Validation.Checks;
 using Range = Light.Validation.Tools.Range;
 
-namespace Bachelor.Thesis.Benchmarking.FlatEightParametersDto.Validators;
+namespace Bachelor.Thesis.Benchmarking.FlatEightParameters.Validators;
 
 public class LightValidator : Validator<EmployeeDto>
 {

@@ -1,8 +1,8 @@
-﻿using Bachelor.Thesis.Benchmarking.ComplexTwoParametersDto.Dto;
+﻿using Bachelor.Thesis.Benchmarking.ComplexTwoParameters.Dto;
 using FluentValidation;
 using FluentValidation.Results;
 
-namespace Bachelor.Thesis.Benchmarking.ComplexTwoParametersDto.FluentValidator;
+namespace Bachelor.Thesis.Benchmarking.ComplexTwoParameters.FluentValidator;
 
 public class FluentAddressValidator : AbstractValidator<Address>
 {

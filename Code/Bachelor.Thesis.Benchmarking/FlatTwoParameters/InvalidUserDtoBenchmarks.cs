@@ -1,25 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Bachelor.Thesis.Benchmarking.FlatTwoParametersDto.Validators;
+using Bachelor.Thesis.Benchmarking.FlatTwoParameters.Validators;
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Configs;
 
-namespace Bachelor.Thesis.Benchmarking.FlatTwoParametersDto;
+namespace Bachelor.Thesis.Benchmarking.FlatTwoParameters;
 
-[GroupBenchmarksBy(BenchmarkLogicalGroupRule.ByParams)]
-public class ValidUserDtoBenchmarks
+public class InvalidUserDtoBenchmarks
 {
-    public FluentValidator FluentValidator = new ();
+    public UserDto Dto = new() { Id = -1, Name = String.Empty };
 
-    public LightValidator LightValidator = new ();
-
-    [ParamsSource(nameof(ValuesForDto))]
-    public UserDto Dto { get; set; } = null!;
-
-    public static IEnumerable<UserDto> ValuesForDto => new[]
-    {
-        UserDto.ValidDto,
-        UserDto.InvalidDto
-    };
+    public FluentValidator FluentValidator = new();
+    public LightValidator LightValidator = new();
 
     [Benchmark(Baseline = true)]
     public object? CheckViaLightValidator()
@@ -31,7 +21,7 @@ public class ValidUserDtoBenchmarks
     [Benchmark]
     public object? CheckViaFluentValidator() =>
         FluentValidator.Validate(Dto);
-
+    
     [Benchmark]
     public object CheckViaModelValidation()
     {

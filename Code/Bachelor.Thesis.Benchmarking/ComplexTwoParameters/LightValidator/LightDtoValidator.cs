@@ -1,7 +1,7 @@
 ﻿using Light.Validation;
 using Light.Validation.Checks;
 
-namespace Bachelor.Thesis.Benchmarking.ComplexTwoParametersDto.LightValidator;
+namespace Bachelor.Thesis.Benchmarking.ComplexTwoParameters.LightValidator;
 
 public class LightDtoValidator : Validator<Dto.CustomerDto>
 {

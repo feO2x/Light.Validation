@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Bachelor.Thesis.Benchmarking.ComplexTwoParametersDto.Dto;
+namespace Bachelor.Thesis.Benchmarking.ComplexTwoParameters.Dto;
 
 public class User
 {

@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Bachelor.Thesis.Benchmarking.ComplexTwoParametersDto.Dto;
-using Bachelor.Thesis.Benchmarking.ComplexTwoParametersDto.FluentValidator;
-using Bachelor.Thesis.Benchmarking.ComplexTwoParametersDto.LightValidator;
+using Bachelor.Thesis.Benchmarking.ComplexTwoParameters.Dto;
+using Bachelor.Thesis.Benchmarking.ComplexTwoParameters.FluentValidator;
+using Bachelor.Thesis.Benchmarking.ComplexTwoParameters.LightValidator;
 using BenchmarkDotNet.Attributes;
 
-namespace Bachelor.Thesis.Benchmarking.ComplexTwoParametersDto;
+namespace Bachelor.Thesis.Benchmarking.ComplexTwoParameters;
 
 public class InvalidCustomerDtoBenchmarks
 {
