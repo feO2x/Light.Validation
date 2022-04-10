@@ -2,9 +2,9 @@
 
 namespace Bachelor.Thesis.Benchmarking.FlatCollection.Validators;
 
-public class FluentDtoValidation : AbstractValidator<FlatCollection>
+public class FluentDtoValidator : AbstractValidator<FlatCollection>
 {
-    public FluentDtoValidation()
+    public FluentDtoValidator()
     {
         RuleFor(dto => dto.Names).NotEmpty();
         RuleFor(dto => dto.Names.Count).InclusiveBetween(1, 10);
