@@ -17,7 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bachelor.Thesis.Benchmarking", "Bachelor.Thesis.Benchmarking\Bachelor.Thesis.Benchmarking.csproj", "{B7E8A6AC-2B45-453D-8843-86E676DBC16F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bachelor.Thesis.Validators.Test", "Bachelor.Thesis.Validators.Test\Bachelor.Thesis.Validators.Test.csproj", "{DA4EA18D-5043-4F1D-897A-00FA4FCA4C5A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bachelor.Thesis.Test", "Bachelor.Thesis.Validators.Test\Bachelor.Thesis.Test.csproj", "{DA4EA18D-5043-4F1D-897A-00FA4FCA4C5A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

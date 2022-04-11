@@ -4,7 +4,7 @@ using Bachelor.Thesis.Benchmarking.FlatTwoParameters.Validators;
 using Light.GuardClauses;
 using Xunit;
 
-namespace Bachelor.Thesis.Validators.Test;
+namespace Bachelor.Thesis.Test;
 
 public class FlatTwoParametersValidatorTest
 {
