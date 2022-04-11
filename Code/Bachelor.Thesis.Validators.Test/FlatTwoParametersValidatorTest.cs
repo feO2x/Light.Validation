@@ -6,7 +6,7 @@ using Xunit;
 
 namespace Bachelor.Thesis.Validators.Test;
 
-public class FlatTwoParametersTest
+public class FlatTwoParametersValidatorTest
 {
     private readonly UserDto _validUser = UserDto.ValidDto;
     private readonly UserDto _invalidUser = UserDto.InvalidDto;
