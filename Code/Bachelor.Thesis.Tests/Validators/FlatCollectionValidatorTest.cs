@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Bachelor.Thesis.Benchmarking.FlatCollection;
 using Bachelor.Thesis.Benchmarking.FlatCollection.Validators;
 using Light.GuardClauses;
@@ -32,7 +33,8 @@ public class FlatCollectionValidatorTest
     [Fact]
     public void ModelValidatorValidDtoTest()
     {
-        var result = Validator.TryValidateObject(_validCollection, new ValidationContext(_validCollection), null, true);
+        var errors = new List<ValidationResult>();
+        var result = Validator.TryValidateObject(_validCollection, new ValidationContext(_validCollection), errors, true);
 
         result.MustBe(true);
     }
@@ -58,7 +60,8 @@ public class FlatCollectionValidatorTest
     [Fact]
     public void ModelValidatorInvalidDtoTest()
     {
-        var result = Validator.TryValidateObject(_invalidCollection, new ValidationContext(_invalidCollection), null, true);
+        var errors = new List<ValidationResult>();
+        var result = Validator.TryValidateObject(_invalidCollection, new ValidationContext(_invalidCollection), errors, true);
 
         result.MustBe(false);
     }
