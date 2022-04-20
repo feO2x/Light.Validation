@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Bachelor.Thesis.Benchmarking.ComplexTwoParameters.Dto;
 using Bachelor.Thesis.Benchmarking.ComplexTwoParameters.FluentValidator;
 using Bachelor.Thesis.Benchmarking.ComplexTwoParameters.LightValidator;
@@ -33,7 +34,8 @@ public class ComplexTwoParametersValidatorTest
     [Fact]
     public void ModelValidatorValidDtoTest()
     {
-        var result = Validator.TryValidateObject(_validCustomer, new ValidationContext(_validCustomer), null, true);
+        var errors = new List<ValidationResult>();
+        var result = Validator.TryValidateObject(_validCustomer, new ValidationContext(_validCustomer), errors, true);
 
         result.MustBe(true);
     }
@@ -59,7 +61,8 @@ public class ComplexTwoParametersValidatorTest
     [Fact]
     public void ModelValidatorInvalidDtoTest()
     {
-        var result = Validator.TryValidateObject(_invalidCustomer, new ValidationContext(_invalidCustomer), null, true);
+        var errors = new List<ValidationResult>();
+        var result = Validator.TryValidateObject(_invalidCustomer, new ValidationContext(_invalidCustomer), errors, true);
 
         result.MustBe(false);
     }

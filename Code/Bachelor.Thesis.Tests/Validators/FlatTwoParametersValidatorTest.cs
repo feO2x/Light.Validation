@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Bachelor.Thesis.Benchmarking.FlatTwoParameters;
 using Bachelor.Thesis.Benchmarking.FlatTwoParameters.Validators;
@@ -32,7 +33,8 @@ public class FlatTwoParametersValidatorTest
     [Fact]
     public void ModelValidatorValidDtoTest()
     {
-        var result = Validator.TryValidateObject(_validUser, new ValidationContext(_validUser), null, true);
+        var errors = new List<ValidationResult>();
+        var result = Validator.TryValidateObject(_validUser, new ValidationContext(_validUser), errors, true);
 
         result.MustBe(true);
     }
@@ -58,7 +60,8 @@ public class FlatTwoParametersValidatorTest
     [Fact]
     public void ModelValidatorInvalidDtoTest()
     {
-        var result = Validator.TryValidateObject(_invalidUser, new ValidationContext(_invalidUser), null, true);
+        var errors = new List<ValidationResult>();
+        var result = Validator.TryValidateObject(_invalidUser, new ValidationContext(_invalidUser), errors, true);
 
         result.MustBe(false);
     }

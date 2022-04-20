@@ -60,7 +60,8 @@ public class FlatEightParametersValidatorTest
     [Fact]
     public void ModelValidatorInvalidDtoTest()
     {
-        var result = Validator.TryValidateObject(_invalidEmployee, new ValidationContext(_invalidEmployee), null, true);
+        var errors = new List<ValidationResult>();
+        var result = Validator.TryValidateObject(_invalidEmployee, new ValidationContext(_invalidEmployee), errors, true);
 
         result.MustBe(false);
     }
