@@ -6,7 +6,7 @@ public class EmployeeDto
 {
     public static EmployeeDto ValidEmployeeDto = new ()
     {
-        Id = new (),
+        Id = Guid.NewGuid(),
         Name = "John Doe",
         Department = 420,
         WeeklyWorkingHours = 40,
@@ -41,7 +41,7 @@ public class EmployeeDto
     public int WeeklyWorkingHours { get; set; }
 
     [Required]
-    [RegularExpression(@"^[0-9]")]
+    [RegularExpression(@"^[0-9]+")]
     public string PhoneNumber { get; set; } = string.Empty;
 
     [Required]

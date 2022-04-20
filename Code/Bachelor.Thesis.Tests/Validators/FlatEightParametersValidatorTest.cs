@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Bachelor.Thesis.Benchmarking.FlatEightParameters;
 using Bachelor.Thesis.Benchmarking.FlatEightParameters.Validators;
 using Light.GuardClauses;
@@ -32,7 +33,8 @@ public class FlatEightParametersValidatorTest
     [Fact]
     public void ModelValidatorValidDtoTest()
     {
-        var result = Validator.TryValidateObject(_validEmployee, new ValidationContext(_validEmployee), null, true);
+        var errors = new List<ValidationResult>();
+        var result = Validator.TryValidateObject(_validEmployee, new ValidationContext(_validEmployee), errors, true);
 
         result.MustBe(true);
     }
