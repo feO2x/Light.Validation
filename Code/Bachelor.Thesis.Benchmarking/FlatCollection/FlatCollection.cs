@@ -15,9 +15,9 @@ public class FlatCollection
         },
         Availability = new ()
         {
-            { 12345, true },
-            { 45678, false },
-            { 98765, true }
+            { 1234, true },
+            { 4567, false },
+            { 9876, true }
         }
     };
 
