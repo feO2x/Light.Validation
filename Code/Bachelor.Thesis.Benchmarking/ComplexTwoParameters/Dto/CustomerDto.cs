@@ -16,10 +16,8 @@ public class CustomerDto
     };
 
     [Required]
-    [ValidateComplexType] // doesn't work as of right now...
     public User User { get; set; } = new ();
 
     [Required]
-    [ValidateComplexType]
     public Address Address { get; set; } = new ();
 }

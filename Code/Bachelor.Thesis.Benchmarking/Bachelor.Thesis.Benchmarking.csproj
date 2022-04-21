@@ -16,7 +16,6 @@
 		<ProjectReference Include="..\Light.Validation\Light.Validation.csproj" />
 		<PackageReference Include="FluentValidation" Version="10.4.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.DataAnnotations.Validation" Version="3.2.0-rc1.20223.4" />
 	</ItemGroup>
 
 </Project>
