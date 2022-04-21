@@ -7,7 +7,7 @@ public class User
     public static User ValidUser = new ()
     {
         UserName = "JohnDoe1337",
-        Password = "P4S$W0rD123",
+        Password = "P4SsW0rD123",
         Name = "John Doe",
         Email = "john.doe@example.com",
         Active = true,
