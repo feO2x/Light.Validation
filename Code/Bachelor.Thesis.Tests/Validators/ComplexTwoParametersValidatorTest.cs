@@ -72,7 +72,7 @@ public class ComplexTwoParametersValidatorTest
         var errors = new List<ValidationResult>();
         var result = Validator.TryValidateObject(_invalidCustomer, new ValidationContext(_invalidCustomer), errors, true);
 
-        var errorsNestedObjectUser = new List<ValidationResult>();
+        /*var errorsNestedObjectUser = new List<ValidationResult>();
         var resultNestedObjectUser = Validator.TryValidateObject(User.InvalidUser, new ValidationContext(User.InvalidUser), errorsNestedObjectUser, true);
 
         var errorsNestedObjectAddress = new List<ValidationResult>();
@@ -80,6 +80,7 @@ public class ComplexTwoParametersValidatorTest
 
         result.MustBe(true);
         resultNestedObjectUser.MustBe(false);
-        resultNestedObjectAddress.MustBe(false);
+        resultNestedObjectAddress.MustBe(false);*/
+        result.MustBe(false); // result is always true -> nested objects don't get validated without explicit validation call
     }
 }
