@@ -35,17 +35,9 @@ public class ComplexTwoParametersValidatorTest
     public void ModelValidatorValidDtoTest()
     {
         var errors = new List<ValidationResult>();
-        var result = Validator.TryValidateObject(_validCustomer, new ValidationContext(_validCustomer), errors, true);
-
-        var errorsNestedObjectUser = new List<ValidationResult>();
-        var resultNestedObjectUser = Validator.TryValidateObject(User.ValidUser, new ValidationContext(User.ValidUser), errorsNestedObjectUser);
-
-        var errorsNestedObjectAddress = new List<ValidationResult>();
-        var resultNestedObjectAddress = Validator.TryValidateObject(Address.ValidAddress, new ValidationContext(Address.ValidAddress), errorsNestedObjectAddress);
+        var result = Validator.TryValidateObject(_validCustomer, new ValidationContext(_validCustomer), errors);
 
         result.MustBe(true);
-        resultNestedObjectUser.MustBe(true);
-        resultNestedObjectAddress.MustBe(true);
     }
 
     [Fact]
@@ -68,23 +60,6 @@ public class ComplexTwoParametersValidatorTest
 
     [Fact]
     public void ModelValidatorInvalidDtoTest()
-    {
-        var errors = new List<ValidationResult>();
-        var result = Validator.TryValidateObject(_invalidCustomer, new ValidationContext(_invalidCustomer), errors);
-
-        var errorsNestedObjectUser = new List<ValidationResult>();
-        var resultNestedObjectUser = Validator.TryValidateObject(User.InvalidUser, new ValidationContext(User.InvalidUser), errorsNestedObjectUser);
-
-        var errorsNestedObjectAddress = new List<ValidationResult>();
-        var resultNestedObjectAddress = Validator.TryValidateObject(Address.InvalidAddress, new ValidationContext(Address.InvalidAddress), errorsNestedObjectAddress);
-
-        result.MustBe(true);
-        resultNestedObjectUser.MustBe(false);
-        resultNestedObjectAddress.MustBe(false);
-    }
-
-    [Fact]
-    public void ModelValidatorNestedValidationTest()
     {
         var errors = new List<ValidationResult>();
         var result = Validator.TryValidateObject(_invalidCustomer, new ValidationContext(_invalidCustomer), errors);
