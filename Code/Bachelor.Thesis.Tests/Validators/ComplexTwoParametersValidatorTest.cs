@@ -82,4 +82,13 @@ public class ComplexTwoParametersValidatorTest
         resultNestedObjectUser.MustBe(false);
         resultNestedObjectAddress.MustBe(false);
     }
+
+    [Fact]
+    public void ModelValidatorNestedValidationTest()
+    {
+        var errors = new List<ValidationResult>();
+        var result = Validator.TryValidateObject(_invalidCustomer, new ValidationContext(_invalidCustomer), errors, true);
+
+        result.MustBe(false);
+    }
 }
