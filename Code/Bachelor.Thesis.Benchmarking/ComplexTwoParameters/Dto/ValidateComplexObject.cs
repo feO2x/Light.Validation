@@ -12,7 +12,7 @@ public class ValidateComplexObject : ValidationAttribute
         }
 
         var errors = new List<ValidationResult>();
-        var result = Validator.TryValidateObject(value, new ValidationContext(value), errors, true);
+        Validator.TryValidateObject(value, new ValidationContext(value), errors);
 
         if (errors.Count > 0)
         {
