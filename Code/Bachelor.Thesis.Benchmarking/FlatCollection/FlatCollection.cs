@@ -26,7 +26,7 @@ public class FlatCollection
         Names = new ()
         {
             "John Doe 0",
-            "John Doe 1",
+            "John Doe 0123456789 0123456789",
             "John Doe 2",
             "John Doe 3",
             "John Doe 4",
@@ -34,8 +34,7 @@ public class FlatCollection
             "John Doe 6",
             "John Doe 7",
             "John Doe 8",
-            "John Doe 9",
-            "John Doe 10"
+            "John Doe 9"
         },
         Availability = new ()
         {
