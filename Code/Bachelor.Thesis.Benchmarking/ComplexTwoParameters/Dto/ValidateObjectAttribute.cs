@@ -2,7 +2,7 @@
 
 namespace Bachelor.Thesis.Benchmarking.ComplexTwoParameters.Dto;
 
-public class ValidateComplexObject : ValidationAttribute
+public class ValidateObjectAttribute : ValidationAttribute
 {
     protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {

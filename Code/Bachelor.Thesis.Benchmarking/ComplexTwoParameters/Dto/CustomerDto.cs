@@ -15,11 +15,9 @@ public class CustomerDto
         Address = Address.InvalidAddress
     };
 
-    [Required]
-    [ValidateComplexObject]
+    [ValidateObject]
     public User User { get; set; } = new ();
 
-    [Required]
-    [ValidateComplexObject]
+    [ValidateObject]
     public Address Address { get; set; } = new ();
 }
