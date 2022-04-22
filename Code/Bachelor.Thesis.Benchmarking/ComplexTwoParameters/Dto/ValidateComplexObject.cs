@@ -14,16 +14,11 @@ public class ValidateComplexObject : ValidationAttribute
         var errors = new List<ValidationResult>();
         Validator.TryValidateObject(value, new ValidationContext(value), errors);
 
-        if (errors.Count > 0)
+        if (errors.Count != 0)
         {
-            var validationResultString = string.Empty;
+            var compositeResults = new CompositeValidationResult($"Validation for {validationContext.DisplayName} failed!");
 
-            foreach (var error in errors)
-            {
-                validationResultString += error.ErrorMessage + ", ";
-            }
-            
-            return new ValidationResult("The following error messages have been thrown for object " + nameof(value) + ":" + validationResultString);
+            return compositeResults;
         }
 
         return ValidationResult.Success;
