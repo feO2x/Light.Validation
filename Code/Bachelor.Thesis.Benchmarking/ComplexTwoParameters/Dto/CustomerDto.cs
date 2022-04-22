@@ -16,8 +16,10 @@ public class CustomerDto
     };
 
     [Required]
+    [ValidateComplexObject]
     public User User { get; set; } = new ();
 
     [Required]
+    [ValidateComplexObject]
     public Address Address { get; set; } = new ();
 }
