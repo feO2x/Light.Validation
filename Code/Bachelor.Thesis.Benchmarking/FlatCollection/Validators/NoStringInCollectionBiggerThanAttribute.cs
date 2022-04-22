@@ -2,11 +2,11 @@
 
 namespace Bachelor.Thesis.Benchmarking.FlatCollection.Validators;
 
-public class NoStringInCollectionBiggerThan : ValidationAttribute
+public class NoStringInCollectionBiggerThanAttribute : ValidationAttribute
 {
     private readonly int _length;
 
-    public NoStringInCollectionBiggerThan(int length) =>
+    public NoStringInCollectionBiggerThanAttribute(int length) =>
         _length = length;
 
     protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)

@@ -2,11 +2,11 @@
 
 namespace Bachelor.Thesis.Benchmarking.FlatCollection.Validators;
 
-public class NoLongInDictionaryBiggerThan : ValidationAttribute
+public class NoLongInDictionaryBiggerThanAttribute : ValidationAttribute
 {
     private readonly int _maxValue;
 
-    public NoLongInDictionaryBiggerThan(int maxValue) =>
+    public NoLongInDictionaryBiggerThanAttribute(int maxValue) =>
         _maxValue = maxValue;
 
     protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
