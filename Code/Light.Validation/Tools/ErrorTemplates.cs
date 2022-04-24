@@ -20,15 +20,9 @@ public class ErrorTemplates : ExtensibleObject
     /// <summary>
     /// Initializes a new instance of <see cref="ErrorTemplates" />.
     /// </summary>
-    /// <param name="attachedObjects">The dictionary that will be used as the internal storage for attached objects.</param>
-    /// <param name="disallowSettingAttachedObjects">
-    /// The value indicating whether <see cref="ExtensibleObject.SetAttachedObject" /> will throw an exception when being called.
-    /// If this value is set to true, the extensible object is immutable and the fully-filled dictionary of attached objects
-    /// must be passed as a parameter to the constructor. Using this feature makes instances of this class thread-safe.
-    /// </param>
-    public ErrorTemplates(Dictionary<string, object>? attachedObjects = null,
-                          bool disallowSettingAttachedObjects = false)
-        : base(attachedObjects, disallowSettingAttachedObjects) { }
+    /// <param name="other">Another extensible object whose attached objects will be shallow-copied to this instance.</param>
+    public ErrorTemplates(ExtensibleObject? other = null)
+        : base(other) { }
 
     /// <summary>
     /// Gets the default error templates.
