@@ -4,25 +4,25 @@ using Range = Light.Validation.Tools.Range;
 
 namespace Bachelor.Thesis.Benchmarking.CollectionFlat.Validators;
 
-public class LightDtoValidator : Validator<FlatCollection>
+public class LightDtoValidator : Validator<CollectionFlatDto>
 {
-    protected override FlatCollection PerformValidation(ValidationContext context, FlatCollection collectionDto)
+    protected override CollectionFlatDto PerformValidation(ValidationContext context, CollectionFlatDto dto)
     {
-        collectionDto.Names = context.Check(collectionDto.Names).IsNotNull();
-        context.Check(collectionDto.Names.Count).IsIn(Range.FromInclusive(1).ToInclusive(10));
+        dto.Names = context.Check(dto.Names).IsNotNull();
+        context.Check(dto.Names.Count).IsIn(Range.FromInclusive(1).ToInclusive(10));
 
-        foreach (var name in collectionDto.Names)
+        foreach (var name in dto.Names)
         {
             context.Check(name).IsShorterThan(20);
         }
 
-        collectionDto.Availability = context.Check(collectionDto.Availability).IsNotNull();
+        dto.Availability = context.Check(dto.Availability).IsNotNull();
 
-        foreach (var key in collectionDto.Availability.Keys)
+        foreach (var key in dto.Availability.Keys)
         {
             context.Check(key).IsLessThanOrEqualTo(10000);
         }
 
-        return collectionDto;
+        return dto;
     }
 }

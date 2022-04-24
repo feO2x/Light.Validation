@@ -2,7 +2,7 @@
 
 namespace Bachelor.Thesis.Benchmarking.CollectionFlat.Validators;
 
-public class FluentDtoValidator : AbstractValidator<FlatCollection>
+public class FluentDtoValidator : AbstractValidator<CollectionFlatDto>
 {
     public FluentDtoValidator()
     {

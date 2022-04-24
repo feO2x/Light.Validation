@@ -9,14 +9,14 @@ namespace Bachelor.Thesis.Tests.Validators;
 
 public class CollectionFlatValidatorTest
 {
-    private readonly FlatCollection _validCollection = FlatCollection.ValidDto;
-    private readonly FlatCollection _invalidCollection = FlatCollection.InvalidDto;
+    private readonly CollectionFlatDto _valid = CollectionFlatDto.ValidDto;
+    private readonly CollectionFlatDto _invalid = CollectionFlatDto.InvalidDto;
 
     [Fact]
     public void FluentValidatorValidDtoTest()
     {
         var fluentValidator = new FluentDtoValidator();
-        var result = fluentValidator.Validate(_validCollection);
+        var result = fluentValidator.Validate(_valid);
 
         result.IsValid.MustBe(true);
     }
@@ -25,7 +25,7 @@ public class CollectionFlatValidatorTest
     public void LightValidatorValidDtoTest()
     {
         var lightValidator = new LightDtoValidator();
-        var result = lightValidator.Validate(_validCollection);
+        var result = lightValidator.Validate(_valid);
 
         result.IsValid.MustBe(true);
     }
@@ -34,7 +34,7 @@ public class CollectionFlatValidatorTest
     public void ModelValidatorValidDtoTest()
     {
         var errors = new List<ValidationResult>();
-        var result = Validator.TryValidateObject(_validCollection, new ValidationContext(_validCollection), errors, true);
+        var result = Validator.TryValidateObject(_valid, new ValidationContext(_valid), errors, true);
 
         result.MustBe(true);
     }
@@ -43,7 +43,7 @@ public class CollectionFlatValidatorTest
     public void FluentValidatorInvalidDtoTest()
     {
         var fluentValidator = new FluentDtoValidator();
-        var result = fluentValidator.Validate(_invalidCollection);
+        var result = fluentValidator.Validate(_invalid);
 
         result.IsValid.MustBe(false);
     }
@@ -52,7 +52,7 @@ public class CollectionFlatValidatorTest
     public void LightValidatorInvalidDtoTest()
     {
         var lightValidator = new LightDtoValidator();
-        var result = lightValidator.Validate(_invalidCollection);
+        var result = lightValidator.Validate(_invalid);
 
         result.IsValid.MustBe(false);
     }
@@ -61,7 +61,7 @@ public class CollectionFlatValidatorTest
     public void ModelValidatorInvalidDtoTest()
     {
         var errors = new List<ValidationResult>();
-        var result = Validator.TryValidateObject(_invalidCollection, new ValidationContext(_invalidCollection), errors, true);
+        var result = Validator.TryValidateObject(_invalid, new ValidationContext(_invalid), errors, true);
 
         result.MustBe(false);
     }

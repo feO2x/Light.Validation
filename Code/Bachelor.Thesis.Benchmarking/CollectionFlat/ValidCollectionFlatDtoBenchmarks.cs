@@ -6,7 +6,7 @@ namespace Bachelor.Thesis.Benchmarking.CollectionFlat;
 
 public class ValidCollectionFlatDtoBenchmarks
 {
-    public FlatCollection Dto = FlatCollection.ValidDto;
+    public CollectionFlatDto Dto = CollectionFlatDto.ValidDto;
 
     public FluentDtoValidator FluentValidator = new ();
     public LightDtoValidator LightValidator = new ();

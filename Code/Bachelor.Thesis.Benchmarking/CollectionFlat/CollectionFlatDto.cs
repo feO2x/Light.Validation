@@ -3,9 +3,9 @@ using Bachelor.Thesis.Benchmarking.CollectionFlat.Validators;
 
 namespace Bachelor.Thesis.Benchmarking.CollectionFlat;
 
-public class FlatCollection
+public class CollectionFlatDto
 {
-    public static FlatCollection ValidDto = new ()
+    public static CollectionFlatDto ValidDto = new ()
     {
         Names = new ()
         {
@@ -21,7 +21,7 @@ public class FlatCollection
         }
     };
 
-    public static FlatCollection InvalidDto = new ()
+    public static CollectionFlatDto InvalidDto = new ()
     {
         Names = new ()
         {
