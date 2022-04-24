@@ -7,7 +7,7 @@ using Xunit;
 
 namespace Bachelor.Thesis.Tests.Validators;
 
-public class FlatEightParametersValidatorTest
+public class PrimitiveParametersValidatorTest
 {
     private readonly EmployeeDto _validEmployee = EmployeeDto.ValidEmployeeDto;
     private readonly EmployeeDto _invalidEmployee = EmployeeDto.InvalidEmployeeDto;
