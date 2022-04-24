@@ -8,9 +8,11 @@ public class EmployeeDto
     {
         Id = Guid.NewGuid(),
         Name = "John Doe",
+        Position = 'B',
         Department = 420,
         WeeklyWorkingHours = 40,
-        EmployeeId = 123459876,
+        EmployeeId = 12345L,
+        ProductivityScore = 82.3,
         OvertimeWorked = 143.423f,
         HourlySalary = new decimal(16.50)
     };
@@ -19,8 +21,12 @@ public class EmployeeDto
     {
         Id = new (),
         Name = "   x     ",
+        Position = 'a'
         Department = 98,
         WeeklyWorkingHours = 50,
+        EmployeeId = 1023L,
+        ProductivityScore = 120.1,
+        OvertimeWorked = -110.23f,
         HourlySalary = new decimal(8.50)
     };
 
@@ -42,7 +48,7 @@ public class EmployeeDto
     [Required]
     [Range(20, 48)]
     public int WeeklyWorkingHours { get; set; }
-    
+
     [Required]
     [Range(10000L, 99999L)]
     public long EmployeeId { get; set; }
