@@ -4,12 +4,12 @@ using BenchmarkDotNet.Attributes;
 
 namespace Bachelor.Thesis.Benchmarking.CollectionFlat;
 
-public class InvalidCollectionDtoBenchmarks
+public class ValidCollectionFlatDtoBenchmarks
 {
-    public FlatCollection Dto = FlatCollection.InvalidDto;
+    public FlatCollection Dto = FlatCollection.ValidDto;
 
-    public FluentDtoValidator FluentValidator = new();
-    public LightDtoValidator LightValidator = new();
+    public FluentDtoValidator FluentValidator = new ();
+    public LightDtoValidator LightValidator = new ();
 
     [Benchmark(Baseline = true)]
     public object? CheckViaLightValidator()
