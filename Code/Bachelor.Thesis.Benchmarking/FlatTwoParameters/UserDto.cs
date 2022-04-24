@@ -12,7 +12,6 @@ public class UserDto
     public int Id { get; set; }
 
     [Required]
-    [MinLength(1)]
-    [MaxLength(80)]
+    [StringLength(80, MinimumLength = 1)]
     public string Name { get; set; } = String.Empty;
 }
