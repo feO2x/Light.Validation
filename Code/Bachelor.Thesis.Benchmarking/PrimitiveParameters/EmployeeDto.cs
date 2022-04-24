@@ -21,7 +21,7 @@ public class EmployeeDto
     {
         Id = new (),
         Name = "   x     ",
-        Position = 'a'
+        Position = 'a',
         Department = 98,
         WeeklyWorkingHours = 50,
         EmployeeId = 1023L,
