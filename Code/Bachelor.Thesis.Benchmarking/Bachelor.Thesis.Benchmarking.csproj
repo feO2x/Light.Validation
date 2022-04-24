@@ -19,7 +19,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="CollectionComplex\" />
+	  <Folder Include="CollectionComplex\Dto\" />
+	  <Folder Include="CollectionComplex\LightValidation\" />
+	  <Folder Include="CollectionComplex\FluentValidation\" />
 	</ItemGroup>
 
 </Project>
