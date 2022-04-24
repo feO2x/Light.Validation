@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Bachelor.Thesis.Benchmarking.FlatEightParameters;
+namespace Bachelor.Thesis.Benchmarking.PrimitiveParameters;
 
 public class EmployeeDto
 {

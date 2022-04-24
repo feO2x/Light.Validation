@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Bachelor.Thesis.Benchmarking.FlatEightParameters;
-using Bachelor.Thesis.Benchmarking.FlatEightParameters.Validators;
+using Bachelor.Thesis.Benchmarking.PrimitiveParameters;
+using Bachelor.Thesis.Benchmarking.PrimitiveParameters.Validators;
 using Light.GuardClauses;
 using Xunit;
 

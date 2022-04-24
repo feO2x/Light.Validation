@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Bachelor.Thesis.Benchmarking.FlatEightParameters.Validators;
+using Bachelor.Thesis.Benchmarking.PrimitiveParameters.Validators;
 using BenchmarkDotNet.Attributes;
 
-namespace Bachelor.Thesis.Benchmarking.FlatEightParameters;
+namespace Bachelor.Thesis.Benchmarking.PrimitiveParameters;
 
 public class ValidEmployeeDtoBenchmarks
 {
