@@ -10,7 +10,7 @@ public class EmployeeDto
         Name = "John Doe",
         Department = 420,
         WeeklyWorkingHours = 40,
-        PhoneNumber = "0123459876",
+        EmployeeId = 123459876,
         OvertimeWorked = 143.423f,
         HourlySalary = new decimal(16.50)
     };
@@ -28,9 +28,12 @@ public class EmployeeDto
     public Guid Id { get; set; }
 
     [Required]
-    [MinLength(2)]
-    [MaxLength(80)]
+    [StringLength(80, MinimumLength = 2)]
     public string Name { get; set; } = string.Empty;
+
+    [Required]
+    [Range('A', 'Z')]
+    public char Position { get; set; }
 
     [Required]
     [Range(100, 999)]
@@ -39,13 +42,17 @@ public class EmployeeDto
     [Required]
     [Range(20, 48)]
     public int WeeklyWorkingHours { get; set; }
+    
+    [Required]
+    [Range(10000L, 99999L)]
+    public long EmployeeId { get; set; }
 
     [Required]
-    [RegularExpression(@"^[0-9]+")]
-    public string PhoneNumber { get; set; } = string.Empty;
+    [Range(0.0, 100.0)]
+    public double ProductivityScore { get; set; }
 
     [Required]
-    [Range(float.MinValue, float.MaxValue)]
+    [Range(-100.0, 200.0)]
     public float OvertimeWorked { get; set; }
 
     [Required]
