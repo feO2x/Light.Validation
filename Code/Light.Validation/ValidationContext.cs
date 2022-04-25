@@ -18,6 +18,7 @@ public class ValidationContext : ExtensibleObject
     /// <summary>
     /// Initializes a new instance of <see cref="ValidationContext" />.
     /// </summary>
+    /// <param name="factory">The factory that was used to create this context.</param>
     /// <param name="options">
     /// The options for this context (optional). If null is specified,
     /// <see cref="ValidationContextOptions.Default" /> will be used.
@@ -28,14 +29,21 @@ public class ValidationContext : ExtensibleObject
     /// is specified, <see cref="Tools.ErrorTemplates.Default" /> will be used.
     /// </param>
     /// <param name="other">Another extensible object whose attached objects will be shallow-copied to this instance.</param>
-    public ValidationContext(ValidationContextOptions? options = null,
-                             ErrorTemplates? errorTemplates = null,
+    public ValidationContext(IValidationContextFactory factory,
+                             ValidationContextOptions options,
+                             ErrorTemplates errorTemplates,
                              ExtensibleObject? other = null)
         : base(other)
     {
-        Options = options ?? ValidationContextOptions.Default;
-        ErrorTemplates = errorTemplates ?? ErrorTemplates.Default;
+        Factory = factory.MustNotBeNull();
+        Options = options.MustNotBeNull();
+        ErrorTemplates = errorTemplates.MustNotBeNull();
     }
+
+    /// <summary>
+    /// Gets the factory that was used to create this context.
+    /// </summary>
+    private IValidationContextFactory Factory { get; }
 
     /// <summary>
     /// Gets the errors dictionary. This value can be null when no errors were

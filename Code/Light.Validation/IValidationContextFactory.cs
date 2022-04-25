@@ -8,7 +8,7 @@ public interface IValidationContextFactory
     /// <summary>
     /// Creates a new validation context.
     /// </summary>
-    ValidationContext CreateInitialValidationContext();
+    ValidationContext CreateValidationContext();
 
     /// <summary>
     /// Creates a new validation context, usually used to validate
