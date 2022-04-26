@@ -55,9 +55,9 @@ public class CollectionComplexDto
 
     [Required]
     [MinLength(1), MaxLength(10)]
-    public List<ObjectOne> ListOne { get; set; } = new ();
+    public List<OrderDetails> ListOne { get; set; } = new ();
 
     [Required]
     [MinLength(1), MaxLength(10)]
-    public List<ObjectTwo> ListTwo { get; set; } = new ();
+    public List<Article> ListTwo { get; set; } = new ();
 }
