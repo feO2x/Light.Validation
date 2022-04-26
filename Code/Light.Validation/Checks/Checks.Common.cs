@@ -398,7 +398,9 @@ public static partial class Checks
     {
         validator.MustNotBeNull();
 
-        var result = validator.Validate(check.Value, check.Key);
+        var childContext = check.CreateChildContext();
+
+        var result = validator.Validate(check.Value, childContext, check.Key);
         if (result.TryGetErrors(out var errors))
             check = check.AddError(errors);
 
@@ -425,7 +427,8 @@ public static partial class Checks
     {
         validator.MustNotBeNull();
 
-        var result = await validator.ValidateAsync(check.Value, check.Key)
+        var childContext = check.CreateChildContext();
+        var result = await validator.ValidateAsync(check.Value, childContext, check.Key)
                                     .ConfigureAwait(continueOnCapturedContext);
         if (result.TryGetErrors(out var errors))
             check = check.AddError(errors);

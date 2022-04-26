@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using Light.GuardClauses;
 
 namespace Light.Validation;
@@ -13,34 +12,29 @@ public abstract class BaseValidator<T>
     /// <summary>
     /// Initializes a new instance of <see cref="BaseValidator{T}" />
     /// </summary>
-    /// <param name="createValidationContext">
-    /// The delegate that is used to create a new <see cref="ValidationContext" /> instance (optional).
-    /// If null is provided, the constructor of <see cref="ValidationContext" /> is called with all parameters
-    /// set to the default values.
+    /// <param name="validationContextFactory">
+    /// The factory that is used to create a new <see cref="ValidationContext" /> instance.
     /// </param>
     /// <param name="isNullCheckingEnabled">
     /// The value indicating whether the validator automatically performs null-checking (optional).
     /// The default value is true. If enabled, the validator will automatically check if a value is
     /// null and then return the a error message that the value must not be null.
     /// </param>
-    protected BaseValidator(Func<ValidationContext>? createValidationContext, bool isNullCheckingEnabled)
+    protected BaseValidator(IValidationContextFactory validationContextFactory, bool isNullCheckingEnabled)
     {
-        CreateValidationContext = createValidationContext;
+        ValidationContextFactory = validationContextFactory.MustNotBeNull();
         IsNullCheckingEnabled = isNullCheckingEnabled;
     }
 
-    private Func<ValidationContext>? CreateValidationContext { get; }
+    /// <summary>
+    /// Gets the factory that can be used to create validation contexts.
+    /// </summary>
+    protected IValidationContextFactory ValidationContextFactory { get; }
 
     /// <summary>
     /// Gets the value indicating whether the validator should perform automatic null-checking.
     /// </summary>
     protected bool IsNullCheckingEnabled { get; }
-
-    /// <summary>
-    /// Creates the validation context, either using the optional delegate or a standard call to the constructor
-    /// of <see cref="ValidationContext" />.
-    /// </summary>
-    protected ValidationContext CreateContext() => CreateValidationContext?.Invoke() ?? new ();
 
     /// <summary>
     /// This method checks if the validator should perform an automatic null-check (<see cref="IsNullCheckingEnabled" />)

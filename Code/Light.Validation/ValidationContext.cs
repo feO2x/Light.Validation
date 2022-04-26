@@ -18,6 +18,7 @@ public class ValidationContext : ExtensibleObject
     /// <summary>
     /// Initializes a new instance of <see cref="ValidationContext" />.
     /// </summary>
+    /// <param name="factory">The factory that was used to create this context.</param>
     /// <param name="options">
     /// The options for this context (optional). If null is specified,
     /// <see cref="ValidationContextOptions.Default" /> will be used.
@@ -27,21 +28,22 @@ public class ValidationContext : ExtensibleObject
     /// used to format the error messages if a check fails. If null
     /// is specified, <see cref="Tools.ErrorTemplates.Default" /> will be used.
     /// </param>
-    /// <param name="attachedObjects">The dictionary that will be used as the internal storage for attached objects.</param>
-    /// <param name="disallowSettingAttachedObjects">
-    /// The value indicating whether <see cref="ExtensibleObject.SetAttachedObject" /> will throw an exception when being called.
-    /// If this value is set to true, the extensible object is immutable and the fully-filled dictionary of attached objects
-    /// must be passed as a parameter to the constructor. Using this feature makes instances of this class thread-safe.
-    /// </param>
-    public ValidationContext(ValidationContextOptions? options = null,
-                             ErrorTemplates? errorTemplates = null,
-                             Dictionary<string, object>? attachedObjects = null,
-                             bool disallowSettingAttachedObjects = false)
-        : base(attachedObjects, disallowSettingAttachedObjects)
+    /// <param name="other">Another extensible object whose attached objects will be shallow-copied to this instance.</param>
+    public ValidationContext(IValidationContextFactory factory,
+                             ValidationContextOptions options,
+                             ErrorTemplates errorTemplates,
+                             ExtensibleObject? other = null)
+        : base(other)
     {
-        Options = options ?? ValidationContextOptions.Default;
-        ErrorTemplates = errorTemplates ?? ErrorTemplates.Default;
+        Factory = factory.MustNotBeNull();
+        Options = options.MustNotBeNull();
+        ErrorTemplates = errorTemplates.MustNotBeNull();
     }
+
+    /// <summary>
+    /// Gets the factory that was used to create this context.
+    /// </summary>
+    public IValidationContextFactory Factory { get; }
 
     /// <summary>
     /// Gets the errors dictionary. This value can be null when no errors were

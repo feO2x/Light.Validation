@@ -15,9 +15,8 @@ public abstract class AsyncValidator<T> : BaseValidator<T>
     /// <summary>
     /// Initializes a new instance of <see cref="Validator{T}" />.
     /// </summary>
-    /// <param name="createValidationContext">
-    /// The delegate that is used to create a new <see cref="ValidationContext" /> instance (optional).
-    /// If null is provided, the constructor of <see cref="ValidationContext" /> is called by default.
+    /// <param name="validationContextFactory">
+    /// The factory that is used to create a new <see cref="ValidationContext" /> instance.
     /// </param>
     /// <param name="isNullCheckingEnabled">
     /// The value indicating whether the validator automatically performs null-checking (optional).
@@ -30,10 +29,10 @@ public abstract class AsyncValidator<T> : BaseValidator<T>
     /// is false. This is the boolean value passed to ConfigureAwait for the
     /// PerformValidationAsync task. If you have no clue, just leave it to false.
     /// </param>
-    protected AsyncValidator(Func<ValidationContext>? createValidationContext = null,
+    protected AsyncValidator(ValidationContextFactory validationContextFactory,
                              bool isNullCheckingEnabled = true,
                              bool continueOnCapturedContextAfterAwait = false)
-        : base(createValidationContext, isNullCheckingEnabled) =>
+        : base(validationContextFactory, isNullCheckingEnabled) =>
         ContinueOnCapturedContextAfterAwait = continueOnCapturedContextAfterAwait;
 
     private bool ContinueOnCapturedContextAfterAwait { get; }
@@ -51,7 +50,7 @@ public abstract class AsyncValidator<T> : BaseValidator<T>
     /// </param>
     public Task<ValidationResult<T>> ValidateAsync([ValidatedNotNull] T? value,
                                                    [CallerArgumentExpression("value")] string key = "") =>
-        ValidateAsync(value, CreateContext(), key);
+        ValidateAsync(value, ValidationContextFactory.CreateValidationContext(), key);
 
     /// <summary>
     /// Asynchronously validates the specified value while reusing the specified validation context.
@@ -74,7 +73,7 @@ public abstract class AsyncValidator<T> : BaseValidator<T>
         if (TryCheckForNull(value, context, key, out var error))
             return new ValidationResult<T>(value!, error);
 
-        value = await PerformValidationAsync(context, value!).ConfigureAwait(ContinueOnCapturedContextAfterAwait);
+        value = await PerformValidationAsync(context, value).ConfigureAwait(ContinueOnCapturedContextAfterAwait);
         return new ValidationResult<T>(value, value);
     }
 

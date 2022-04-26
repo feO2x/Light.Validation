@@ -15,19 +15,17 @@ public abstract class Validator<T> : BaseValidator<T>
     /// <summary>
     /// Initializes a new instance of <see cref="Validator{T}" />.
     /// </summary>
-    /// <param name="createValidationContext">
-    /// The delegate that is used to create a new <see cref="ValidationContext" /> instance (optional).
-    /// If null is provided, the constructor of <see cref="ValidationContext" /> is called with all parameters
-    /// set to the default values.
+    /// <param name="validationContextFactory">
+    /// The factory that is used to create a new <see cref="ValidationContext" /> instance.
     /// </param>
     /// <param name="isNullCheckingEnabled">
     /// The value indicating whether the validator automatically performs null-checking (optional).
     /// The default value is true. If enabled, the validator will automatically check if a value is
     /// null and then return the a error message that the value must not be null.
     /// </param>
-    protected Validator(Func<ValidationContext>? createValidationContext = null,
+    protected Validator(IValidationContextFactory validationContextFactory,
                         bool isNullCheckingEnabled = true)
-        : base(createValidationContext, isNullCheckingEnabled) { }
+        : base(validationContextFactory, isNullCheckingEnabled) { }
 
     /// <summary>
     /// Validates the specified value. If it has errors, true will be returned and the dictionary
@@ -45,7 +43,7 @@ public abstract class Validator<T> : BaseValidator<T>
     public bool CheckForErrors([NotNullWhen(false)] T? value,
                                [NotNullWhen(true)] out object? errors,
                                [CallerArgumentExpression("value")] string key = "") =>
-        CheckForErrors(value, CreateContext(), out errors, key);
+        CheckForErrors(value, ValidationContextFactory.CreateValidationContext(), out errors, key);
 
     /// <summary>
     /// Validates the specified value while performing error tracking with the specified context.
@@ -96,7 +94,7 @@ public abstract class Validator<T> : BaseValidator<T>
     /// </param>
     public ValidationResult<T> Validate([ValidatedNotNull] T? value,
                                         [CallerArgumentExpression("value")] string key = "") =>
-        Validate(value, CreateContext(), key);
+        Validate(value, ValidationContextFactory.CreateValidationContext(), key);
 
     /// <summary>
     /// Validates the specified value while performing error tracking with the specified context.

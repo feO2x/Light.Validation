@@ -1,5 +1,6 @@
 ﻿using Light.Validation.Checks;
 using Light.Validation.Tests.TestHelpers;
+using Light.Validation.Tools;
 using Xunit;
 
 namespace Light.Validation.Tests.Checks;
@@ -20,7 +21,7 @@ public static class IsNotNullForReferencesTests
     private static ValidationContextOptions Options { get; } =
         new () { IsNormalizingStringValues = false };
 
-    private static ValidationContext CreateValidationContext() => new (Options);
+    private static ValidationContext CreateValidationContext() => new (ValidationContextFactory.Instance, Options, ErrorTemplates.Default);
 
     [Fact]
     public static void ValueIsNull()

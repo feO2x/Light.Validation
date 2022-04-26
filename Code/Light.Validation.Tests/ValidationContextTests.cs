@@ -11,7 +11,7 @@ public static class ValidationContextTests
     public static void SupplyAndRetrieveDerivedOptions()
     {
         var myOptions = new MyOptions();
-        var context = new ValidationContext(myOptions);
+        var context = CreateContext(myOptions);
 
         var retrievedOptions = context.GetOptionsAs<MyOptions>();
 
@@ -21,7 +21,7 @@ public static class ValidationContextTests
     [Fact]
     public static void InvalidOptionsCast()
     {
-        var act = () => new ValidationContext().GetOptionsAs<MyOptions>();
+        var act = () => CreateContext().GetOptionsAs<MyOptions>();
 
         act.Should().Throw<InvalidCastException>();
     }
@@ -30,7 +30,7 @@ public static class ValidationContextTests
     public static void SupplyAndRetrieveDerivedErrorTemplates()
     {
         var errorTemplates = new MyErrorTemplates();
-        var context = new ValidationContext(errorTemplates: errorTemplates);
+        var context = CreateContext(errorTemplates: errorTemplates);
 
         var retrievedTemplates = context.GetErrorTemplatesAs<MyErrorTemplates>();
 
@@ -40,10 +40,15 @@ public static class ValidationContextTests
     [Fact]
     public static void InvalidErrorTemplatesCast()
     {
-        var act = () => new ValidationContext().GetErrorTemplatesAs<MyErrorTemplates>();
+        var act = () => CreateContext().GetErrorTemplatesAs<MyErrorTemplates>();
 
         act.Should().Throw<InvalidCastException>();
     }
+
+    public static ValidationContext CreateContext(ValidationContextOptions? options = null, ErrorTemplates? errorTemplates = null) =>
+        new ValidationContextFactory(options ?? ValidationContextOptions.Default,
+                                     errorTemplates ?? ErrorTemplates.Default)
+           .CreateValidationContext();
 
     private sealed class MyOptions : ValidationContextOptions { }
 

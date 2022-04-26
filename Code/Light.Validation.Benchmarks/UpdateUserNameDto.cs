@@ -10,7 +10,7 @@ public sealed class UpdateUserNameDto
 
     public bool CheckForErrors(out object? errors)
     {
-        var context = new ValidationContext();
+        var context = ValidationContextFactory.CreateDefaultContext();
         context.Check(Id).IsGreaterThan(0);
         UserName = context.Check(UserName)
                           .IsNotNullOrWhiteSpace();
