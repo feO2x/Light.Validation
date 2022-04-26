@@ -5,7 +5,7 @@ namespace Light.Validation.Benchmarks;
 public class ValidDtoBenchmarks
 {
     public UpdateUserNameDto Dto { get; } = new () { Id = 42, UserName = "feO2x" };
-    public LightValidator LightValidator { get; } = new ();
+    public LightValidator LightValidator { get; } = new (ValidationContextFactory.Instance);
     public FluentValidator FluentValidator { get; } = new ();
 
     [Benchmark(Baseline = true)]

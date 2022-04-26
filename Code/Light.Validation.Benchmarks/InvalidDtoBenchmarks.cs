@@ -8,7 +8,7 @@ public class InvalidDtoBenchmarks
 {
     public UpdateUserNameDto Dto { get; } = new () { Id = 0, UserName = " " };
 
-    public LightValidator LightValidator { get; } = new ();
+    public LightValidator LightValidator { get; } = new (ValidationContextFactory.Instance);
 
     public FluentValidator FluentValidator { get; } = new ();
 

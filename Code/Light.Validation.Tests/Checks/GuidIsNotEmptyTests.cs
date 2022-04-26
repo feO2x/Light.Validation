@@ -19,7 +19,7 @@ public static class GuidIsNotEmptyTests
     public static void EmptyGuid()
     {
         var dto = new Dto();
-        var context = new ValidationContext();
+        var context = ValidationContextFactory.CreateDefaultContext();
 
         var check = context.Check(dto.Id).IsNotEmpty();
 
@@ -32,7 +32,7 @@ public static class GuidIsNotEmptyTests
     public static void ValidGuid(Guid guid)
     {
         var dto = new Dto { Id = guid };
-        var context = new ValidationContext();
+        var context = ValidationContextFactory.CreateDefaultContext();
 
         var check = context.Check(dto.Id).IsNotEmpty();
 
@@ -44,7 +44,7 @@ public static class GuidIsNotEmptyTests
     public static void ShortCircuit()
     {
         var dto = new Dto();
-        var context = new ValidationContext();
+        var context = ValidationContextFactory.CreateDefaultContext();
 
         var check = context.Check(dto.Id).IsNotEmpty(shortCircuitOnError: true);
 
@@ -56,7 +56,7 @@ public static class GuidIsNotEmptyTests
     public static void NoErrorOnShortCircuitedCheck()
     {
         var dto = new Dto();
-        var context = new ValidationContext();
+        var context = ValidationContextFactory.CreateDefaultContext();
 
         var check = context.Check(dto.Id)
                            .ShortCircuit()
@@ -70,7 +70,7 @@ public static class GuidIsNotEmptyTests
     public static void CustomErrorMessage()
     {
         var dto = new Dto();
-        var context = new ValidationContext();
+        var context = ValidationContextFactory.CreateDefaultContext();
         
         var check = context.Check(dto.Id).IsNotEmpty("An empty GUID? Are you kidding?");
 
@@ -82,7 +82,7 @@ public static class GuidIsNotEmptyTests
     public static void CustomErrorMessageFactory()
     {
         var dto = new Dto();
-        var context = new ValidationContext();
+        var context = ValidationContextFactory.CreateDefaultContext();
 
         var check = context.Check(dto.Id).IsNotEmpty(c => $"The {c.Key} is empty");
 
@@ -95,7 +95,7 @@ public static class GuidIsNotEmptyTests
     public static void NoErrorWithCustomMessageFactory(Guid validGuid)
     {
         var dto = new Dto { Id = validGuid };
-        var context = new ValidationContext();
+        var context = ValidationContextFactory.CreateDefaultContext();
 
         var check = context.Check(dto.Id).IsNotEmpty(_ => "whatever");
 
@@ -107,7 +107,7 @@ public static class GuidIsNotEmptyTests
     public static void ShortCircuitWithCustomMessageFactory()
     {
         var dto = new Dto();
-        var context = new ValidationContext();
+        var context = ValidationContextFactory.CreateDefaultContext();
 
         var check = context.Check(dto.Id).IsNotEmpty(c => $"{c.Key} must be a valid GUID", shortCircuitOnError: true);
 
@@ -119,7 +119,7 @@ public static class GuidIsNotEmptyTests
     public static void NoErrorForShortCircuitedCheckWithCustomMessageFactory()
     {
         var dto = new Dto();
-        var context = new ValidationContext();
+        var context = ValidationContextFactory.CreateDefaultContext();
 
         var check = context.Check(dto.Id)
                            .ShortCircuit()

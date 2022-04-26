@@ -31,7 +31,7 @@ public static class IsLessThanTests
     public static void ValueGreaterThanOrEqual(double value, double comparativeValue)
     {
         var dto = new Dto<double> { TheValue = value };
-        var context = new ValidationContext();
+        var context = ValidationContextFactory.CreateDefaultContext();
 
         var check = context.Check(dto.TheValue).IsLessThan(comparativeValue);
 
@@ -44,7 +44,7 @@ public static class IsLessThanTests
     public static void ValueIsLessThan(int value, int comparativeValue)
     {
         var dto = new Dto<int> { TheValue = value };
-        var context = new ValidationContext();
+        var context = ValidationContextFactory.CreateDefaultContext();
 
         var check = context.Check(dto.TheValue).IsLessThan(comparativeValue);
 
@@ -57,7 +57,7 @@ public static class IsLessThanTests
     public static void CustomErrorMessage(double value, double comparativeValue)
     {
         var dto = new Dto<double> { TheValue = value };
-        var context = new ValidationContext();
+        var context = ValidationContextFactory.CreateDefaultContext();
 
         var check = context.Check(dto.TheValue).IsLessThan(comparativeValue, "Errors.LessThan");
 
@@ -70,7 +70,7 @@ public static class IsLessThanTests
     public static void ShortCircuit(double value, double comparativeValue)
     {
         var dto = new Dto<double> { TheValue = value };
-        var context = new ValidationContext();
+        var context = ValidationContextFactory.CreateDefaultContext();
 
         var check = context.Check(dto.TheValue).IsLessThan(comparativeValue, shortCircuitOnError: true);
 
@@ -83,7 +83,7 @@ public static class IsLessThanTests
     public static void NoErrorOnShortCircuitedCheck(double value, double comparativeValue)
     {
         var dto = new Dto<double> { TheValue = value };
-        var context = new ValidationContext();
+        var context = ValidationContextFactory.CreateDefaultContext();
 
         var check = context.Check(dto.TheValue)
                            .ShortCircuit()
@@ -97,7 +97,7 @@ public static class IsLessThanTests
     public static void CustomErrorMessageFactory()
     {
         var dto = new Dto<float> { TheValue = 42f };
-        var context = new ValidationContext();
+        var context = ValidationContextFactory.CreateDefaultContext();
 
         var check = context.Check(dto.TheValue).IsLessThan(40f, (c, o) => $"{c.Key} must not be greater than or equal to {o.ToString(CultureInfo.InvariantCulture)}");
 
@@ -109,7 +109,7 @@ public static class IsLessThanTests
     public static void NoErrorWithCustomFactory()
     {
         var dto = new Dto<string> { TheValue = "a" };
-        var context = new ValidationContext();
+        var context = ValidationContextFactory.CreateDefaultContext();
 
         var check = context.Check(dto.TheValue).IsLessThan("b", (_, _) => "Foo");
 
@@ -121,7 +121,7 @@ public static class IsLessThanTests
     public static void ShortCircuitWithCustomFactory()
     {
         var dto = new Dto<int> { TheValue = 42 };
-        var context = new ValidationContext();
+        var context = ValidationContextFactory.CreateDefaultContext();
 
         var check = context.Check(dto.TheValue)
                            .IsLessThan(15, (_, _) => "I'm the error", true);
@@ -134,7 +134,7 @@ public static class IsLessThanTests
     public static void NoErrorOnShortCircuitedCheckWithCustomFactory()
     {
         var dto = new Dto<int> { TheValue = 1503 };
-        var context = new ValidationContext();
+        var context = ValidationContextFactory.CreateDefaultContext();
 
         var check = context.Check(dto.TheValue)
                            .ShortCircuit()

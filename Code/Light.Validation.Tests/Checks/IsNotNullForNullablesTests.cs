@@ -22,7 +22,7 @@ public static class IsNotNullForNullablesTests
     public static void ValueIsNull()
     {
         var dto = new Dto();
-        var context = new ValidationContext();
+        var context = ValidationContextFactory.CreateDefaultContext();
 
         var check = context.Check(dto.NullableValue).IsNotNull();
 
@@ -35,7 +35,7 @@ public static class IsNotNullForNullablesTests
     public static void NotNull(int validValue)
     {
         var dto = new Dto { NullableValue = validValue };
-        var context = new ValidationContext();
+        var context = ValidationContextFactory.CreateDefaultContext();
 
         var check = context.Check(dto.NullableValue).IsNotNull();
 
@@ -47,7 +47,7 @@ public static class IsNotNullForNullablesTests
     public static void CustomErrorMessage()
     {
         var dto = new Dto();
-        var context = new ValidationContext();
+        var context = ValidationContextFactory.CreateDefaultContext();
 
         var check = context.Check(dto.NullableValue).IsNotNull("How can you pass null?");
 
@@ -59,7 +59,7 @@ public static class IsNotNullForNullablesTests
     public static void CustomErrorMessageFactory()
     {
         var dto = new Dto();
-        var context = new ValidationContext();
+        var context = ValidationContextFactory.CreateDefaultContext();
 
         var check = context.Check(dto.NullableValue).IsNotNull(c => $"Damn you, {c.Key} is null!");
 
@@ -72,7 +72,7 @@ public static class IsNotNullForNullablesTests
     public static void NoErrorWithCustomMessageFactory(int validValue)
     {
         var dto = new Dto { NullableValue = validValue };
-        var context = new ValidationContext();
+        var context = ValidationContextFactory.CreateDefaultContext();
 
         var check = context.Check(dto.NullableValue).IsNotNull(_ => "It doesn't matter");
 
@@ -84,7 +84,7 @@ public static class IsNotNullForNullablesTests
     public static void DisableShortCircuiting()
     {
         var dto = new Dto();
-        var context = new ValidationContext();
+        var context = ValidationContextFactory.CreateDefaultContext();
 
         var check = context.Check(dto.NullableValue).IsNotNull(shortCircuitOnError: false);
 
@@ -96,7 +96,7 @@ public static class IsNotNullForNullablesTests
     public static void DisableShortCircuitingWithCustomMessageFactory()
     {
         var dto = new Dto();
-        var context = new ValidationContext();
+        var context = ValidationContextFactory.CreateDefaultContext();
 
         var check = context.Check(dto.NullableValue).IsNotNull(_ => "OMG it's null", false);
 

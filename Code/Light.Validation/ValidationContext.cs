@@ -43,7 +43,7 @@ public class ValidationContext : ExtensibleObject
     /// <summary>
     /// Gets the factory that was used to create this context.
     /// </summary>
-    private IValidationContextFactory Factory { get; }
+    public IValidationContextFactory Factory { get; }
 
     /// <summary>
     /// Gets the errors dictionary. This value can be null when no errors were

@@ -12,7 +12,7 @@ public sealed class ComplexValidationTests
     public ComplexValidationTests(ITestOutputHelper output) => Output = output;
 
     private ITestOutputHelper Output { get; }
-    private ContactDtoValidator Validator { get; } = new (new ());
+    private ContactDtoValidator Validator { get; } = new (new (ValidationContextFactory.Instance), ValidationContextFactory.Instance);
 
     [Theory]
     [MemberData(nameof(InvalidDtos))]
@@ -81,7 +81,10 @@ public sealed class AddressDto
 
 public sealed class ContactDtoValidator : Validator<ContactDto>
 {
-    public ContactDtoValidator(AddressDtoValidator addressValidator) => AddressValidator = addressValidator;
+    public ContactDtoValidator(AddressDtoValidator addressValidator,
+                               IValidationContextFactory validationContextFactory)
+        : base(validationContextFactory) =>
+        AddressValidator = addressValidator;
 
     private AddressDtoValidator AddressValidator { get; }
 
@@ -96,6 +99,8 @@ public sealed class ContactDtoValidator : Validator<ContactDto>
 
 public sealed class AddressDtoValidator : Validator<AddressDto>
 {
+    public AddressDtoValidator(IValidationContextFactory validationContextFactory) : base(validationContextFactory) { }
+
     protected override AddressDto PerformValidation(ValidationContext context, AddressDto dto)
     {
         dto.Street = context.Check(dto.Street).IsNotNullOrWhiteSpace();
