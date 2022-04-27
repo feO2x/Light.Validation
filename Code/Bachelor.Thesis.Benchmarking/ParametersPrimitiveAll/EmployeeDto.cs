@@ -14,7 +14,8 @@ public class EmployeeDto
         EmployeeId = 12345L,
         ProductivityScore = 82.3,
         OvertimeWorked = 143.423f,
-        HourlySalary = new decimal(16.50)
+        HourlySalary = new decimal(16.50),
+        DateEmployed = new DateTime(2022, 01, 01)
     };
 
     public static EmployeeDto InvalidEmployeeDto = new ()
@@ -27,7 +28,8 @@ public class EmployeeDto
         EmployeeId = 1023L,
         ProductivityScore = 120.1,
         OvertimeWorked = -110.23f,
-        HourlySalary = new decimal(8.50)
+        HourlySalary = new decimal(8.50),
+        DateEmployed = new DateTime(2023, 01, 01)
     };
 
     [Required]
@@ -64,4 +66,8 @@ public class EmployeeDto
     [Required]
     [Range(12.0, 999.9)]
     public decimal HourlySalary { get; set; }
+
+    [Required]
+    [Range(typeof(DateTime), "2000-01-01", "2022-04-27")]
+    public DateTime DateEmployed { get; set; }
 }
