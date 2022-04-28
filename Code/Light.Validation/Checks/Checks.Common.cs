@@ -405,6 +405,12 @@ public static partial class Checks
         if (check.IsShortCircuited)
             return check;
 
+        if (validator.IsNullCheckingEnabled && check.IsValueNull)
+        {
+            check = check.AddNotNullError();
+            return check.ShortCircuitIfNecessary(shortCircuitOnError);
+        }
+
         var childContext = check.CreateChildContext();
 
         var result = validator.Validate(check.Value, childContext, check.Key);
@@ -449,6 +455,12 @@ public static partial class Checks
 
         if (check.IsShortCircuited)
             return check;
+
+        if (validator.IsNullCheckingEnabled && check.IsValueNull)
+        {
+            check = check.AddNotNullError();
+            return check.ShortCircuitIfNecessary(shortCircuitOnError);
+        }
 
         var childContext = check.CreateChildContext();
         var result = await validator.ValidateAsync(check.Value, childContext, check.Key)
