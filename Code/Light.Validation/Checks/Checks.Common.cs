@@ -398,6 +398,9 @@ public static partial class Checks
     {
         validator.MustNotBeNull();
 
+        if (check.IsShortCircuited)
+            return check;
+
         var childContext = check.CreateChildContext();
 
         var result = validator.Validate(check.Value, childContext, check.Key);
@@ -421,11 +424,20 @@ public static partial class Checks
     /// PerformValidationAsync task. If you have no clue, just leave it to false.
     /// </param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="validator"/> is null.</exception>
+#if NETSTANDARD2_0
     public static async Task<Check<T>> ValidateWithAsync<T>(this Check<T> check,
                                                             AsyncValidator<T> validator,
                                                             bool continueOnCapturedContext = false)
+#else
+    public static async ValueTask<Check<T>> ValidateWithAsync<T>(this Check<T> check,
+                                                                 AsyncValidator<T> validator,
+                                                                 bool continueOnCapturedContext = false)
+#endif
     {
         validator.MustNotBeNull();
+
+        if (check.IsShortCircuited)
+            return check;
 
         var childContext = check.CreateChildContext();
         var result = await validator.ValidateAsync(check.Value, childContext, check.Key)
