@@ -15,7 +15,7 @@ public class EmployeeDto
         ProductivityScore = 82.3,
         OvertimeWorked = 143.423f,
         HourlySalary = new decimal(16.50),
-        DateEmployed = new DateTime(2022, 01, 01)
+        DateEmployed = new DateTime(2020, 01, 01)
     };
 
     public static EmployeeDto InvalidEmployeeDto = new ()
