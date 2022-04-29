@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Bachelor.Thesis.Benchmarking.CollectionComplex.ModelValidation;
 
 namespace Bachelor.Thesis.Benchmarking.CollectionComplex.Dto;
 
@@ -23,14 +22,14 @@ public class CollectionComplexDto : IValidatableObject
         }
     };
 
-    public static CollectionComplexDto InvalidDto = new()
+    public static CollectionComplexDto InvalidDto = new ()
     {
-        OrderDetailsList = new()
+        OrderDetailsList = new ()
         {
             OrderDetails.InvalidOrderDetails,
             OrderDetails.InvalidOrderDetails
         },
-        ArticleList = new()
+        ArticleList = new ()
         {
             Article.InvalidArticle,
             Article.InvalidArticle,
