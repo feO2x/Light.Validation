@@ -6,58 +6,50 @@ public class CollectionComplexDto
 {
     public static CollectionComplexDto ValidDto = new ()
     {
-        ListOne = new ()
+        OrderDetailsList = new ()
         {
-            new (),
-            new ()
+            OrderDetails.ValidOrderDetails,
+            OrderDetails.ValidOrderDetails
         },
-        ListTwo = new ()
+        ArticleList = new ()
         {
-            new (),
-            new (),
-            new (),
-            new (),
-            new (),
-            new (),
-            new (),
-            new (),
+            Article.ValidArticle,
+            Article.ValidArticle,
+            Article.ValidArticle,
+            Article.ValidArticle,
+            Article.ValidArticle,
+            Article.ValidArticle
         }
     };
 
     public static CollectionComplexDto InvalidDto = new()
     {
-        ListOne = new()
+        OrderDetailsList = new()
         {
-            new(),
-            new()
+            OrderDetails.InvalidOrderDetails,
+            OrderDetails.InvalidOrderDetails
         },
-        ListTwo = new()
+        ArticleList = new()
         {
-            new(),
-            new(),
-            new(),
-            new(),
-            new(),
-            new(),
-            new(),
-            new(),
-            new(),
-            new(),
-            new(),
-            new(),
-            new(),
-            new(),
-            new(),
-            new(),
-            new()
+            Article.InvalidArticle,
+            Article.InvalidArticle,
+            Article.InvalidArticle,
+            Article.InvalidArticle,
+            Article.InvalidArticle,
+            Article.InvalidArticle,
+            Article.InvalidArticle,
+            Article.InvalidArticle,
+            Article.InvalidArticle,
+            Article.InvalidArticle,
+            Article.InvalidArticle,
         }
     };
 
     [Required]
     [MinLength(1), MaxLength(10)]
-    public List<OrderDetails> ListOne { get; set; } = new ();
+    public List<OrderDetails> OrderDetailsList { get; set; } = new ();
 
     [Required]
     [MinLength(1), MaxLength(10)]
-    public List<Article> ListTwo { get; set; } = new ();
+    public List<Article> ArticleList { get; set; } = new ();
 }
