@@ -29,17 +29,10 @@ public class CustomerDto : IValidatableObject
         var results = new List<ValidationResult>();
 
         Validator.TryValidateObject(User, new ValidationContext(User), resultsUser);
+        results.AddRange(resultsUser);
+
         Validator.TryValidateObject(Address, new ValidationContext(Address), resultsAddress);
-
-        foreach (var result in resultsUser)
-        {
-            results.Add(result);
-        }
-
-        foreach (var result in resultsAddress)
-        {
-            results.Add(result);
-        }
+        results.AddRange(resultsAddress);
 
         return results;
     }

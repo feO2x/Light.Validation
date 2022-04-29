@@ -63,21 +63,13 @@ public class CollectionComplexDto : IValidatableObject
         foreach (var order in OrderDetailsList)
         {
             Validator.TryValidateObject(order, new ValidationContext(order), resultsOrderDetailsList);
+            results.AddRange(resultsOrderDetailsList);
         }
 
         foreach (var article in ArticleList)
         {
             Validator.TryValidateObject(article, new ValidationContext(article), resultsArticleList);
-        }
-
-        foreach (var result in resultsOrderDetailsList)
-        {
-            results.Add(result);
-        }
-
-        foreach (var result in resultsArticleList)
-        {
-            results.Add(result);
+            results.AddRange(resultsArticleList);
         }
 
         return results;
