@@ -8,7 +8,7 @@ public class OrderDetails
     {
         OrderId = 10010,
         ProductId = 20010,
-        Date = DateOnly.Parse("2022-04-27"),
+        Date = DateTime.Parse("2022-04-27"),
         Quantity = 20,
         PricePaid = 100
     };
@@ -17,7 +17,7 @@ public class OrderDetails
     {
         OrderId = 1001,
         ProductId = 2001,
-        Date = DateOnly.Parse("2023-04-27"),
+        Date = DateTime.Parse("2023-04-27"),
         Quantity = -8,
         PricePaid = 2000000
     };
@@ -31,8 +31,8 @@ public class OrderDetails
     public long ProductId { get; set; }
 
     [Required]
-    [Range(typeof(DateOnly), "2020-01-01", "2022-12-31")]
-    public DateOnly Date { get; set; }
+    [Range(typeof(DateTime), "2020-01-01", "2022-12-31")]
+    public DateTime Date { get; set; }
 
     [Required]
     [Range(0, 1000)]
