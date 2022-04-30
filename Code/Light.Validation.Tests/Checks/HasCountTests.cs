@@ -33,7 +33,7 @@ public static class HasCountTests
 
         var check = context.Check(dto.Value).HasCount(count);
 
-        context.ShouldHaveSingleError("value", $"value must have {count} {(count == 1 ? "item" : "items")}");
+        context.ShouldHaveSingleError("Value", $"Value must have {count} {(count == 1 ? "item" : "items")}");
         check.ShouldNotBeShortCircuited();
     }
 
@@ -57,7 +57,7 @@ public static class HasCountTests
 
         var check = context.Check(dto.Value).HasCount(count, "Errors.InvalidCollectionCount");
 
-        context.ShouldHaveSingleError("value", "Errors.InvalidCollectionCount");
+        context.ShouldHaveSingleError("Value", "Errors.InvalidCollectionCount");
         check.ShouldNotBeShortCircuited();
     }
 
@@ -95,7 +95,7 @@ public static class HasCountTests
 
         var check = context.Check(dto.Value).HasCount(count, (c, l) => $"{c.Key} must have length {l}");
 
-        context.ShouldHaveSingleError("value", $"value must have length {count}");
+        context.ShouldHaveSingleError("Value", $"Value must have length {count}");
         check.ShouldNotBeShortCircuited();
     }
 

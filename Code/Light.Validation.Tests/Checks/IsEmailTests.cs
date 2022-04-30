@@ -34,7 +34,7 @@ public static class IsEmailTests
 
         var check = context.Check(dto.Value).IsEmail();
 
-        context.ShouldHaveSingleError("value", "value must be an email address");
+        context.ShouldHaveSingleError("Value", "Value must be an email address");
         check.ShouldNotBeShortCircuited();
     }
 
@@ -58,7 +58,7 @@ public static class IsEmailTests
 
         var check = context.Check(dto.Value).IsEmail("Errors.InvalidEmail");
 
-        context.ShouldHaveSingleError("value", "Errors.InvalidEmail");
+        context.ShouldHaveSingleError("Value", "Errors.InvalidEmail");
         check.ShouldNotBeShortCircuited();
     }
 
@@ -96,7 +96,7 @@ public static class IsEmailTests
 
         var check = context.Check(dto.Value).IsEmail(c => $"{c.Key} is no email address");
 
-        context.ShouldHaveSingleError("value", "value is no email address");
+        context.ShouldHaveSingleError("Value", "Value is no email address");
         check.ShouldNotBeShortCircuited();
     }
 

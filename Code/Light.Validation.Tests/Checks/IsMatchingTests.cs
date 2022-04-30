@@ -35,7 +35,7 @@ public static class IsMatchingTests
 
         var check = context.Check(dto.Value).IsMatching(Regex);
 
-        context.ShouldHaveSingleError("value", "value must match the required pattern");
+        context.ShouldHaveSingleError("Value", "Value must match the required pattern");
         check.ShouldNotBeShortCircuited();
     }
 
@@ -59,7 +59,7 @@ public static class IsMatchingTests
 
         var check = context.Check(dto.Value).IsMatching(Regex, "No match for you");
 
-        context.ShouldHaveSingleError("value", "No match for you");
+        context.ShouldHaveSingleError("Value", "No match for you");
         check.ShouldNotBeShortCircuited();
     }
 
@@ -97,7 +97,7 @@ public static class IsMatchingTests
 
         var check = context.Check(dto.Value).IsMatching(Regex, (c, r) => $"{c.Key} must match pattern \"{r}\".");
 
-        context.ShouldHaveSingleError("value", "value must match pattern \"^\\w{4}$\".");
+        context.ShouldHaveSingleError("Value", "Value must match pattern \"^\\w{4}$\".");
         check.ShouldNotBeShortCircuited();
     }
 

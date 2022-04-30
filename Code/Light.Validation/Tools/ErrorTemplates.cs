@@ -39,7 +39,7 @@ public class ErrorTemplates : ExtensibleObject
     /// The default value is "{0} must not be null".
     /// This template takes one parameter:
     /// <list type="bullet">
-    /// <item>{0} key</item>
+    /// <item>{0} display name</item>
     /// </list>
     /// </summary>
     public string NotNull { get; set; } = "{0} must not be null";
@@ -49,7 +49,7 @@ public class ErrorTemplates : ExtensibleObject
     /// The default value is "{0} must be {1}".
     /// This template takes two parameters:
     /// <list type="bullet">
-    /// <item>{0} key</item>
+    /// <item>{0} display name</item>
     /// <item>{1} comparative value</item>
     /// </list>
     /// </summary>
@@ -60,7 +60,7 @@ public class ErrorTemplates : ExtensibleObject
     /// The default value is "{0} must not be {1}".
     /// This template takes two parameters:
     /// <list type="bullet">
-    /// <item>{0} key</item>
+    /// <item>{0} display name</item>
     /// <item>{1} comparative value</item>
     /// </list>
     /// </summary>
@@ -71,7 +71,7 @@ public class ErrorTemplates : ExtensibleObject
     /// The default value is "{0} must be greater than {1}".
     /// This template takes two parameters:
     /// <list type="bullet">
-    /// <item>{0} key</item>
+    /// <item>{0} display name</item>
     /// <item>{1} comparative value</item>
     /// </list>
     /// </summary>
@@ -82,7 +82,7 @@ public class ErrorTemplates : ExtensibleObject
     /// The default value is "{0} must be greater than or equal to {1}".
     /// This template takes two parameters:
     /// <list type="bullet">
-    /// <item>{0} key</item>
+    /// <item>{0} display name</item>
     /// <item>{1} comparative value</item>
     /// </list>
     /// </summary>
@@ -93,7 +93,7 @@ public class ErrorTemplates : ExtensibleObject
     /// The default value is "{0} must be less than {1}".
     /// This template takes two parameters:
     /// <list type="bullet">
-    /// <item>{0} key</item>
+    /// <item>{0} display name</item>
     /// <item>{1} comparative value</item>
     /// </list>
     /// </summary>
@@ -104,7 +104,7 @@ public class ErrorTemplates : ExtensibleObject
     /// The default value is "{0} must be less than or equal to {1}".
     /// This template takes two parameters:
     /// <list type="bullet">
-    /// <item>{0} key</item>
+    /// <item>{0} display name</item>
     /// <item>{1} comparative value</item>
     /// </list>
     /// </summary>
@@ -115,7 +115,7 @@ public class ErrorTemplates : ExtensibleObject
     /// The default value is "{0} must be in range from {1}".
     /// This template takes two parameters:
     /// <list type="bullet">
-    /// <item>{0} key</item>
+    /// <item>{0} display name</item>
     /// <item>{1} the Range&lt;T&gt; instance where, by default, CreateRangeDescriptionText is called upon. You can override FormatRange to change this behavior.</item>
     /// </list>
     /// </summary>
@@ -126,7 +126,7 @@ public class ErrorTemplates : ExtensibleObject
     /// The default value is "{0} must not be in range from {1}".
     /// This template takes two parameters:
     /// <list type="bullet">
-    /// <item>{0} key</item>
+    /// <item>{0} display name</item>
     /// <item>{1} the Range&lt;T&gt; instance where, by default, CreateRangeDescriptionText is called upon. You can override FormatRange to change this behavior.</item>
     /// </list>
     /// </summary>
@@ -137,7 +137,7 @@ public class ErrorTemplates : ExtensibleObject
     /// The default value is "{0} must not be an empty GUID".
     /// This template takes one parameter:
     /// <list type="bullet">
-    /// <item>{0} key</item>
+    /// <item>{0} display name</item>
     /// </list>
     /// </summary>
     public string NotEmptyGuid { get; set; } = "{0} must not be an empty GUID";
@@ -147,7 +147,7 @@ public class ErrorTemplates : ExtensibleObject
     /// The default value is "{0} must not be empty".
     /// This template takes one parameter:
     /// <list type="bullet">
-    /// <item>{0} key</item>
+    /// <item>{0} display name</item>
     /// </list>
     /// </summary>
     public string NotNullOrWhiteSpace { get; set; } = "{0} must not be empty";
@@ -157,7 +157,7 @@ public class ErrorTemplates : ExtensibleObject
     /// The default value is "{0} must match the required pattern".
     /// This template takes one parameter:
     /// <list type="bullet">
-    /// <item>{0} key</item>
+    /// <item>{0} display name</item>
     /// </list>
     /// </summary>
     public string RegexMustMatch { get; set; } = "{0} must match the required pattern";
@@ -167,7 +167,7 @@ public class ErrorTemplates : ExtensibleObject
     /// The default value is "{0} must be an email address".
     /// This template takes one parameter:
     /// <list type="bullet">
-    /// <item>{0} key</item>
+    /// <item>{0} display name</item>
     /// </list>
     /// </summary>
     public string Email { get; set; } = "{0} must be an email address";
@@ -177,7 +177,7 @@ public class ErrorTemplates : ExtensibleObject
     /// The default value is "{0} must be longer than {1} characters".
     /// This template takes two parameters:
     /// <list type="bullet">
-    /// <item>{0} key</item>
+    /// <item>{0} display name</item>
     /// <item>{1} the comparative length value</item>
     /// </list>
     /// </summary>
@@ -188,7 +188,7 @@ public class ErrorTemplates : ExtensibleObject
     /// The default value is "{0} must be shorter than {1} characters".
     /// This template takes two parameters:
     /// <list type="bullet">
-    /// <item>{0} key</item>
+    /// <item>{0} display name</item>
     /// <item>{1} the comparative length value</item>
     /// </list>
     /// </summary>
@@ -199,7 +199,7 @@ public class ErrorTemplates : ExtensibleObject
     /// The default value is "{0} must have {1} characters".
     /// This template takes two parameters:
     /// <list type="bullet">
-    /// <item>{0} key</item>
+    /// <item>{0} display name</item>
     /// <item>{1} the Range&lt;T&gt; instance where, by default, CreateRangeDescriptionText is called upon. You can override FormatRange to change this behavior.</item>
     /// </list>
     /// </summary>
@@ -210,7 +210,7 @@ public class ErrorTemplates : ExtensibleObject
     /// The default value is "{0} must contain only digits".
     /// The template takes one parameter:
     /// <list type="bullet">
-    /// <item>{0} key</item>
+    /// <item>{0} display name</item>
     /// </list>
     /// </summary>
     public string OnlyDigits { get; set; } = "{0} must contain only digits";
@@ -220,7 +220,7 @@ public class ErrorTemplates : ExtensibleObject
     /// The default value is "{0} must contain only digits".
     /// The template takes one parameter:
     /// <list type="bullet">
-    /// <item>{0} key</item>
+    /// <item>{0} display name</item>
     /// </list>
     /// </summary>
     public string OnlyLettersAndDigits { get; set; } = "{0} must contain only letters and digits";
@@ -230,7 +230,7 @@ public class ErrorTemplates : ExtensibleObject
     /// The default value is "{0} must have 1 item".
     /// This template takes one parameter:
     /// <list type="bullet">
-    /// <item>{0} key</item>
+    /// <item>{0} display name</item>
     /// </list>
     /// </summary>
     public string CountSingular { get; set; } = "{0} must have 1 item";
@@ -240,7 +240,7 @@ public class ErrorTemplates : ExtensibleObject
     /// The default value is "{0} must have {1} items".
     /// This template takes two parameters:
     /// <list type="bullet">
-    /// <item>{0} key</item>
+    /// <item>{0} display name</item>
     /// <item>{1} count</item>
     /// </list>
     /// </summary>
@@ -251,7 +251,7 @@ public class ErrorTemplates : ExtensibleObject
     /// The default value is "{0} is not one of the allowed values".
     /// The template takes one parameter:
     /// <list type="bullet">
-    /// <item>{0} key</item>
+    /// <item>{0} display name</item>
     /// </list>
     /// </summary>
     public string TryParseToEnum { get; set; } = "{0} must be one of the allowed values";

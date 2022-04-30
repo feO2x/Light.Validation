@@ -44,7 +44,7 @@ public static class TryParseToEnumForStringsTests
         var result = context.Check(dto.Value).TryParseToEnum<ConsoleModifiers>(out var parsedEnumValue);
 
         result.Should().BeFalse();
-        context.ShouldHaveSingleError("value", "value must be one of the allowed values");
+        context.ShouldHaveSingleError("Value", "Value must be one of the allowed values");
         parsedEnumValue.Should().Be(default);
     }
 
@@ -70,7 +70,7 @@ public static class TryParseToEnumForStringsTests
         var result = context.Check(dto.Value).TryParseToEnum<ConsoleColor>(out var parsedEnumValue, false);
 
         result.Should().BeFalse();
-        context.ShouldHaveSingleError("value", "value must be one of the allowed values");
+        context.ShouldHaveSingleError("Value", "Value must be one of the allowed values");
         parsedEnumValue.Should().Be(default);
     }
 
@@ -83,7 +83,7 @@ public static class TryParseToEnumForStringsTests
         var result = context.Check(dto.Value).TryParseToEnum<ConsoleModifiers>(out var parsedValue, message: "InvalidEnumValue");
 
         result.Should().BeFalse();
-        context.ShouldHaveSingleError("value", "InvalidEnumValue");
+        context.ShouldHaveSingleError("Value", "InvalidEnumValue");
         parsedValue.Should().Be(default);
     }
 
@@ -112,7 +112,7 @@ public static class TryParseToEnumForStringsTests
 
         result.Should().BeFalse();
         // ReSharper disable once ConstantConditionalAccessQualifier -- in one test case, invalidValue is actually null
-        context.ShouldHaveSingleError("value", $"value must not be {invalidValue?.Trim()}");
+        context.ShouldHaveSingleError("Value", $"Value must not be {invalidValue?.Trim()}");
         parsedValue.Should().Be(default);
     }
 

@@ -14,7 +14,7 @@ public static class RoundTests
     [InlineData(3.1, 2, 3.1)]
     public static void RoundDouble(double value, int digits, double expectedValue)
     {
-        var context = ValidationContextFactory.CreateDefaultContext();
+        var context = ValidationContextFactory.CreateContext();
 
         var roundedValue = context.Check(value).Round(digits).Value;
 
@@ -28,7 +28,7 @@ public static class RoundTests
     [InlineData(42.25f, 3, 42.25f)]
     public static void RoundFloat(float value, int digits, float expectedValue)
     {
-        var context = ValidationContextFactory.CreateDefaultContext();
+        var context = ValidationContextFactory.CreateContext();
 
         var roundedValue = context.Check(value).Round(digits).Value;
 
@@ -39,7 +39,7 @@ public static class RoundTests
     [MemberData(nameof(DecimalData))]
     public static void RoundDecimal(decimal value, int digits, decimal expectedValue)
     {
-        var context = ValidationContextFactory.CreateDefaultContext();
+        var context = ValidationContextFactory.CreateContext();
 
         var roundedValue = context.Check(value).Round(digits).Value;
 

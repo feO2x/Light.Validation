@@ -11,13 +11,12 @@ public static class StringExtensions
     /// <summary>
     /// Checks if the key contains dots. If yes, the substring
     /// after the last dot will be taken instead of the whole string (only
-    /// when there are actually characters after the last dot).
-    /// In any case, this method will ensure that the first character
-    /// is lowercase.
+    /// when there are actually characters after the last dot). The key is
+    /// trimmed to remove leading and trailing white space.
     /// </summary>
     /// <param name="key">The value that should be normalized.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="key" /> is null.</exception>
-    public static string NormalizeLastSectionToLowerCamelCase(this string key)
+    public static string GetSectionAfterLastDot(this string key)
     {
         key.MustNotBeNull();
 
@@ -26,42 +25,19 @@ public static class StringExtensions
             return string.Empty;
 
         var indexOfDot = readOnlySpan.GetLastIndexOfDot();
-        if (indexOfDot != -1)
-        {
-            var startIndex = indexOfDot + 1;
-            readOnlySpan = readOnlySpan.Slice(startIndex);
-        }
-        else if (readOnlySpan.Length == key.Length &&
-                 readOnlySpan[0].IsStartingCharacterForLowerCamelCase())
-        {
-            return key;
-        }
+        if (indexOfDot == -1)
+            return readOnlySpan.Length == key.Length ? key : readOnlySpan.ToString();
 
-        Span<char> span = stackalloc char[readOnlySpan.Length];
-        readOnlySpan.CopyTo(span);
-        span[0] = char.ToLowerInvariant(span[0]);
-        return span.ToString();
+        return readOnlySpan.Slice(indexOfDot + 1).ToString();
     }
 
     private static int GetLastIndexOfDot(this ReadOnlySpan<char> span)
     {
         // We only want to find dots that are not the last
-        // character of the input key. That's why we start at
-        // span.Length - 2.
-        var i = span.Length - 2;
-        while (i >= 0)
-        {
-            if (span[i] == '.')
-                return i;
-
-            i--;
-        }
-
-        return -1;
+        // character of the input key.
+        var index = span.LastIndexOf('.');
+        return index == -1 || index == span.Length - 1 ? -1 : index;
     }
-
-    private static bool IsStartingCharacterForLowerCamelCase(this char character) =>
-        !char.IsLetter(character) || char.IsLower(character);
 
     /// <summary>
     /// Checks if the specified value is an email address. This is done by checking if the string

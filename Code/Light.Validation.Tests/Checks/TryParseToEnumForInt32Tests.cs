@@ -29,7 +29,7 @@ public static class TryParseToEnumForInt32Tests
         var result = context.Check(dto.Value).TryParseToEnum<ConsoleModifiers>(out var parsedValue);
 
         result.Should().BeFalse();
-        context.ShouldHaveSingleError("value", "value must be one of the allowed values");
+        context.ShouldHaveSingleError("Value", "Value must be one of the allowed values");
         parsedValue.Should().Be(default);
     }
 
@@ -55,7 +55,7 @@ public static class TryParseToEnumForInt32Tests
         var result = context.Check(dto.Value).TryParseToEnum<ConsoleModifiers>(out var parsedValue, "This is wrong!");
 
         result.Should().BeFalse();
-        context.ShouldHaveSingleError("value", "This is wrong!");
+        context.ShouldHaveSingleError("Value", "This is wrong!");
         parsedValue.Should().Be(default);
     }
 
@@ -83,7 +83,7 @@ public static class TryParseToEnumForInt32Tests
         var result = context.Check(dto.Value).TryParseToEnum<ConsoleModifiers>(out var parsedValue, c => $"{c.Key} is stupidly wrong");
 
         result.Should().BeFalse();
-        context.ShouldHaveSingleError("value", "value is stupidly wrong");
+        context.ShouldHaveSingleError("Value", "Value is stupidly wrong");
         parsedValue.Should().Be(default);
     }
 

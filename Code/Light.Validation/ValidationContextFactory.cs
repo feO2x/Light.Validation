@@ -34,9 +34,9 @@ public sealed class ValidationContextFactory : IValidationContextFactory
     private  ExtensibleObject? AttachedObjects { get; }
 
     /// <summary>
-    /// Creates the default validation context.
+    /// Creates the validation context with default options and error templates.
     /// </summary>
-    public static ValidationContext CreateDefaultContext() => Instance.CreateValidationContext();
+    public static ValidationContext CreateContext() => Instance.CreateValidationContext();
 
     /// <summary>
     /// Creates a new validation context, passing in the options,

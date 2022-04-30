@@ -4,21 +4,22 @@ using Xunit;
 
 namespace Light.Validation.Tests.Tools;
 
-public static class NormalizeLastSectionToLowerCamelCaseTests
+public static class GetSectionAfterLastDotTests
 {
     [Theory]
-    [InlineData("A", "a")]
-    [InlineData("G", "g")]
-    [InlineData("Ä", "ä")]
-    [InlineData("Ü", "ü")]
-    [InlineData("Ö", "ö")]
-    [InlineData("SomeProperty", "someProperty")]
-    [InlineData("dto.MyProperty", "myProperty")]
-    [InlineData("dto.User.Address", "address")]
-    [InlineData("PropertyWith.", "propertyWith.")]
+    [InlineData("A", "A")]
+    [InlineData("G", "G")]
+    [InlineData("Ä", "Ä")]
+    [InlineData("Ü", "Ü")]
+    [InlineData("Ö", "Ö")]
+    [InlineData("SomeProperty", "SomeProperty")]
+    [InlineData("dto.MyProperty", "MyProperty")]
+    [InlineData("dto.User.Address", "Address")]
+    [InlineData("PropertyWith.", "PropertyWith.")]
+    [InlineData("  dto.LastName ", "LastName")]
     public static void ChangeKeyDuringNormalization(string inputKey, string expectedKey)
     {
-        var normalizedKey = inputKey.NormalizeLastSectionToLowerCamelCase();
+        var normalizedKey = inputKey.GetSectionAfterLastDot();
 
         normalizedKey.Should().Be(expectedKey);
     }
@@ -62,9 +63,10 @@ public static class NormalizeLastSectionToLowerCamelCaseTests
     [InlineData("ä")]
     [InlineData("ü")]
     [InlineData("ö")]
+    [InlineData("Foo")]
     public static void ReturnSameKeyWhenNormalizationIsNotNecessary(string inputKey)
     {
-        var normalizedKey = inputKey.NormalizeLastSectionToLowerCamelCase();
+        var normalizedKey = inputKey.GetSectionAfterLastDot();
 
         normalizedKey.Should().BeSameAs(inputKey);
     }
