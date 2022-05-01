@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Light.GuardClauses;
 
 namespace Light.Validation;
@@ -18,8 +19,11 @@ public abstract class BaseValidator<T>
     /// <param name="isNullCheckingEnabled">
     /// The value indicating whether the validator automatically performs null-checking (optional).
     /// The default value is true. If enabled, the validator will automatically check if a value is
-    /// null and then return the a error message that the value must not be null.
+    /// null and then return the default error message that the value must not be null.
+    /// The default error message is created by <see cref="ValidationContext.CreateErrorForAutomaticNullCheck" />
+    /// and can be overridden.
     /// </param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="validationContextFactory" /> is null.</exception>
     protected BaseValidator(IValidationContextFactory validationContextFactory, bool isNullCheckingEnabled)
     {
         ValidationContextFactory = validationContextFactory.MustNotBeNull();
@@ -44,15 +48,29 @@ public abstract class BaseValidator<T>
     /// <param name="value">The value to be checked.</param>
     /// <param name="context">The validation context that is used to assemble the error message.</param>
     /// <param name="key">The key that identifies the value.</param>
+    /// <param name="displayName">The human-readable name of the value.</param>
     /// <param name="error">The error message when the null-check fails.</param>
     protected bool TryCheckForNull([NotNullWhen(false)] T? value,
                                    ValidationContext context,
                                    string key,
+                                   string displayName,
                                    [NotNullWhen(true)] out object? error)
     {
         context.MustNotBeNull();
-        if (IsNullCheckingEnabled)
-            return context.CheckForNull(value, out error, key);
+
+        if (IsNullCheckingEnabled && value is null)
+        {
+            if (context.Options.IsNormalizingKeys)
+            {
+                var isDisplayNameEqual = ReferenceEquals(key, displayName);
+                key = context.NormalizeKey(key);
+                if (isDisplayNameEqual)
+                    displayName = key;
+            }
+
+            error = context.CreateErrorForAutomaticNullCheck(key, displayName);
+            return true;
+        }
 
         error = default;
         return false;

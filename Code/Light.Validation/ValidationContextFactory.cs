@@ -4,7 +4,7 @@ using Light.Validation.Tools;
 namespace Light.Validation;
 
 /// <summary>
-/// Represents the default factory for creating validation contexts
+/// Represents the default factory for creating validation contexts.
 /// </summary>
 public sealed class ValidationContextFactory : IValidationContextFactory
 {

@@ -21,8 +21,11 @@ public abstract class Validator<T> : BaseValidator<T>
     /// <param name="isNullCheckingEnabled">
     /// The value indicating whether the validator automatically performs null-checking (optional).
     /// The default value is true. If enabled, the validator will automatically check if a value is
-    /// null and then return the a error message that the value must not be null.
+    /// null and then return the default error message that the value must not be null.
+    /// The default error message is created by <see cref="ValidationContext.CreateErrorForAutomaticNullCheck" />
+    /// and can be overridden.
     /// </param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="validationContextFactory" /> is null.</exception>
     protected Validator(IValidationContextFactory validationContextFactory,
                         bool isNullCheckingEnabled = true)
         : base(validationContextFactory, isNullCheckingEnabled) { }
@@ -39,11 +42,18 @@ public abstract class Validator<T> : BaseValidator<T>
     /// via the <see cref="CallerArgumentExpressionAttribute" />. This value is only relevant if this validator is
     /// called by another validator.
     /// </param>
+    /// <param name="displayName">
+    /// The human-readable name of the value (optional). The default value is null.
+    /// This parameter will be set to the value of the <paramref name="key" /> parameter if null is passed.
+    /// It will also be normalized if no dedicated display name is set.
+    /// </param>
     /// <returns>True if at least one error was found, else false.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="key"/> is null.</exception>
     public bool CheckForErrors([NotNullWhen(false)] T? value,
                                [NotNullWhen(true)] out object? errors,
-                               [CallerArgumentExpression("value")] string key = "") =>
-        CheckForErrors(value, ValidationContextFactory.CreateValidationContext(), out errors, key);
+                               [CallerArgumentExpression("value")] string key = "",
+                               string? displayName = null) =>
+        CheckForErrors(value, ValidationContextFactory.CreateValidationContext(), out errors, key, displayName);
 
     /// <summary>
     /// Validates the specified value while performing error tracking with the specified context.
@@ -59,16 +69,25 @@ public abstract class Validator<T> : BaseValidator<T>
     /// via the <see cref="CallerArgumentExpressionAttribute" />. This value is only relevant if this validator is
     /// called by another validator.
     /// </param>
+    /// <param name="displayName">
+    /// The human-readable name of the value (optional). The default value is null.
+    /// This parameter will be set to the value of the <paramref name="key" /> parameter if null is passed.
+    /// It will also be normalized if no dedicated display name is set.
+    /// </param>
     /// <returns>True if at least one error was found, else false.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="context" /> is null.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="context" /> or <paramref name="key"/> are null.</exception>
     public bool CheckForErrors([NotNullWhen(false)] T? value,
                                ValidationContext context,
                                [NotNullWhen(true)] out object? errors,
-                               [CallerArgumentExpression("value")] string key = "")
+                               [CallerArgumentExpression("value")] string key = "",
+                               string? displayName = null)
     {
         context.MustNotBeNull();
+        key.MustNotBeNull();
 
-        if (TryCheckForNull(value, context, key, out errors))
+        displayName ??= key;
+
+        if (TryCheckForNull(value, context, key, displayName, out errors))
             return true;
 
         PerformValidation(context, value);
@@ -92,9 +111,16 @@ public abstract class Validator<T> : BaseValidator<T>
     /// via the <see cref="CallerArgumentExpressionAttribute" />. This value is only relevant if this validator is
     /// called by another validator.
     /// </param>
+    /// <param name="displayName">
+    /// The human-readable name of the value (optional). The default value is null.
+    /// This parameter will be set to the value of the <paramref name="key" /> parameter if null is passed.
+    /// It will also be normalized if no dedicated display name is set.
+    /// </param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="key"/> is null.</exception>
     public ValidationResult<T> Validate([ValidatedNotNull] T? value,
-                                        [CallerArgumentExpression("value")] string key = "") =>
-        Validate(value, ValidationContextFactory.CreateValidationContext(), key);
+                                        [CallerArgumentExpression("value")] string key = "",
+                                        string? displayName = null) =>
+        Validate(value, ValidationContextFactory.CreateValidationContext(), key, displayName);
 
     /// <summary>
     /// Validates the specified value while performing error tracking with the specified context.
@@ -108,14 +134,23 @@ public abstract class Validator<T> : BaseValidator<T>
     /// via the <see cref="CallerArgumentExpressionAttribute" />. This value is only relevant if this validator is
     /// called by another validator.
     /// </param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="context" /> is null.</exception>
+    /// <param name="displayName">
+    /// The human-readable name of the value (optional). The default value is null.
+    /// This parameter will be set to the value of the <paramref name="key" /> parameter if null is passed.
+    /// It will also be normalized if no dedicated display name is set.
+    /// </param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="context" /> or <paramref name="key"/> are null.</exception>
     public ValidationResult<T> Validate([ValidatedNotNull] T? value,
                                         ValidationContext context,
-                                        [CallerArgumentExpression("value")] string key = "")
+                                        [CallerArgumentExpression("value")] string key = "",
+                                        string? displayName = null)
     {
         context.MustNotBeNull();
+        key.MustNotBeNull();
 
-        if (TryCheckForNull(value, context, key, out var error))
+        displayName ??= key;
+
+        if (TryCheckForNull(value, context, key, displayName, out var error))
             return new ValidationResult<T>(value!, error);
 
         value = PerformValidation(context, value);

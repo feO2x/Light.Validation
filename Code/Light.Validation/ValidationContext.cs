@@ -175,6 +175,7 @@ public class ValidationContext : ExtensibleObject
     /// <param name="displayName">
     /// The human-readable name of the value (optional). The default value is null.
     /// This parameter will be set to the value of the <paramref name="key" /> parameter if null is passed.
+    /// It will also be normalized if no dedicated display name is set.
     /// </param>
     /// <typeparam name="T">The type of the value to be checked.</typeparam>
     public Check<T> Check<T>(T value,
@@ -211,35 +212,6 @@ public class ValidationContext : ExtensibleObject
         }
     }
 
-    /// <summary>
-    /// Checks if the specified value is null. If yes, the <paramref name="error" />
-    /// will be set and true will be returned. Otherwise, false will be returned and
-    /// value is ensured to not be null.
-    /// </summary>
-    /// <param name="value">The value to be checked.</param>
-    /// <param name="error">The error message that will be set when <paramref name="value"/> is null.</param>
-    /// <param name="key">
-    /// The string that identifies the corresponding errors in the internal dictionary of the validation context (optional).
-    /// You do not need to pass this value as it is automatically obtained by the expression that is passed to <paramref name="value" />
-    /// via the <see cref="CallerArgumentExpressionAttribute" />.
-    /// </param>
-    public bool CheckForNull<T>([NotNullWhen(false)] T? value,
-                                [NotNullWhen(true)] out object? error,
-                                [CallerArgumentExpression("value")] string key = "")
-    {
-        if (value is null)
-        {
-            error = string.Format(
-                ErrorTemplates.NotNull,
-                NormalizeKey(key, Options.IsNormalizingKeys)
-            );
-            return true;
-        }
-
-        error = default;
-        return false;
-    }
-
     private static bool DetermineBooleanSetting(bool? methodParameter, bool optionValue) => methodParameter ?? optionValue;
 
     /// <summary>
@@ -264,14 +236,6 @@ public class ValidationContext : ExtensibleObject
         errors = default;
         return false;
     }
-
-    /// <summary>
-    /// Normalizes the specified key when the specified condition value is true.
-    /// </summary>
-    /// <param name="key">The potential key to be normalized.</param>
-    /// <param name="condition">The condition that determines if the key is normalized.</param>
-    public string NormalizeKey(string key, bool condition) =>
-        condition ? NormalizeKey(key) : key;
 
     /// <summary>
     /// Normalizes the specified key.
@@ -309,16 +273,25 @@ public class ValidationContext : ExtensibleObject
         }
     }
 
+    /// <summary>
+    /// Creates the error for automatic null checks. This method is called from validators as well as
+    /// ValidateItems and ValidateItemsAsync when they are configured to perform automatic null checks
+    /// and found a violation (i.e. the value is null). You can override this method to manipulate
+    /// the message that is created in this case.
+    /// </summary>
+    /// <param name="key">The key of the error. The key is already normalized when this method is called.</param>
+    /// <param name="displayName">The display name of the value.</param>
+    public virtual object CreateErrorForAutomaticNullCheck(string key, string displayName) =>
+        string.Format(ErrorTemplates.NotNull, displayName);
+
     private object TransformSingleError(string singleExistingError,
-                                        string errorMessage)
-    {
-        return Options.MultipleErrorsPerKeyBehavior switch
+                                        string errorMessage) =>
+        Options.MultipleErrorsPerKeyBehavior switch
         {
             MultipleErrorsPerKeyBehavior.ReplaceError => errorMessage,
             MultipleErrorsPerKeyBehavior.PlaceInList => new List<string>(2) { singleExistingError, errorMessage },
             _ => singleExistingError + Options.NewLine + errorMessage
         };
-    }
 
     /// <summary>
     /// Returns the string representation of this validation context.

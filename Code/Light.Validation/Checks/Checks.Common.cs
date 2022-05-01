@@ -413,7 +413,7 @@ public static partial class Checks
 
         var childContext = check.CreateChildContext();
 
-        var result = validator.Validate(check.Value, childContext, check.Key);
+        var result = validator.Validate(check.Value, childContext, check.Key, check.DisplayName);
         check = check.WithNewValue(result.ValidatedValue);
 
         return result.TryGetErrors(out var errors) ?
@@ -465,7 +465,7 @@ public static partial class Checks
         }
 
         var childContext = check.CreateChildContext();
-        var result = await validator.ValidateAsync(check.Value, childContext, check.Key)
+        var result = await validator.ValidateAsync(check.Value, childContext, check.Key, check.DisplayName)
                                     .ConfigureAwait(continueOnCapturedContext);
         check = check.WithNewValue(result.ValidatedValue);
         return result.TryGetErrors(out var errors) ?
