@@ -48,9 +48,16 @@ public abstract class AsyncValidator<T> : BaseValidator<T>
     /// via the <see cref="CallerArgumentExpressionAttribute" />. This value is only relevant if this validator is
     /// called by another validator.
     /// </param>
+    /// <param name="displayName">
+    /// The human-readable name of the value (optional). The default value is null.
+    /// This parameter will be set to the value of the <paramref name="key" /> parameter if null is passed.
+    /// It will also be normalized if no dedicated display name is set.
+    /// </param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="key"/> is null.</exception>
     public Task<ValidationResult<T>> ValidateAsync([ValidatedNotNull] T? value,
-                                                   [CallerArgumentExpression("value")] string key = "") =>
-        ValidateAsync(value, ValidationContextFactory.CreateValidationContext(), key);
+                                                   [CallerArgumentExpression("value")] string key = "",
+                                                   string? displayName = null) =>
+        ValidateAsync(value, ValidationContextFactory.CreateValidationContext(), key, displayName);
 
     /// <summary>
     /// Asynchronously validates the specified value while reusing the specified validation context.
@@ -63,14 +70,23 @@ public abstract class AsyncValidator<T> : BaseValidator<T>
     /// via the <see cref="CallerArgumentExpressionAttribute" />. This value is only relevant if this validator is
     /// called by another validator.
     /// </param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="context" /> is null.</exception>
+    /// <param name="displayName">
+    /// The human-readable name of the value (optional). The default value is null.
+    /// This parameter will be set to the value of the <paramref name="key" /> parameter if null is passed.
+    /// It will also be normalized if no dedicated display name is set.
+    /// </param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="context" /> or <paramref name="key"/> are null.</exception>
     public async Task<ValidationResult<T>> ValidateAsync([ValidatedNotNull] T? value,
                                                          ValidationContext context,
-                                                         [CallerArgumentExpression("value")] string key = "")
+                                                         [CallerArgumentExpression("value")] string key = "",
+                                                         string? displayName = null)
     {
         context.MustNotBeNull();
+        key.MustNotBeNull();
 
-        if (TryCheckForNull(value, context, key, out var error))
+        displayName ??= key;
+
+        if (TryCheckForNull(value, context, key, displayName, out var error))
             return new ValidationResult<T>(value!, error);
 
         value = await PerformValidationAsync(context, value).ConfigureAwait(ContinueOnCapturedContextAfterAwait);

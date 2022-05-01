@@ -96,7 +96,9 @@ public static partial class Checks
 
         if (isNullCheckingEnabled && check.IsValueNull)
         {
-            check = check.AddNotNullError();
+            check = check.NormalizeKeyIfNecessary();
+            var error = check.Context.CreateErrorForAutomaticNullCheck(check.Key, check.DisplayName);
+            check = check.AddError(error);
             return check.ShortCircuitIfNecessary(shortCircuitOnError);
         }
 
@@ -154,7 +156,9 @@ public static partial class Checks
 
         if (isNullCheckingEnabled && check.IsValueNull)
         {
-            check = check.AddNotNullError();
+            check = check.NormalizeKeyIfNecessary();
+            var error = check.Context.CreateErrorForAutomaticNullCheck(check.Key, check.DisplayName);
+            check = check.AddError(error);
             return check.ShortCircuitIfNecessary(shortCircuitOnError);
         }
 
