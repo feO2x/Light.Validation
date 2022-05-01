@@ -74,7 +74,7 @@ public abstract class AsyncValidator<T> : BaseValidator<T>
             return new ValidationResult<T>(value!, error);
 
         value = await PerformValidationAsync(context, value).ConfigureAwait(ContinueOnCapturedContextAfterAwait);
-        return new ValidationResult<T>(value, value);
+        return new ValidationResult<T>(value, context.Errors);
     }
 
     /// <summary>

@@ -82,19 +82,7 @@ public sealed class ValidateWithTests
     }
 }
 
-public class ComplexDto
-{
-    public ChildDto Child { get; set; } = null!;
-}
-
-public class ChildDto
-{
-    public int Id { get; set; }
-
-    public string Name { get; set; } = string.Empty;
-}
-
-public class ChildDtoValidator : Validator<ChildDto>
+public sealed class ChildDtoValidator : Validator<ChildDto>
 {
     public ChildDtoValidator(IValidationContextFactory validationContextFactory)
         : base(validationContextFactory) { }
