@@ -417,7 +417,9 @@ public static partial class Checks
         check = check.WithNewValue(result.ValidatedValue);
 
         return result.TryGetErrors(out var errors) ?
-                   check.AddError(errors).ShortCircuitIfNecessary(shortCircuitOnError) :
+                   check.NormalizeKeyIfNecessary()
+                        .AddError(errors)
+                        .ShortCircuitIfNecessary(shortCircuitOnError) :
                    check;
     }
 
@@ -467,7 +469,9 @@ public static partial class Checks
                                     .ConfigureAwait(continueOnCapturedContext);
         check = check.WithNewValue(result.ValidatedValue);
         return result.TryGetErrors(out var errors) ?
-                   check.AddError(errors).ShortCircuitIfNecessary(shortCircuitOnError) :
+                   check.NormalizeKeyIfNecessary()
+                        .AddError(errors)
+                        .ShortCircuitIfNecessary(shortCircuitOnError) :
                    check;
     }
 }
