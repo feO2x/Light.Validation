@@ -33,7 +33,7 @@ public static class ContainsOnlyLettersAndDigitsTests
 
         var check = context.Check(dto.Value).ContainsOnlyLettersAndDigits();
 
-        context.ShouldHaveSingleError("value", "value must contain only letters and digits");
+        context.ShouldHaveSingleError("Value", "Value must contain only letters and digits");
         check.ShouldNotBeShortCircuited();
     }
 
@@ -57,7 +57,7 @@ public static class ContainsOnlyLettersAndDigitsTests
 
         var check = context.Check(dto.Value).ContainsOnlyLettersAndDigits("My Custom Message");
 
-        context.ShouldHaveSingleError("value", "My Custom Message");
+        context.ShouldHaveSingleError("Value", "My Custom Message");
         check.ShouldNotBeShortCircuited();
     }
 
@@ -95,7 +95,7 @@ public static class ContainsOnlyLettersAndDigitsTests
 
         var check = context.Check(dto.Value).ContainsOnlyLettersAndDigits(c => $"{c.Key} contains bad characters");
 
-        context.ShouldHaveSingleError("value", "value contains bad characters");
+        context.ShouldHaveSingleError("Value", "Value contains bad characters");
         check.ShouldNotBeShortCircuited();
     }
 

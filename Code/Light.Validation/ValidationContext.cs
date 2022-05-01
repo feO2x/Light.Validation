@@ -172,25 +172,34 @@ public class ValidationContext : ExtensibleObject
     /// You do not need to pass this value as it is automatically obtained by the expression that is passed to <paramref name="value" />
     /// via the <see cref="CallerArgumentExpressionAttribute" />.
     /// </param>
+    /// <param name="displayName">
+    /// The human-readable name of the value (optional). The default value is null.
+    /// This parameter will be set to the value of the <paramref name="key" /> parameter if null is passed.
+    /// </param>
     /// <typeparam name="T">The type of the value to be checked.</typeparam>
     public Check<T> Check<T>(T value,
                              bool? normalizeValue = null,
-                             [CallerArgumentExpression("value")] string key = "")
+                             [CallerArgumentExpression("value")] string key = "",
+                             string? displayName = null)
     {
         if (typeof(T) == typeof(string))
         {
             key.MustNotBeNull();
 
+            displayName ??= key;
+
             if (!DetermineBooleanSetting(normalizeValue, Options.IsNormalizingStringValues))
-                return new Check<T>(this, key, false, value);
+                return new Check<T>(this, key, false, value, key);
 
             var stringValue = Unsafe.As<T, string>(ref value);
             stringValue = NormalizeStringValue(stringValue);
-            return new Check<T>(this, key, false, Unsafe.As<string, T>(ref stringValue));
+            return new Check<T>(this, key, false, Unsafe.As<string, T>(ref stringValue), displayName);
         }
         else
         {
             key.MustNotBeNull();
+
+            displayName ??= key;
 
             if (value is string stringValue && DetermineBooleanSetting(normalizeValue, Options.IsNormalizingStringValues))
             {
@@ -198,7 +207,7 @@ public class ValidationContext : ExtensibleObject
                 value = Unsafe.As<string, T>(ref stringValue);
             }
 
-            return new Check<T>(this, key, false, value);
+            return new Check<T>(this, key, false, value, displayName);
         }
     }
 
@@ -268,7 +277,7 @@ public class ValidationContext : ExtensibleObject
     /// Normalizes the specified key.
     /// </summary>
     public string NormalizeKey(string key) =>
-        Options.NormalizeKey?.Invoke(key) ?? key.NormalizeLastSectionToLowerCamelCase();
+        Options.NormalizeKey?.Invoke(key) ?? key.GetSectionAfterLastDot();
 
     private bool TryAddFirstError(string key, object error)
     {

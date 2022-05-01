@@ -44,7 +44,7 @@ public static class IsNotEqualToTests
 
         var check = context.Check(dto.Value).IsNotEqualTo(value);
 
-        context.ShouldHaveSingleError("value", $"value must not be {Formatter.Format(value)}");
+        context.ShouldHaveSingleError("Value", $"Value must not be {Formatter.Format(value)}");
         check.ShouldNotBeShortCircuited();
     }
 
@@ -68,7 +68,7 @@ public static class IsNotEqualToTests
 
         var check = context.Check(dto.Value).IsNotEqualTo(value, "WTF");
 
-        context.ShouldHaveSingleError("value", "WTF");
+        context.ShouldHaveSingleError("Value", "WTF");
         check.ShouldNotBeShortCircuited();
     }
 
@@ -106,7 +106,7 @@ public static class IsNotEqualToTests
 
         var check = context.Check(dto.Value).IsNotEqualTo(comparativeValue, StringComparer.OrdinalIgnoreCase);
 
-        context.ShouldHaveSingleError("value", $"value must not be {Formatter.Format(comparativeValue)}");
+        context.ShouldHaveSingleError("Value", $"Value must not be {Formatter.Format(comparativeValue)}");
         check.ShouldNotBeShortCircuited();
     }
 
@@ -130,7 +130,7 @@ public static class IsNotEqualToTests
 
         var check = context.Check(dto.Value).IsNotEqualTo(comparativeValue, StringComparer.OrdinalIgnoreCase, "Errors.ValuesEqual");
 
-        context.ShouldHaveSingleError("value", "Errors.ValuesEqual");
+        context.ShouldHaveSingleError("Value", "Errors.ValuesEqual");
         check.ShouldNotBeShortCircuited();
     }
 
@@ -168,7 +168,7 @@ public static class IsNotEqualToTests
 
         var check = context.Check(dto.Value).IsNotEqualTo(value, (c, o) => $"{c.Key} must be different than {Formatter.Format(o)}");
 
-        context.ShouldHaveSingleError("value", $"value must be different than {Formatter.Format(value)}");
+        context.ShouldHaveSingleError("Value", $"Value must be different than {Formatter.Format(value)}");
         check.ShouldNotBeShortCircuited();
     }
 
@@ -195,7 +195,7 @@ public static class IsNotEqualToTests
                                          StringComparer.OrdinalIgnoreCase,
                                          (c, o) => $"{c.Key} must be different than {Formatter.Format(o)}");
 
-        context.ShouldHaveSingleError("value", $"value must be different than {Formatter.Format(comparativeValue)}");
+        context.ShouldHaveSingleError("Value", $"Value must be different than {Formatter.Format(comparativeValue)}");
         check.ShouldNotBeShortCircuited();
     }
 

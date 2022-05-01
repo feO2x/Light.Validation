@@ -21,7 +21,7 @@ public sealed class SimpleValidationTests
     [Fact]
     public void ValidateDtoDirectly()
     {
-        var context = ValidationContextFactory.CreateDefaultContext();
+        var context = ValidationContextFactory.CreateContext();
         var invalidDto = new UpdateUserNameDto { Id = 0, UserName = "" };
 
         var result = invalidDto.CheckForErrors(context, out var errors);
@@ -30,7 +30,7 @@ public sealed class SimpleValidationTests
         Output.WriteLine(Json.Serialize(errors));
         result.Should().BeTrue();
         errorsDictionary.Should().HaveCount(2);
-        CheckKeys(errorsDictionary, "id", "userName");
+        CheckKeys(errorsDictionary, nameof(UpdateUserNameDto.Id), nameof(UpdateUserNameDto.UserName));
     }
 
     [Fact]
@@ -45,7 +45,7 @@ public sealed class SimpleValidationTests
         result.Should().BeTrue();
         var errorDictionary = errors.MustBeOfType<Dictionary<string, object>>();
         errorDictionary.Should().HaveCount(2);
-        CheckKeys(errorDictionary, "id", "userName");
+        CheckKeys(errorDictionary, nameof(UpdateUserNameDto.Id), nameof(UpdateUserNameDto.UserName));
     }
 
     [Fact]
@@ -89,7 +89,7 @@ public sealed class SimpleValidationTests
 
         public async Task<IActionResult> UpdateUserName(UpdateUserNameDto? dto)
         {
-            var context = ValidationContextFactory.CreateDefaultContext();
+            var context = ValidationContextFactory.CreateContext();
             if (Validator.CheckForErrors(dto, context, out var errors))
                 return BadRequest(errors);
 

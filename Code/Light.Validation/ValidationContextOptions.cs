@@ -31,7 +31,7 @@ public class ValidationContextOptions : ExtensibleObject
     /// Gets or sets the delegate that is used to normalize keys.
     /// The default value is null. If no delegate is set,
     /// the default normalization function will be used which is
-    /// <see cref="StringExtensions.NormalizeLastSectionToLowerCamelCase" />.
+    /// <see cref="StringExtensions.GetSectionAfterLastDot" />.
     /// </summary>
     public Func<string, string>? NormalizeKey { get; set; }
 

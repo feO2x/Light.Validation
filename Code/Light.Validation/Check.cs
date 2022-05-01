@@ -15,32 +15,30 @@ public readonly record struct Check<T>
     /// </summary>
     /// <param name="context">The context that manages the errors dictionary.</param>
     /// <param name="key">The key that identifies errors for the value.</param>
-    /// <param name="isKeyNormalized">The value indicating whether the <paramref name="key"/> is normalized.</param>
+    /// <param name="isKeyNormalized">The value indicating whether the <paramref name="key" /> is normalized.</param>
+    /// <param name="displayName">The human-readable name of the value.</param>
     /// <param name="value">The value to be checked.</param>
     /// <param name="isShortCircuited">
     /// The value indicating whether no further checks should
     /// be performed on this instance.
     /// </param>
     /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="context" /> or <paramref name="key" /> is null.
+    /// Thrown when <paramref name="context" />, <paramref name="key" />, or <paramref name="displayName" /> are null.
     /// </exception>
     public Check(ValidationContext context,
                  string key,
                  bool isKeyNormalized,
                  T value,
+                 string displayName,
                  bool isShortCircuited = false)
     {
         Context = context.MustNotBeNull();
         Key = key.MustNotBeNull();
         IsKeyNormalized = isKeyNormalized;
         Value = value;
+        DisplayName = displayName.MustNotBeNull();
         IsShortCircuited = isShortCircuited;
     }
-
-    /// <summary>
-    /// Gets the value to be checked.
-    /// </summary>
-    public T Value { get; }
 
     /// <summary>
     /// Gets the context that manages the errors dictionary.
@@ -58,6 +56,16 @@ public readonly record struct Check<T>
     public bool IsKeyNormalized { get; }
 
     /// <summary>
+    /// Gets the value to be checked.
+    /// </summary>
+    public T Value { get; }
+
+    /// <summary>
+    /// Gets the human-readable name of the value.
+    /// </summary>
+    public string DisplayName { get; }
+
+    /// <summary>
     /// Gets the value indicating whether no further checks should
     /// be performed with this instance.
     /// </summary>
@@ -67,6 +75,11 @@ public readonly record struct Check<T>
     /// Gets the value indicating whether the context has errors for the key of this check instance.
     /// </summary>
     public bool HasError => Context.Errors?.ContainsKey(Key) ?? false;
+
+    /// <summary>
+    /// Gets the value indicating whether <see cref="Value" /> is null.
+    /// </summary>
+    public bool IsValueNull => Value is null;
 
     /// <summary>
     /// Adds the specified error message to the context. By default,
@@ -89,15 +102,16 @@ public readonly record struct Check<T>
     }
 
     /// <summary>
-    /// Gets the value indicating whether <see cref="Value" /> is null.
+    /// Initializes a new instance of <see cref="Check{T}" /> with the specified value.
+    /// All other values stay the same.
     /// </summary>
-    public bool IsValueNull => Value is null;
+    public Check<T> WithNewValue(T newValue) => new (Context, Key, IsKeyNormalized, newValue, DisplayName, IsShortCircuited);
 
     /// <summary>
-    /// Initializes a new instance of <see cref="Check{T}" /> with the
-    /// same context and key, but with the specified value.
+    /// Initializes a new instance of <see cref="Check{T}" /> with the specified display name.
+    /// All other values stay the same.
     /// </summary>
-    public Check<T> WithNewValue(T newValue) => new (Context, Key, IsKeyNormalized, newValue, IsShortCircuited);
+    public Check<T> WithDisplayName(string displayName) => new (Context, Key, IsKeyNormalized, Value, displayName, IsShortCircuited);
 
     /// <summary>
     /// Initializes a new instance of <see cref="Check{T}" /> with the
@@ -111,7 +125,7 @@ public readonly record struct Check<T>
     /// same context, key, and value, but with <see cref="IsShortCircuited" />
     /// set to the specified value.
     /// </summary>
-    public Check<T> ShortCircuitIfNecessary(bool isShortCircuited) => new (Context, Key, IsKeyNormalized, Value, isShortCircuited);
+    public Check<T> ShortCircuitIfNecessary(bool isShortCircuited) => new (Context, Key, IsKeyNormalized, Value, DisplayName, isShortCircuited);
 
     /// <summary>
     /// Casts the validation context to the specified subtype and returns
@@ -139,7 +153,10 @@ public readonly record struct Check<T>
             return this;
 
         var key = Context.NormalizeKey(Key);
-        return new Check<T>(Context, key, true, Value, IsShortCircuited);
+        var displayName = DisplayName;
+        if (ReferenceEquals(displayName, Key))
+            displayName = key;
+        return new Check<T>(Context, key, true, Value, displayName, IsShortCircuited);
     }
 
     /// <summary>

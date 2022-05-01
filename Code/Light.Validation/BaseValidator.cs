@@ -34,7 +34,7 @@ public abstract class BaseValidator<T>
     /// <summary>
     /// Gets the value indicating whether the validator should perform automatic null-checking.
     /// </summary>
-    protected bool IsNullCheckingEnabled { get; }
+    public bool IsNullCheckingEnabled { get; }
 
     /// <summary>
     /// This method checks if the validator should perform an automatic null-check (<see cref="IsNullCheckingEnabled" />)

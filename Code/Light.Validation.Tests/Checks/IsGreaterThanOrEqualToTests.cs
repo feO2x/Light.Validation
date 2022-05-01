@@ -33,7 +33,7 @@ public static class IsGreaterThanOrEqualToTests
         var check = context.Check(dto.Value).IsGreaterThanOrEqualTo(comparativeValue);
 
         context.ShouldHaveSingleError(
-            "value", $"value must be greater than or equal to {comparativeValue}");
+            "Value", $"Value must be greater than or equal to {comparativeValue}");
         check.ShouldNotBeShortCircuited();
     }
 
@@ -57,7 +57,7 @@ public static class IsGreaterThanOrEqualToTests
 
         var check = context.Check(dto.Value).IsGreaterThanOrEqualTo(comparativeValue, "Errors.MustBeGreaterThanOrEqualTo");
 
-        context.ShouldHaveSingleError("value", "Errors.MustBeGreaterThanOrEqualTo");
+        context.ShouldHaveSingleError("Value", "Errors.MustBeGreaterThanOrEqualTo");
         check.ShouldNotBeShortCircuited();
     }
 
@@ -99,7 +99,7 @@ public static class IsGreaterThanOrEqualToTests
                         (c, o) => $"{c.Key} must not be less than {o.ToString(CultureInfo.InvariantCulture)}"
                     );
 
-        context.ShouldHaveSingleError("value", "value must not be less than 45.75");
+        context.ShouldHaveSingleError("Value", "Value must not be less than 45.75");
         check.ShouldNotBeShortCircuited();
     }
 

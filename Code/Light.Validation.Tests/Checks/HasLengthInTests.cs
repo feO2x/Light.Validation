@@ -31,7 +31,7 @@ public static class HasLengthInTests
 
         var check = context.Check(dto.Value).HasLengthIn(range);
 
-        context.ShouldHaveSingleError("value", $"value must have {range.CreateRangeDescriptionText()} characters");
+        context.ShouldHaveSingleError("Value", $"Value must have {range.CreateRangeDescriptionText()} characters");
         check.ShouldNotBeShortCircuited();
     }
 
@@ -55,7 +55,7 @@ public static class HasLengthInTests
 
         var check = context.Check(dto.Value).HasLengthIn(range, "Custom Error");
 
-        context.ShouldHaveSingleError("value", "Custom Error");
+        context.ShouldHaveSingleError("Value", "Custom Error");
         check.ShouldNotBeShortCircuited();
     }
 
@@ -93,7 +93,7 @@ public static class HasLengthInTests
 
         var check = context.Check(dto.Value).HasLengthIn(range, (c, r) => $"{c.Key} must be between {r.From} and {r.To} characters long");
 
-        context.ShouldHaveSingleError("value", $"value must be between {range.From} and {range.To} characters long");
+        context.ShouldHaveSingleError("Value", $"Value must be between {range.From} and {range.To} characters long");
         check.ShouldNotBeShortCircuited();
     }
 

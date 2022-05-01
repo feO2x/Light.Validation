@@ -32,7 +32,7 @@ public static class IsLongerThanTests
 
         var check = context.Check(dto.Value).IsLongerThan(length);
 
-        context.ShouldHaveSingleError("value", $"value must be longer than {length} characters");
+        context.ShouldHaveSingleError("Value", $"Value must be longer than {length} characters");
         check.ShouldNotBeShortCircuited();
     }
 
@@ -56,7 +56,7 @@ public static class IsLongerThanTests
 
         var check = context.Check(dto.Value).IsLongerThan(length, "Custom Error Message");
 
-        context.ShouldHaveSingleError("value", "Custom Error Message");
+        context.ShouldHaveSingleError("Value", "Custom Error Message");
         check.ShouldNotBeShortCircuited();
     }
 
@@ -94,7 +94,7 @@ public static class IsLongerThanTests
 
         var check = context.Check(dto.Value).IsLongerThan(length, (c, l) => $"{c.Key} is too short ({l})");
 
-        context.ShouldHaveSingleError("value", $"value is too short ({length})");
+        context.ShouldHaveSingleError("Value", $"Value is too short ({length})");
         check.ShouldNotBeShortCircuited();
     }
 

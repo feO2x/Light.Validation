@@ -22,11 +22,11 @@ public static class IsNotNullForNullablesTests
     public static void ValueIsNull()
     {
         var dto = new Dto();
-        var context = ValidationContextFactory.CreateDefaultContext();
+        var context = ValidationContextFactory.CreateContext();
 
         var check = context.Check(dto.NullableValue).IsNotNull();
 
-        context.ShouldHaveSingleError("nullableValue", "nullableValue must not be null");
+        context.ShouldHaveSingleError("NullableValue", "NullableValue must not be null");
         check.ShouldBeShortCircuited();
     }
     
@@ -35,7 +35,7 @@ public static class IsNotNullForNullablesTests
     public static void NotNull(int validValue)
     {
         var dto = new Dto { NullableValue = validValue };
-        var context = ValidationContextFactory.CreateDefaultContext();
+        var context = ValidationContextFactory.CreateContext();
 
         var check = context.Check(dto.NullableValue).IsNotNull();
 
@@ -47,11 +47,11 @@ public static class IsNotNullForNullablesTests
     public static void CustomErrorMessage()
     {
         var dto = new Dto();
-        var context = ValidationContextFactory.CreateDefaultContext();
+        var context = ValidationContextFactory.CreateContext();
 
         var check = context.Check(dto.NullableValue).IsNotNull("How can you pass null?");
 
-        context.ShouldHaveSingleError("nullableValue", "How can you pass null?");
+        context.ShouldHaveSingleError("NullableValue", "How can you pass null?");
         check.ShouldBeShortCircuited();
     }
     
@@ -59,11 +59,11 @@ public static class IsNotNullForNullablesTests
     public static void CustomErrorMessageFactory()
     {
         var dto = new Dto();
-        var context = ValidationContextFactory.CreateDefaultContext();
+        var context = ValidationContextFactory.CreateContext();
 
         var check = context.Check(dto.NullableValue).IsNotNull(c => $"Damn you, {c.Key} is null!");
 
-        context.ShouldHaveSingleError("nullableValue", "Damn you, nullableValue is null!");
+        context.ShouldHaveSingleError("NullableValue", "Damn you, NullableValue is null!");
         check.ShouldBeShortCircuited();
     }
     
@@ -72,7 +72,7 @@ public static class IsNotNullForNullablesTests
     public static void NoErrorWithCustomMessageFactory(int validValue)
     {
         var dto = new Dto { NullableValue = validValue };
-        var context = ValidationContextFactory.CreateDefaultContext();
+        var context = ValidationContextFactory.CreateContext();
 
         var check = context.Check(dto.NullableValue).IsNotNull(_ => "It doesn't matter");
 
@@ -84,7 +84,7 @@ public static class IsNotNullForNullablesTests
     public static void DisableShortCircuiting()
     {
         var dto = new Dto();
-        var context = ValidationContextFactory.CreateDefaultContext();
+        var context = ValidationContextFactory.CreateContext();
 
         var check = context.Check(dto.NullableValue).IsNotNull(shortCircuitOnError: false);
 
@@ -96,7 +96,7 @@ public static class IsNotNullForNullablesTests
     public static void DisableShortCircuitingWithCustomMessageFactory()
     {
         var dto = new Dto();
-        var context = ValidationContextFactory.CreateDefaultContext();
+        var context = ValidationContextFactory.CreateContext();
 
         var check = context.Check(dto.NullableValue).IsNotNull(_ => "OMG it's null", false);
 

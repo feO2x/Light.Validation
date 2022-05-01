@@ -32,7 +32,7 @@ public static class IsNullOrWhiteSpaceTests
 
         context.Check(dto.Value).IsNotNullOrWhiteSpace();
 
-        context.ShouldHaveSingleError("value", "value must not be empty");
+        context.ShouldHaveSingleError("Value", "Value must not be empty");
     }
 
     [Theory]
@@ -54,7 +54,7 @@ public static class IsNullOrWhiteSpaceTests
 
         context.Check(dto.Value).IsNotNullOrWhiteSpace("Errors.EmptyString");
 
-        context.ShouldHaveSingleError("value", "Errors.EmptyString");
+        context.ShouldHaveSingleError("Value", "Errors.EmptyString");
     }
 
     [Theory]
@@ -65,7 +65,7 @@ public static class IsNullOrWhiteSpaceTests
 
         context.Check(dto.Value).IsNotNullOrWhiteSpace(c => $"You must set the {c.Key}");
 
-        context.ShouldHaveSingleError("value", "You must set the value");
+        context.ShouldHaveSingleError("Value", "You must set the Value");
     }
 
     [Theory]
