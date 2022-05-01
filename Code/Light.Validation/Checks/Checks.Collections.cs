@@ -111,7 +111,9 @@ public static partial class Checks
         }
 
         return childContext.TryGetErrors(out var errors) ?
-                   check.AddError(errors).ShortCircuitIfNecessary(shortCircuitOnError) :
+                   check.NormalizeKeyIfNecessary()
+                        .AddError(errors)
+                        .ShortCircuitIfNecessary(shortCircuitOnError) :
                    check;
     }
 
@@ -167,7 +169,9 @@ public static partial class Checks
         }
 
         return childContext.TryGetErrors(out var errors) ?
-                   check.AddError(errors).ShortCircuitIfNecessary(shortCircuitOnError) :
+                   check.NormalizeKeyIfNecessary()
+                        .AddError(errors)
+                        .ShortCircuitIfNecessary(shortCircuitOnError) :
                    check;
     }
 

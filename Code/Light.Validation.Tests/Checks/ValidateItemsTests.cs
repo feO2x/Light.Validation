@@ -24,7 +24,7 @@ public static class ValidateItemsTests
     [Fact]
     public static void SomeItemsInvalid()
     {
-        var array = new [] { 4, 12, 8, 28918, 30 };
+        var array = new[] { 4, 12, 8, 28918, 30 };
         var context = ValidationContextFactory.CreateContext();
 
         var check = context.Check(array).ValidateItems((Check<int> number) => number.IsGreaterThanOrEqualTo(10));
@@ -114,5 +114,22 @@ public static class ValidateItemsTests
 
         context.ShouldHaveErrors();
         check.ShouldBeShortCircuited();
+    }
+
+    [Fact]
+    public static void NormalizeKeyOnError()
+    {
+        var list = new List<string> { "Foo" };
+        var context = ValidationContextFactory.CreateContext();
+
+        context.Check(list, key: "dto.Strings").ValidateItems((Check<string> text) => text.IsLongerThan(10));
+
+        context.ShouldHaveSingleComplexError(
+            "Strings",
+            new Dictionary<string, object>
+            {
+                ["0"] = "The value must be longer than 10 characters"
+            }
+        );
     }
 }

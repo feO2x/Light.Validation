@@ -156,4 +156,26 @@ public static class ValidateItemsAsyncTests
         context.ShouldHaveSingleError("array", "array must not be null");
         check.ShouldBeShortCircuited();
     }
+
+    [Fact]
+    public static async Task NormalizeKeyOnError()
+    {
+        var list = new List<string> { "Foo" };
+        var context = ValidationContextFactory.CreateContext();
+
+        await context.Check(list, key: "dto.Strings")
+                     .ValidateItemsAsync((Check<string> text) =>
+                      {
+                          text.IsLongerThan(10);
+                          return Task.FromResult(text);
+                      });
+
+        context.ShouldHaveSingleComplexError(
+            "Strings",
+            new Dictionary<string, object>
+            {
+                ["0"] = "The value must be longer than 10 characters"
+            }
+        );
+    }
 }
