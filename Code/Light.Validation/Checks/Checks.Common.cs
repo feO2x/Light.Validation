@@ -33,7 +33,7 @@ public static partial class Checks
     {
         if (check.IsShortCircuited || !check.IsValueNull)
             return check;
-        
+
         check = check.AddNotNullError(message);
         return check.ShortCircuitIfNecessary(shortCircuitOnError);
     }
@@ -393,16 +393,34 @@ public static partial class Checks
     /// <typeparam name="T">The type of the value to be checked.</typeparam>
     /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
     /// <param name="validator">The validator that performs checks on the specified value.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="validator"/> is null.</exception>
-    public static Check<T> ValidateWith<T>(this Check<T> check, Validator<T> validator)
+    /// <param name="shortCircuitOnError">
+    /// The value indicating whether the check instance is short-circuited when validation fails.
+    /// Short-circuited instances will not perform any more checks.
+    /// </param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="validator" /> is null.</exception>
+    public static Check<T> ValidateWith<T>(this Check<T> check, Validator<T> validator, bool shortCircuitOnError = false)
     {
         validator.MustNotBeNull();
 
-        var result = validator.Validate(check.Value, check.Key);
-        if (result.TryGetErrors(out var errors))
-            check = check.AddError(errors);
+        if (check.IsShortCircuited)
+            return check;
 
-        return check.WithNewValue(result.ValidatedValue);
+        if (validator.IsNullCheckingEnabled && check.IsValueNull)
+        {
+            check = check.AddNotNullError();
+            return check.ShortCircuitIfNecessary(shortCircuitOnError);
+        }
+
+        var childContext = check.CreateChildContext();
+
+        var result = validator.Validate(check.Value, childContext, check.Key, check.DisplayName);
+        check = check.WithNewValue(result.ValidatedValue);
+
+        return result.TryGetErrors(out var errors) ?
+                   check.NormalizeKeyIfNecessary()
+                        .AddError(errors)
+                        .ShortCircuitIfNecessary(shortCircuitOnError) :
+                   check;
     }
 
     /// <summary>
@@ -412,24 +430,48 @@ public static partial class Checks
     /// <typeparam name="T">The type of the value to be checked.</typeparam>
     /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
     /// <param name="validator">The validator that performs checks on the specified value.</param>
+    /// <param name="shortCircuitOnError">
+    /// The value indicating whether the check instance is short-circuited when validation fails.
+    /// Short-circuited instances will not perform any more checks.
+    /// </param>
     /// <param name="continueOnCapturedContext">
     /// The value indicating whether the continuation after the internal async call in this method should
     /// be executed on the captured synchronization context (optional). The default value
     /// is false. This is the boolean value passed to ConfigureAwait for the
     /// PerformValidationAsync task. If you have no clue, just leave it to false.
     /// </param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="validator"/> is null.</exception>
-    public static async Task<Check<T>> ValidateWithAsync<T>(this Check<T> check,
-                                                            AsyncValidator<T> validator,
-                                                            bool continueOnCapturedContext = false)
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="validator" /> is null.</exception>
+    public static async
+#if NETSTANDARD2_0
+        Task<Check<T>>
+#else
+        ValueTask<Check<T>>
+#endif
+
+        ValidateWithAsync<T>(this Check<T> check,
+                             AsyncValidator<T> validator,
+                             bool shortCircuitOnError = false,
+                             bool continueOnCapturedContext = false)
     {
         validator.MustNotBeNull();
 
-        var result = await validator.ValidateAsync(check.Value, check.Key)
-                                    .ConfigureAwait(continueOnCapturedContext);
-        if (result.TryGetErrors(out var errors))
-            check = check.AddError(errors);
+        if (check.IsShortCircuited)
+            return check;
 
-        return check.WithNewValue(result.ValidatedValue);
+        if (validator.IsNullCheckingEnabled && check.IsValueNull)
+        {
+            check = check.AddNotNullError();
+            return check.ShortCircuitIfNecessary(shortCircuitOnError);
+        }
+
+        var childContext = check.CreateChildContext();
+        var result = await validator.ValidateAsync(check.Value, childContext, check.Key, check.DisplayName)
+                                    .ConfigureAwait(continueOnCapturedContext);
+        check = check.WithNewValue(result.ValidatedValue);
+        return result.TryGetErrors(out var errors) ?
+                   check.NormalizeKeyIfNecessary()
+                        .AddError(errors)
+                        .ShortCircuitIfNecessary(shortCircuitOnError) :
+                   check;
     }
 }

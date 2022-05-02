@@ -55,7 +55,7 @@ public static class IsEqualToTests
 
         var check = context.Check(dto.Value).IsEqualTo(comparativeValue);
 
-        context.ShouldHaveSingleError("value", $"value must be {Formatter.Format(comparativeValue)}");
+        context.ShouldHaveSingleError("Value", $"Value must be {Formatter.Format(comparativeValue)}");
         check.ShouldNotBeShortCircuited();
     }
 
@@ -79,7 +79,7 @@ public static class IsEqualToTests
 
         var check = context.Check(dto.Value).IsEqualTo(comparativeValue, shortCircuitOnError: true);
 
-        context.ShouldHaveSingleError("value", $"value must be {Formatter.Format(comparativeValue)}");
+        context.ShouldHaveSingleError("Value", $"Value must be {Formatter.Format(comparativeValue)}");
         check.IsShortCircuited.Should().BeTrue();
     }
 
@@ -104,7 +104,7 @@ public static class IsEqualToTests
 
         var check = context.Check(dto.Value).IsEqualTo(comparativeValue, "Errors.ValuesNotEqual");
 
-        context.ShouldHaveSingleError("value", "Errors.ValuesNotEqual");
+        context.ShouldHaveSingleError("Value", "Errors.ValuesNotEqual");
         check.ShouldNotBeShortCircuited();
     }
 
@@ -116,7 +116,7 @@ public static class IsEqualToTests
 
         var check = context.Check(dto.Value).IsEqualTo(comparativeValue, StringComparer.OrdinalIgnoreCase);
 
-        context.ShouldHaveSingleError("value", $"value must be {Formatter.Format(comparativeValue)}");
+        context.ShouldHaveSingleError("Value", $"Value must be {Formatter.Format(comparativeValue)}");
         check.ShouldNotBeShortCircuited();
     }
 
@@ -154,7 +154,7 @@ public static class IsEqualToTests
         var check = context.Check(dto.Value)
                            .IsEqualTo(comparativeValue, StringComparer.OrdinalIgnoreCase, "Errors.ValuesNotEqual");
 
-        context.ShouldHaveSingleError("value", "Errors.ValuesNotEqual");
+        context.ShouldHaveSingleError("Value", "Errors.ValuesNotEqual");
         check.ShouldNotBeShortCircuited();
     }
 
@@ -167,7 +167,7 @@ public static class IsEqualToTests
         var check = context.Check(dto.Value)
                            .IsEqualTo(comparativeValue, (c, o) => $"{c.Key} is not {Formatter.Format(o)}");
 
-        context.ShouldHaveSingleError("value", $"value is not {Formatter.Format(comparativeValue)}");
+        context.ShouldHaveSingleError("Value", $"Value is not {Formatter.Format(comparativeValue)}");
         check.ShouldNotBeShortCircuited();
     }
 
@@ -194,7 +194,7 @@ public static class IsEqualToTests
                                       StringComparer.OrdinalIgnoreCase,
                                       (c, o) => $"{c.Key} is not {Formatter.Format(o)}");
 
-        context.ShouldHaveSingleError("value", $"value is not {Formatter.Format(comparativeValue)}");
+        context.ShouldHaveSingleError("Value", $"Value is not {Formatter.Format(comparativeValue)}");
         check.ShouldNotBeShortCircuited();
     }
 

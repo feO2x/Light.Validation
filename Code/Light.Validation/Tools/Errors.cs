@@ -19,7 +19,7 @@ public static class Errors
     public static Check<T> AddNotNullError<T>(this Check<T> check, string? message = null)
     {
         check = check.NormalizeKeyIfNecessary();
-        message ??= string.Format(check.Context.ErrorTemplates.NotNull, check.Key);
+        message ??= string.Format(check.Context.ErrorTemplates.NotNull, check.DisplayName);
         return check.AddError(message);
     }
 
@@ -38,7 +38,7 @@ public static class Errors
         check = check.NormalizeKeyIfNecessary();
         message ??= string.Format(
             check.Context.ErrorTemplates.EqualTo,
-            check.Key,
+            check.DisplayName,
             check.Context.ErrorTemplates.FormatParameter(comparativeValue)
         );
         return check.AddError(message);
@@ -59,7 +59,7 @@ public static class Errors
         check = check.NormalizeKeyIfNecessary();
         message ??= string.Format(
             check.Context.ErrorTemplates.NotEqualTo,
-            check.Key,
+            check.DisplayName,
             check.Context.ErrorTemplates.FormatParameter(comparativeValue)
         );
         return check.AddError(message);
@@ -76,7 +76,7 @@ public static class Errors
     public static Check<Guid> AddNotEmptyGuidError(this Check<Guid> check, string? message = null)
     {
         check = check.NormalizeKeyIfNecessary();
-        message ??= string.Format(check.Context.ErrorTemplates.NotEmptyGuid, check.Key);
+        message ??= string.Format(check.Context.ErrorTemplates.NotEmptyGuid, check.DisplayName);
         return check.AddError(message);
     }
 
@@ -91,7 +91,7 @@ public static class Errors
     public static Check<string> AddRegexMustMatchError(this Check<string> check, string? message = null)
     {
         check = check.NormalizeKeyIfNecessary();
-        message ??= string.Format(check.Context.ErrorTemplates.RegexMustMatch, check.Key);
+        message ??= string.Format(check.Context.ErrorTemplates.RegexMustMatch, check.DisplayName);
         return check.AddError(message);
     }
 
@@ -108,7 +108,7 @@ public static class Errors
         check = check.NormalizeKeyIfNecessary();
         message ??= string.Format(
             check.Context.ErrorTemplates.NotNullOrWhiteSpace,
-            check.Key
+            check.DisplayName
         );
         return check.AddError(message);
     }
@@ -129,7 +129,7 @@ public static class Errors
         check = check.NormalizeKeyIfNecessary();
         message ??= string.Format(
             check.Context.ErrorTemplates.GreaterThan,
-            check.Key,
+            check.DisplayName,
             check.Context.ErrorTemplates.FormatParameter(comparativeValue)
         );
         return check.AddError(message);
@@ -151,7 +151,7 @@ public static class Errors
         check = check.NormalizeKeyIfNecessary();
         message ??= string.Format(
             check.Context.ErrorTemplates.GreaterThanOrEqualTo,
-            check.Key,
+            check.DisplayName,
             check.Context.ErrorTemplates.FormatParameter(comparativeValue)
         );
         return check.AddError(message);
@@ -173,7 +173,7 @@ public static class Errors
         check = check.NormalizeKeyIfNecessary();
         message ??= string.Format(
             check.Context.ErrorTemplates.LessThan,
-            check.Key,
+            check.DisplayName,
             check.Context.ErrorTemplates.FormatParameter(comparativeValue)
         );
         return check.AddError(message);
@@ -195,7 +195,7 @@ public static class Errors
         check = check.NormalizeKeyIfNecessary();
         message ??= string.Format(
             check.Context.ErrorTemplates.LessThanOrEqualTo,
-            check.Key,
+            check.DisplayName,
             check.Context.ErrorTemplates.FormatParameter(comparativeValue)
         );
         return check.AddError(message);
@@ -217,7 +217,7 @@ public static class Errors
         check = check.NormalizeKeyIfNecessary();
         message ??= string.Format(
             check.Context.ErrorTemplates.InRange,
-            check.Key,
+            check.DisplayName,
             check.Context.ErrorTemplates.FormatRange(range)
         );
         return check.AddError(message);
@@ -239,7 +239,7 @@ public static class Errors
         check = check.NormalizeKeyIfNecessary();
         message ??= string.Format(
             check.Context.ErrorTemplates.NotInRange,
-            check.Key,
+            check.DisplayName,
             check.Context.ErrorTemplates.FormatRange(range)
         );
         return check.AddError(message);
@@ -258,7 +258,7 @@ public static class Errors
         check = check.NormalizeKeyIfNecessary();
         message ??= string.Format(
             check.Context.ErrorTemplates.Email,
-            check.Key
+            check.DisplayName
         );
         return check.AddError(message);
     }
@@ -277,7 +277,7 @@ public static class Errors
         check = check.NormalizeKeyIfNecessary();
         message ??= string.Format(
             check.Context.ErrorTemplates.LongerThan,
-            check.Key,
+            check.DisplayName,
             check.Context.ErrorTemplates.FormatParameter(length)
         );
         return check.AddError(message);
@@ -297,7 +297,7 @@ public static class Errors
         check = check.NormalizeKeyIfNecessary();
         message ??= string.Format(
             check.Context.ErrorTemplates.ShorterThan,
-            check.Key,
+            check.DisplayName,
             check.Context.ErrorTemplates.FormatParameter(length)
         );
         return check.AddError(message);
@@ -317,7 +317,7 @@ public static class Errors
         check = check.NormalizeKeyIfNecessary();
         message ??= string.Format(
             check.Context.ErrorTemplates.LengthInRange,
-            check.Key,
+            check.DisplayName,
             check.Context.ErrorTemplates.FormatRange(range)
         );
         return check.AddError(message);
@@ -336,7 +336,7 @@ public static class Errors
         check = check.NormalizeKeyIfNecessary();
         message ??= string.Format(
             check.Context.ErrorTemplates.OnlyDigits,
-            check.Key
+            check.DisplayName
         );
         return check.AddError(message);
     }
@@ -354,7 +354,7 @@ public static class Errors
         check = check.NormalizeKeyIfNecessary();
         message ??= string.Format(
             check.Context.ErrorTemplates.OnlyLettersAndDigits,
-            check.Key
+            check.DisplayName
         );
         return check.AddError(message);
     }
@@ -374,8 +374,8 @@ public static class Errors
     {
         check = check.NormalizeKeyIfNecessary();
         message ??= count == 1 ?
-                        string.Format(check.Context.ErrorTemplates.CountSingular, check.Key) :
-                        string.Format(check.Context.ErrorTemplates.CountMultiple, check.Key, count.ToString());
+                        string.Format(check.Context.ErrorTemplates.CountSingular, check.DisplayName) :
+                        string.Format(check.Context.ErrorTemplates.CountMultiple, check.DisplayName, count.ToString());
         return check.AddError(message);
     }
 
@@ -392,7 +392,7 @@ public static class Errors
         check = check.NormalizeKeyIfNecessary();
         message ??= string.Format(
             check.Context.ErrorTemplates.TryParseToEnum,
-            check.Key
+            check.DisplayName
         );
         return check.AddError(message);
     }
@@ -422,8 +422,8 @@ public static class Errors
     /// <typeparam name="T">The type of the value to be checked.</typeparam>
     /// <typeparam name="TParameter">The type of the comparative value.</typeparam>
     public static Check<T> CreateAndAddError<T, TParameter>(this Check<T> check,
-                                                        Func<Check<T>, TParameter, string> errorMessageFactory,
-                                                        TParameter comparativeValue)
+                                                            Func<Check<T>, TParameter, string> errorMessageFactory,
+                                                            TParameter comparativeValue)
     {
         errorMessageFactory.MustNotBeNull();
 

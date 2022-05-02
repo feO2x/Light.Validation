@@ -1,5 +1,6 @@
 ﻿using Light.Validation.Checks;
 using Light.Validation.Tests.TestHelpers;
+using Light.Validation.Tools;
 using Xunit;
 
 namespace Light.Validation.Tests.Checks;
@@ -20,7 +21,7 @@ public static class IsNotNullForReferencesTests
     private static ValidationContextOptions Options { get; } =
         new () { IsNormalizingStringValues = false };
 
-    private static ValidationContext CreateValidationContext() => new (Options);
+    private static ValidationContext CreateValidationContext() => new (ValidationContextFactory.Instance, Options, ErrorTemplates.Default);
 
     [Fact]
     public static void ValueIsNull()
@@ -30,7 +31,7 @@ public static class IsNotNullForReferencesTests
 
         var check = context.Check(dto.ReferenceValue).IsNotNull();
 
-        context.ShouldHaveSingleError("referenceValue", "referenceValue must not be null");
+        context.ShouldHaveSingleError("ReferenceValue", "ReferenceValue must not be null");
         check.ShouldBeShortCircuited();
     }
 
@@ -55,7 +56,7 @@ public static class IsNotNullForReferencesTests
 
         var check = context.Check(dto.ReferenceValue).IsNotNull("How can you pass null?");
 
-        context.ShouldHaveSingleError("referenceValue", "How can you pass null?");
+        context.ShouldHaveSingleError("ReferenceValue", "How can you pass null?");
         check.ShouldBeShortCircuited();
     }
 
@@ -67,7 +68,7 @@ public static class IsNotNullForReferencesTests
 
         var check = context.Check(dto.ReferenceValue).IsNotNull(c => $"Damn you, {c.Key} is null!");
 
-        context.ShouldHaveSingleError("referenceValue", "Damn you, referenceValue is null!");
+        context.ShouldHaveSingleError("ReferenceValue", "Damn you, ReferenceValue is null!");
         check.ShouldBeShortCircuited();
     }
 

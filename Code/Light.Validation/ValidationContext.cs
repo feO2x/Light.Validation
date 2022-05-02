@@ -18,6 +18,7 @@ public class ValidationContext : ExtensibleObject
     /// <summary>
     /// Initializes a new instance of <see cref="ValidationContext" />.
     /// </summary>
+    /// <param name="factory">The factory that was used to create this context.</param>
     /// <param name="options">
     /// The options for this context (optional). If null is specified,
     /// <see cref="ValidationContextOptions.Default" /> will be used.
@@ -27,21 +28,22 @@ public class ValidationContext : ExtensibleObject
     /// used to format the error messages if a check fails. If null
     /// is specified, <see cref="Tools.ErrorTemplates.Default" /> will be used.
     /// </param>
-    /// <param name="attachedObjects">The dictionary that will be used as the internal storage for attached objects.</param>
-    /// <param name="disallowSettingAttachedObjects">
-    /// The value indicating whether <see cref="ExtensibleObject.SetAttachedObject" /> will throw an exception when being called.
-    /// If this value is set to true, the extensible object is immutable and the fully-filled dictionary of attached objects
-    /// must be passed as a parameter to the constructor. Using this feature makes instances of this class thread-safe.
-    /// </param>
-    public ValidationContext(ValidationContextOptions? options = null,
-                             ErrorTemplates? errorTemplates = null,
-                             Dictionary<string, object>? attachedObjects = null,
-                             bool disallowSettingAttachedObjects = false)
-        : base(attachedObjects, disallowSettingAttachedObjects)
+    /// <param name="other">Another extensible object whose attached objects will be shallow-copied to this instance.</param>
+    public ValidationContext(IValidationContextFactory factory,
+                             ValidationContextOptions options,
+                             ErrorTemplates errorTemplates,
+                             ExtensibleObject? other = null)
+        : base(other)
     {
-        Options = options ?? ValidationContextOptions.Default;
-        ErrorTemplates = errorTemplates ?? ErrorTemplates.Default;
+        Factory = factory.MustNotBeNull();
+        Options = options.MustNotBeNull();
+        ErrorTemplates = errorTemplates.MustNotBeNull();
     }
+
+    /// <summary>
+    /// Gets the factory that was used to create this context.
+    /// </summary>
+    public IValidationContextFactory Factory { get; }
 
     /// <summary>
     /// Gets the errors dictionary. This value can be null when no errors were
@@ -170,25 +172,35 @@ public class ValidationContext : ExtensibleObject
     /// You do not need to pass this value as it is automatically obtained by the expression that is passed to <paramref name="value" />
     /// via the <see cref="CallerArgumentExpressionAttribute" />.
     /// </param>
+    /// <param name="displayName">
+    /// The human-readable name of the value (optional). The default value is null.
+    /// This parameter will be set to the value of the <paramref name="key" /> parameter if null is passed.
+    /// It will also be normalized if no dedicated display name is set.
+    /// </param>
     /// <typeparam name="T">The type of the value to be checked.</typeparam>
     public Check<T> Check<T>(T value,
                              bool? normalizeValue = null,
-                             [CallerArgumentExpression("value")] string key = "")
+                             [CallerArgumentExpression("value")] string key = "",
+                             string? displayName = null)
     {
         if (typeof(T) == typeof(string))
         {
             key.MustNotBeNull();
 
+            displayName ??= key;
+
             if (!DetermineBooleanSetting(normalizeValue, Options.IsNormalizingStringValues))
-                return new Check<T>(this, key, false, value);
+                return new Check<T>(this, key, false, value, key);
 
             var stringValue = Unsafe.As<T, string>(ref value);
             stringValue = NormalizeStringValue(stringValue);
-            return new Check<T>(this, key, false, Unsafe.As<string, T>(ref stringValue));
+            return new Check<T>(this, key, false, Unsafe.As<string, T>(ref stringValue), displayName);
         }
         else
         {
             key.MustNotBeNull();
+
+            displayName ??= key;
 
             if (value is string stringValue && DetermineBooleanSetting(normalizeValue, Options.IsNormalizingStringValues))
             {
@@ -196,37 +208,8 @@ public class ValidationContext : ExtensibleObject
                 value = Unsafe.As<string, T>(ref stringValue);
             }
 
-            return new Check<T>(this, key, false, value);
+            return new Check<T>(this, key, false, value, displayName);
         }
-    }
-
-    /// <summary>
-    /// Checks if the specified value is null. If yes, the <paramref name="error" />
-    /// will be set and true will be returned. Otherwise, false will be returned and
-    /// value is ensured to not be null.
-    /// </summary>
-    /// <param name="value">The value to be checked.</param>
-    /// <param name="error">The error message that will be set when <paramref name="value"/> is null.</param>
-    /// <param name="key">
-    /// The string that identifies the corresponding errors in the internal dictionary of the validation context (optional).
-    /// You do not need to pass this value as it is automatically obtained by the expression that is passed to <paramref name="value" />
-    /// via the <see cref="CallerArgumentExpressionAttribute" />.
-    /// </param>
-    public bool CheckForNull<T>([NotNullWhen(false)] T? value,
-                                [NotNullWhen(true)] out object? error,
-                                [CallerArgumentExpression("value")] string key = "")
-    {
-        if (value is null)
-        {
-            error = string.Format(
-                ErrorTemplates.NotNull,
-                NormalizeKey(key, Options.IsNormalizingKeys)
-            );
-            return true;
-        }
-
-        error = default;
-        return false;
     }
 
     private static bool DetermineBooleanSetting(bool? methodParameter, bool optionValue) => methodParameter ?? optionValue;
@@ -255,18 +238,10 @@ public class ValidationContext : ExtensibleObject
     }
 
     /// <summary>
-    /// Normalizes the specified key when the specified condition value is true.
-    /// </summary>
-    /// <param name="key">The potential key to be normalized.</param>
-    /// <param name="condition">The condition that determines if the key is normalized.</param>
-    public string NormalizeKey(string key, bool condition) =>
-        condition ? NormalizeKey(key) : key;
-
-    /// <summary>
     /// Normalizes the specified key.
     /// </summary>
     public string NormalizeKey(string key) =>
-        Options.NormalizeKey?.Invoke(key) ?? key.NormalizeLastSectionToLowerCamelCase();
+        Options.NormalizeKey?.Invoke(key) ?? key.GetSectionAfterLastDot();
 
     private bool TryAddFirstError(string key, object error)
     {
@@ -298,16 +273,26 @@ public class ValidationContext : ExtensibleObject
         }
     }
 
+    /// <summary>
+    /// Creates the error for automatic null checks. This method is called from validators as well as
+    /// ValidateItems and ValidateItemsAsync when they are configured to perform automatic null checks
+    /// and found a violation (i.e. the value is null). The default implementation will use the
+    /// Not-Null error template to create the error message. You can customize
+    /// </summary>
+    /// <param name="key">The key of the error. The key is already normalized when this method is called.</param>
+    /// <param name="displayName">The display name of the value.</param>
+    public object CreateErrorForAutomaticNullCheck(string key, string displayName) =>
+        Options.CreateErrorObjectForAutomaticNullCheck?.Invoke(this, key, displayName) ??
+        string.Format(ErrorTemplates.NotNull, displayName);
+
     private object TransformSingleError(string singleExistingError,
-                                        string errorMessage)
-    {
-        return Options.MultipleErrorsPerKeyBehavior switch
+                                        string errorMessage) =>
+        Options.MultipleErrorsPerKeyBehavior switch
         {
             MultipleErrorsPerKeyBehavior.ReplaceError => errorMessage,
             MultipleErrorsPerKeyBehavior.PlaceInList => new List<string>(2) { singleExistingError, errorMessage },
             _ => singleExistingError + Options.NewLine + errorMessage
         };
-    }
 
     /// <summary>
     /// Returns the string representation of this validation context.

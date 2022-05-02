@@ -31,7 +31,7 @@ public static class IsNotInTests
 
         var check = context.Check(dto.Value).IsNotIn(range);
 
-        context.ShouldHaveSingleError("value", $"value must not be in range from {range.CreateRangeDescriptionText()}");
+        context.ShouldHaveSingleError("Value", $"Value must not be in range from {range.CreateRangeDescriptionText()}");
         check.ShouldNotBeShortCircuited();
     }
 
@@ -55,7 +55,7 @@ public static class IsNotInTests
 
         var check = context.Check(dto.Value).IsNotIn(range, "Custom Error Message");
 
-        context.ShouldHaveSingleError("value", "Custom Error Message");
+        context.ShouldHaveSingleError("Value", "Custom Error Message");
         check.ShouldNotBeShortCircuited();
     }
 
@@ -94,7 +94,7 @@ public static class IsNotInTests
         var check = context.Check(dto.Value)
                            .IsNotIn(range, (c, r) => $"{c.Key} should not be in range from {r.From} to {r.To}");
 
-        context.ShouldHaveSingleError("value", $"value should not be in range from {range.From} to {range.To}");
+        context.ShouldHaveSingleError("Value", $"Value should not be in range from {range.From} to {range.To}");
         check.ShouldNotBeShortCircuited();
     }
 

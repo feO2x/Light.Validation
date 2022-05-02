@@ -33,7 +33,7 @@ public static class ContainsOnlyDigitsTests
 
         var check = context.Check(dto.Value).ContainsOnlyDigits();
 
-        context.ShouldHaveSingleError("value", "value must contain only digits");
+        context.ShouldHaveSingleError("Value", "Value must contain only digits");
         check.ShouldNotBeShortCircuited();
     }
 
@@ -57,7 +57,7 @@ public static class ContainsOnlyDigitsTests
 
         var check = context.Check(dto.Value).ContainsOnlyDigits("My Custom Message");
 
-        context.ShouldHaveSingleError("value", "My Custom Message");
+        context.ShouldHaveSingleError("Value", "My Custom Message");
         check.ShouldNotBeShortCircuited();
     }
 
@@ -95,7 +95,7 @@ public static class ContainsOnlyDigitsTests
 
         var check = context.Check(dto.Value).ContainsOnlyDigits(c => $"{c.Key} contains not only digits, my friend");
 
-        context.ShouldHaveSingleError("value", "value contains not only digits, my friend");
+        context.ShouldHaveSingleError("Value", "Value contains not only digits, my friend");
         check.ShouldNotBeShortCircuited();
     }
 

@@ -21,7 +21,7 @@ public sealed class SimpleValidationTests
     [Fact]
     public void ValidateDtoDirectly()
     {
-        var context = new ValidationContext();
+        var context = ValidationContextFactory.CreateContext();
         var invalidDto = new UpdateUserNameDto { Id = 0, UserName = "" };
 
         var result = invalidDto.CheckForErrors(context, out var errors);
@@ -30,14 +30,14 @@ public sealed class SimpleValidationTests
         Output.WriteLine(Json.Serialize(errors));
         result.Should().BeTrue();
         errorsDictionary.Should().HaveCount(2);
-        CheckKeys(errorsDictionary, "id", "userName");
+        CheckKeys(errorsDictionary, nameof(UpdateUserNameDto.Id), nameof(UpdateUserNameDto.UserName));
     }
 
     [Fact]
     public void ValidateViaValidator()
     {
         var invalidDto = new UpdateUserNameDto { Id = 0, UserName = " " };
-        var validator = new DtoValidator();
+        var validator = new DtoValidator(ValidationContextFactory.Instance);
 
         var result = validator.CheckForErrors(invalidDto, out var errors);
 
@@ -45,7 +45,7 @@ public sealed class SimpleValidationTests
         result.Should().BeTrue();
         var errorDictionary = errors.MustBeOfType<Dictionary<string, object>>();
         errorDictionary.Should().HaveCount(2);
-        CheckKeys(errorDictionary, "id", "userName");
+        CheckKeys(errorDictionary, nameof(UpdateUserNameDto.Id), nameof(UpdateUserNameDto.UserName));
     }
 
     [Fact]
@@ -53,7 +53,7 @@ public sealed class SimpleValidationTests
     {
         var session = new UpdateUserNameSessionMock { DoesUserNameExist = true };
         var sessionFactory = new SessionFactoryMock<IUpdateUserNameSession>(session);
-        var validator = new DtoValidator();
+        var validator = new DtoValidator(ValidationContextFactory.Instance);
         var controller = new UpdateUserNameController(sessionFactory, validator);
         var dto = new UpdateUserNameDto { Id = 42, UserName = "Kevin" };
 
@@ -67,7 +67,7 @@ public sealed class SimpleValidationTests
     public static void ValidateNull()
     {
         UpdateUserNameDto dto = null!;
-        var validator = new DtoValidator();
+        var validator = new DtoValidator(ValidationContextFactory.Instance);
 
         var result = validator.CheckForErrors(dto, out var errors);
 
@@ -89,7 +89,7 @@ public sealed class SimpleValidationTests
 
         public async Task<IActionResult> UpdateUserName(UpdateUserNameDto? dto)
         {
-            var context = new ValidationContext();
+            var context = ValidationContextFactory.CreateContext();
             if (Validator.CheckForErrors(dto, context, out var errors))
                 return BadRequest(errors);
 
@@ -109,6 +109,8 @@ public sealed class SimpleValidationTests
 
     private sealed class DtoValidator : Validator<UpdateUserNameDto>
     {
+        public DtoValidator(IValidationContextFactory validationContextFactory) : base(validationContextFactory) { }
+
         protected override UpdateUserNameDto PerformValidation(ValidationContext context, UpdateUserNameDto dto)
         {
             context.Check(dto.Id).IsGreaterThan(0);

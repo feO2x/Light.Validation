@@ -32,7 +32,7 @@ public static class IsLessThanOrEqualToTests
 
         var check = context.Check(dto.Value).IsLessThanOrEqualTo(comparativeValue);
 
-        context.ShouldHaveSingleError("value", $"value must be less than or equal to {comparativeValue.ToString(CultureInfo.InvariantCulture)}");
+        context.ShouldHaveSingleError("Value", $"Value must be less than or equal to {comparativeValue.ToString(CultureInfo.InvariantCulture)}");
         check.ShouldNotBeShortCircuited();
     }
 
@@ -56,7 +56,7 @@ public static class IsLessThanOrEqualToTests
 
         var check = context.Check(dto.Value).IsLessThanOrEqualTo(comparativeValue, "Errors.LessThanOrEqualTo");
 
-        context.ShouldHaveSingleError("value", "Errors.LessThanOrEqualTo");
+        context.ShouldHaveSingleError("Value", "Errors.LessThanOrEqualTo");
         check.ShouldNotBeShortCircuited();
     }
 
@@ -93,7 +93,7 @@ public static class IsLessThanOrEqualToTests
 
         var check = context.Check(dto.Value).IsLessThanOrEqualTo(24.1, (c, o) => $"{c.Key} is too great ({o.ToString(CultureInfo.InvariantCulture)})");
 
-        context.ShouldHaveSingleError("value", "value is too great (24.1)");
+        context.ShouldHaveSingleError("Value", "Value is too great (24.1)");
         check.ShouldNotBeShortCircuited();
     }
 
