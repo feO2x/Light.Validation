@@ -69,4 +69,12 @@ public class ValidationContextOptions : ExtensibleObject
     /// converts null to empty strings and trims the value.
     /// </summary>
     public Func<string?, string>? NormalizeStringValue { get; set; }
+
+    /// <summary>
+    /// Gets or sets the delegate that is called to create the error object used when
+    /// automatic null-checks fail. The default value is null. If no delegate is set,
+    /// the validation context will use the default Not-Null error template to create
+    /// the error message. Please see the comments on the delegate type for further information.
+    /// </summary>
+    public CreateErrorForAutomaticNullCheck? CreateErrorObjectForAutomaticNullCheck { get; set; }
 }

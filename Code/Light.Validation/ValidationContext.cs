@@ -276,12 +276,13 @@ public class ValidationContext : ExtensibleObject
     /// <summary>
     /// Creates the error for automatic null checks. This method is called from validators as well as
     /// ValidateItems and ValidateItemsAsync when they are configured to perform automatic null checks
-    /// and found a violation (i.e. the value is null). You can override this method to manipulate
-    /// the message that is created in this case.
+    /// and found a violation (i.e. the value is null). The default implementation will use the
+    /// Not-Null error template to create the error message. You can customize
     /// </summary>
     /// <param name="key">The key of the error. The key is already normalized when this method is called.</param>
     /// <param name="displayName">The display name of the value.</param>
-    public virtual object CreateErrorForAutomaticNullCheck(string key, string displayName) =>
+    public object CreateErrorForAutomaticNullCheck(string key, string displayName) =>
+        Options.CreateErrorObjectForAutomaticNullCheck?.Invoke(this, key, displayName) ??
         string.Format(ErrorTemplates.NotNull, displayName);
 
     private object TransformSingleError(string singleExistingError,
