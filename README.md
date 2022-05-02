@@ -2,7 +2,7 @@
 A lightweight library for validating incoming data in .NET HTTP services
 
 [![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](https://github.com/feO2x/Light.Validation/blob/master/LICENSE)
-[![NuGet](https://img.shields.io/badge/NuGet-0.4.0-blue.svg?style=for-the-badge)](https://www.nuget.org/packages/Light.Validation/)
+[![NuGet](https://img.shields.io/badge/NuGet-0.5.0-blue.svg?style=for-the-badge)](https://www.nuget.org/packages/Light.Validation/)
 [![Documentation](https://img.shields.io/badge/Docs-Wiki-yellowgreen.svg?style=for-the-badge)](https://github.com/feO2x/Light.Validation/wiki)
 [![Documentation](https://img.shields.io/badge/Docs-Changelog-yellowgreen.svg?style=for-the-badge)](https://github.com/feO2x/Light.Validation/releases)
 
@@ -19,7 +19,7 @@ A lightweight library for validating incoming data in .NET HTTP services
 
 Light.Validation is built against .NET 6 and .NET Standard 2.0 and available on [NuGet](https://www.nuget.org/packages/Light.Validation/).
 
-- **Package Reference in csproj**: `<PackageReference Include="Light.Validation" Version="0.4.0" />`
+- **Package Reference in csproj**: `<PackageReference Include="Light.Validation" Version="0.5.0" />`
 - **dotnet CLI**: `dotnet add package Light.Validation`
 - **Visual Studio Package Manager Console**: `Install-Package Light.Validation`
 
@@ -41,6 +41,10 @@ The `MovieId` identifies the target movie, the `Rating` is a value between 0 and
 ```csharp
 public class RateMovieDtoValidator : Validator<RateMovieDto>
 {
+    // The passed factory is used to create instances of ValidationContext
+    public RateMovieDtoValidator(IValidationContextFactory factory)
+        : base(factory) { }
+
     // By default, a validator will check that the dto is not null
     // before calling this method. Thus in this method, you can
     // simply dereference your DTO without the fear of causing
@@ -119,5 +123,7 @@ The resulting body of the bad request would then look like the following JSON do
 To inject your validator, you need to register it with your DI container. Light.Validation is designed to be fast, so by default, your validators can and should be registered as singletons:
 
 ```csharp
-services.AddSingleton(new RateMovieDtoValidator());
+// The validation context factory only needs to be registered once
+services.AddSingleton<IValidationContextFactory>(ValidationContextFactory.Instance) 
+        .AddSingleton<RateMovieDtoValidator>();
 ```
