@@ -1,14 +1,17 @@
-﻿using Light.Validation;
+﻿using Bachelor.Thesis.Benchmarking.ParametersComplexTwo.Dto;
+using Light.Validation;
 using Light.Validation.Checks;
 
 namespace Bachelor.Thesis.Benchmarking.ParametersComplexTwo.LightValidator;
 
-public class LightDtoValidator : Validator<Dto.CustomerDto>
+public class LightDtoValidator : Validator<CustomerDto>
 {
+    public LightDtoValidator(IValidationContextFactory validationContextFactory) : base(validationContextFactory) { }
+
     private LightAddressValidator AddressValidator { get; } = new ();
     private LightUserValidator UserValidator { get; } = new ();
 
-    protected override Dto.CustomerDto PerformValidation(ValidationContext context, Dto.CustomerDto dto)
+    protected override CustomerDto PerformValidation(ValidationContext context, CustomerDto dto)
     {
         dto.User = context.Check(dto.User).ValidateWith(UserValidator);
 

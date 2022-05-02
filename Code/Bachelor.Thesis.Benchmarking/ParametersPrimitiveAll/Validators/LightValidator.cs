@@ -6,6 +6,8 @@ namespace Bachelor.Thesis.Benchmarking.ParametersPrimitiveAll.Validators;
 
 public class LightValidator : Validator<EmployeeDto>
 {
+    public LightValidator(IValidationContextFactory validationContextFactory) : base(validationContextFactory) { }
+
     protected override EmployeeDto PerformValidation(ValidationContext context, EmployeeDto employeeDto)
     {
         employeeDto.Id = context.Check(employeeDto.Id)
