@@ -1,4 +1,5 @@
-﻿using Light.Validation;
+﻿using System.Management;
+using Light.Validation;
 using Light.Validation.Checks;
 using Range = Light.Validation.Tools.Range;
 
@@ -13,12 +14,16 @@ public class LightDtoValidator : Validator<CollectionFlatDto>
         dto.Names = context.Check(dto.Names).IsNotNull();
         context.Check(dto.Names.Count).IsIn(Range.FromInclusive(1).ToInclusive(10));
 
-        foreach (var name in dto.Names)
-        {
-            context.Check(name).IsShorterThan(20);
-        }
+        context.Check(dto.Names)
+               .ValidateItems((Check<string> name) =>
+                                  name.IsShorterThan(20));
 
         dto.Availability = context.Check(dto.Availability).IsNotNull();
+
+        // TODO: change to implicit call when dictionary is supported in light.Validation
+        context.Check(new List<long>(dto.Availability.Keys))
+               .ValidateItems((Check<long> key) =>
+                                  key.IsLessThanOrEqualTo(10000));
 
         foreach (var key in dto.Availability.Keys)
         {
