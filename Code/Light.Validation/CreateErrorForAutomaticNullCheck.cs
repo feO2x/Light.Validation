@@ -4,7 +4,6 @@
 /// This is the delegate type representing the creation of the error object.
 /// This delegate is called when an automatic null-check failed.
 /// </summary>
-/// <typeparam name="T">The type of the value being null.</typeparam>
 /// <param name="context">
 /// The validation context of the current check. DO NOT add the error object to this context,
 /// just return it. You can use the context to retrieve additional objects that you might need
