@@ -1,5 +1,4 @@
-﻿using System.Management;
-using Light.Validation;
+﻿using Light.Validation;
 using Light.Validation.Checks;
 using Range = Light.Validation.Tools.Range;
 
@@ -24,11 +23,6 @@ public class LightDtoValidator : Validator<CollectionFlatDto>
         context.Check(new List<long>(dto.Availability.Keys))
                .ValidateItems((Check<long> key) =>
                                   key.IsLessThanOrEqualTo(10000));
-
-        foreach (var key in dto.Availability.Keys)
-        {
-            context.Check(key).IsLessThanOrEqualTo(10000);
-        }
 
         return dto;
     }
