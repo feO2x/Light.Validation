@@ -8,8 +8,8 @@ public class InvalidCollectionFlatDtoBenchmarks
 {
     public CollectionFlatDto Dto = CollectionFlatDto.InvalidDto;
 
-    public FluentDtoValidator FluentValidator = new();
-    public LightDtoValidator LightValidator = new();
+    public FluentDtoValidator FluentValidator = new ();
+    public LightDtoValidator LightValidator = new ();
 
     [Benchmark(Baseline = true)]
     public object? CheckViaLightValidator()
