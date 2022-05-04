@@ -178,4 +178,60 @@ public static class ValidationExtensions
 }
 ```
 
-As you can see in the example above, you can use the `ValidationContext` directly without implementing a validator. The `IValidationContextFactory` is the central point to configure how a `ValidationContext` instance is created. If you want to use the default one, simply use `ValidationContextFactory.Instance`.
+As you can see in the example above, an instance of `IValidationContextFactory` is injection via the constructor of the controller. When the endpoint action `GetContacts` is called, the factory is used to create a validation context which in turn is passed to the extension method `CheckForPagingErrors` to validate `skip` and `take`.
+
+This example shows that you can use the `ValidationContext` directly without implementing a validator. The `IValidationContextFactory` is the central point to configure how a `ValidationContext` instance is created. If you want to use the default one, simply use `ValidationContextFactory.Instance`.
+
+### Complex Child DTOs
+
+Some DTO's are structured so that they contain a complex child DTO. You can use the `ValidateWith` to validate child DTOs within a validator.
+
+```csharp
+public class NewContactDto
+{
+    public string Name { get; set; } = string.Empty;
+    public AddressDto Address { get; set; } = null!;
+}
+
+public class AddressDto
+{
+    public string Street { get; set; }
+    public string Location { get; set; }
+}
+
+public class NewContactDtoValidator : Validator<NewContactDto>
+{
+    public NewContactDtoValidator(IValidationContextFactory factory,
+                                  AddressDtoValidator childValidator)
+        : base(factory)
+    {
+        ChildValidator = childValidator;
+    }
+
+    private AddressDtoValidator ChildValidator { get; }
+
+    protected override NewContactDto PerformValidation(ValidationContext context, NewContactDto dto)
+    {
+        dto.Name = context.Check(dto.Name).HasLengthIn(Range.FromInclusive(2).ToInclusive(100));
+        dto.Address = context.Check(dto.Address).ValidateWith(ChildValidator);
+        return dto;
+    }
+}
+
+public class AddressDtoValidator : Validator<AddressDto>
+{
+    public AddressDtoValidator(IValidationContextFactory factory)
+        : base(factory) { }
+
+    protected override AddressDto PerformValidation(ValidationContext context, AddressDto dto)
+    {
+        dto.Street = context.Check(dto.Street).HasLengthIn(Range.FromInclusive(2).ToInclusive(100));
+        dto.Location = context.Check(dto.Location).HasLengthIn(Range.FromInclusive(2).ToInclusive(100));
+        return dto;
+    }
+}
+```
+
+In the above example, the `NewContactDtoValidator` also takes a dependency on the `AddressDtoValidator`. The latter is then called in the former's `PerformValidation` method using `ValidateWith`. Both validators can be instantiated / registered with your DI container as singletons.
+
+This example shows you that validators are composable. You can reuse validator when two or more DTOs use the same child DTOs.
