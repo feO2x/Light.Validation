@@ -27,6 +27,8 @@ public class CollectionComplexValidatorTest
         var fluentValidator = new FluentDtoValidator();
         var result = fluentValidator.Validate(_valid);
 
+        Output.WriteLine(Json.Serialize(result));
+
         result.IsValid.MustBe(true);
     }
 
@@ -35,6 +37,8 @@ public class CollectionComplexValidatorTest
     {
         var lightValidator = new LightDtoValidator();
         var result = lightValidator.Validate(_valid);
+
+        Output.WriteLine(Json.Serialize(result));
 
         result.IsValid.MustBe(true);
     }
@@ -45,6 +49,8 @@ public class CollectionComplexValidatorTest
         var errors = new List<ValidationResult>();
         var result = Validator.TryValidateObject(_valid, new ValidationContext(_valid), errors, true);
 
+        Output.WriteLine(Json.Serialize(errors));
+
         result.MustBe(true);
     }
 
@@ -54,6 +60,8 @@ public class CollectionComplexValidatorTest
         var fluentValidator = new FluentDtoValidator();
         var result = fluentValidator.Validate(_invalid);
 
+        Output.WriteLine(Json.Serialize(result));
+
         result.IsValid.MustBe(false);
     }
 
@@ -62,6 +70,8 @@ public class CollectionComplexValidatorTest
     {
         var lightValidator = new LightDtoValidator();
         var result = lightValidator.Validate(_invalid);
+
+        Output.WriteLine(Json.Serialize(result));
 
         result.IsValid.MustBe(false);
     }
