@@ -45,12 +45,10 @@ public class CollectionComplexDto : IValidatableObject
 
     [Required]
     [MinLength(1), MaxLength(10)]
-    // [ValidateOrderDetailsInList]
     public List<OrderDetails> OrderDetailsList { get; set; } = new ();
 
     [Required]
     [MinLength(1), MaxLength(10)]
-    // [ValidateArticleInList]
     public List<Article> ArticleList { get; set; } = new ();
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
