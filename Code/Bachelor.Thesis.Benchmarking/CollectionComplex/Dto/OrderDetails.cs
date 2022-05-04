@@ -39,6 +39,6 @@ public class OrderDetails
     public int Quantity { get; set; }
 
     [Required]
-    [Range(0, 100000)]
+    [Range(0.01, 100000.0)]
     public decimal PricePaid { get; set; }
 }
