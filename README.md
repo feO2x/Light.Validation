@@ -127,3 +127,55 @@ To inject your validator, you need to register it with your DI container. Light.
 services.AddSingleton<IValidationContextFactory>(ValidationContextFactory.Instance) 
         .AddSingleton<RateMovieDtoValidator>();
 ```
+
+## More advanced examples
+
+### Validate query parameters
+
+If you don't have a DTO, you can still use Light.Validation to validate parameters. This is usually the case in HTTP GET or DELETE endpoints that use query parameters. You can use the `IValidationContextFactory` directly instead of creating a validator.
+
+The following example shows a an ASP.NET Core MVC controller that has a single HTTP GET action supporting paging and searching. 
+
+```csharp
+[ApiController]
+[Route("/api/contacts")]
+public class GetContactsController : ControllerBase
+{
+    public GetContactsController(IValidationContextFactory validationFactory,
+                                 ISessionFactory<IGetContactsSession> sessionFactory)
+    {
+        ValidationFactory = validationFactory;
+        SessionFactory = sessionFactory;
+    }
+
+    private IValidationContextFactory ValidationFactory { get; }
+    private ISessionFactory<IGetContactsSession> SessionFactory { get; }
+
+    public async Task<ActionResult<List<ContactDto>>> GetContacts(int skip = 0,
+                                                                  int take = 30,
+                                                                  string? searchTerm = null)
+    {
+        if (ValidationFactory.CreateContext().CheckForPagingErrors(skip, take, out var errors))
+            return BadRequest(errors);
+
+        await using var session = await SessionFactory.OpenSessionAsync();
+        var contacts = session.GetContactsAsync(skip, take, searchTerm);
+        return ContactDto.FromContacts(contacts);
+    }
+}
+
+public static class ValidationExtensions
+{
+    public static bool CheckForPagingErrors(this ValidationContext context,
+                                            int skip,
+                                            int take,
+                                            [NotNullWhen(true)] out object? errors)
+    {
+        context.Check(skip).IsGreaterThanOrEqualTo(0);
+        context.Check(take).IsIn(Range.FromInclusive(1).ToInclusive(100));
+        return context.TryGetErrors(out errors);
+    }
+}
+```
+
+As you can see in the example above, you can use the `ValidationContext` directly without implementing a validator. The `IValidationContextFactory` is the central point to configure how a `ValidationContext` instance is created. If you want to use the default one, simply use `ValidationContextFactory.Instance`.
