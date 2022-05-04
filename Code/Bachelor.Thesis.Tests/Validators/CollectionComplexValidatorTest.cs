@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using Bachelor.Thesis.Benchmarking.CollectionComplex.Dto;
 using Bachelor.Thesis.Benchmarking.CollectionComplex.FluentValidation;
+using Bachelor.Thesis.Benchmarking.CollectionComplex.LightValidation;
 using Light.GuardClauses;
 using Xunit;
 using Xunit.Abstractions;
@@ -29,14 +30,14 @@ public class CollectionComplexValidatorTest
         result.IsValid.MustBe(true);
     }
 
-    /*[Fact]
+    [Fact]
     public void LightValidatorValidDtoTest()
     {
         var lightValidator = new LightDtoValidator();
         var result = lightValidator.Validate(_valid);
 
         result.IsValid.MustBe(true);
-    }*/
+    }
 
     [Fact]
     public void ModelValidatorValidDtoTest()
@@ -56,14 +57,14 @@ public class CollectionComplexValidatorTest
         result.IsValid.MustBe(false);
     }
 
-    /*[Fact]
+    [Fact]
     public void LightValidatorInvalidDtoTest()
     {
         var lightValidator = new LightDtoValidator();
         var result = lightValidator.Validate(_invalid);
 
         result.IsValid.MustBe(false);
-    }*/
+    }
 
     [Fact]
     public void ModelValidatorInvalidDtoTest()
