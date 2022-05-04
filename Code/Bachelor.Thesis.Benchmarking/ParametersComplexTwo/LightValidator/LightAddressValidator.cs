@@ -7,7 +7,7 @@ namespace Bachelor.Thesis.Benchmarking.ParametersComplexTwo.LightValidator;
 
 public class LightAddressValidator : Validator<Address>
 {
-    public LightAddressValidator(IValidationContextFactory validationContextFactory) : base(validationContextFactory) { }
+    public LightAddressValidator() : base(Light.Validation.ValidationContextFactory.Instance) { }
 
     protected override Address PerformValidation(ValidationContext context, Address address)
     {

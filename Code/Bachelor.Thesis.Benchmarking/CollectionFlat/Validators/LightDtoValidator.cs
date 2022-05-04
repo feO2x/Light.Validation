@@ -6,7 +6,7 @@ namespace Bachelor.Thesis.Benchmarking.CollectionFlat.Validators;
 
 public class LightDtoValidator : Validator<CollectionFlatDto>
 {
-    public LightDtoValidator(IValidationContextFactory validationContextFactory) : base(validationContextFactory) { }
+    public LightDtoValidator() : base(Light.Validation.ValidationContextFactory.Instance) { }
 
     protected override CollectionFlatDto PerformValidation(ValidationContext context, CollectionFlatDto dto)
     {

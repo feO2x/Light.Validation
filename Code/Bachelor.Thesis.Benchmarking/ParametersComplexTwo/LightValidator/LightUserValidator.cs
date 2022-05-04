@@ -8,7 +8,7 @@ namespace Bachelor.Thesis.Benchmarking.ParametersComplexTwo.LightValidator;
 
 public class LightUserValidator : Validator<User>
 {
-    public LightUserValidator(IValidationContextFactory validationContextFactory) : base(validationContextFactory) { }
+    public LightUserValidator() : base(Light.Validation.ValidationContextFactory.Instance) { }
 
     protected override User PerformValidation(ValidationContext context, User user)
     {

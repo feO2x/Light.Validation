@@ -6,7 +6,7 @@ namespace Bachelor.Thesis.Benchmarking.ParametersComplexTwo.LightValidator;
 
 public class LightDtoValidator : Validator<CustomerDto>
 {
-    public LightDtoValidator(IValidationContextFactory validationContextFactory) : base(validationContextFactory) { }
+    public LightDtoValidator() : base(Light.Validation.ValidationContextFactory.Instance) { }
 
     private LightAddressValidator AddressValidator { get; } = new ();
     private LightUserValidator UserValidator { get; } = new ();
