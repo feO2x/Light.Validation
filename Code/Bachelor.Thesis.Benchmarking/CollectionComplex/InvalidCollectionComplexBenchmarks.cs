@@ -1,17 +1,17 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Bachelor.Thesis.Benchmarking.ParametersPrimitiveTwo.Validators;
+using Bachelor.Thesis.Benchmarking.CollectionComplex.Dto;
+using Bachelor.Thesis.Benchmarking.CollectionComplex.FluentValidation;
+using Bachelor.Thesis.Benchmarking.CollectionComplex.LightValidation;
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Configs;
 
-namespace Bachelor.Thesis.Benchmarking.ParametersPrimitiveTwo;
+namespace Bachelor.Thesis.Benchmarking.CollectionComplex;
 
-public class ValidUserDtoBenchmarks
+public class InvalidCollectionComplexBenchmarks
 {
-    public FluentValidator FluentValidator = new ();
+    public CollectionComplexDto Dto = CollectionComplexDto.InvalidDto;
 
-    public LightValidator LightValidator = new ();
-
-    public UserDto Dto = UserDto.ValidDto;
+    public FluentDtoValidator FluentValidator = new();
+    public LightDtoValidator LightValidator = new();
 
     [Benchmark(Baseline = true)]
     public object? CheckViaLightValidator()
