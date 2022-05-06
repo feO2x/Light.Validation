@@ -19,10 +19,7 @@ public class LightDtoValidator : Validator<CollectionFlatDto>
 
         dto.Availability = context.Check(dto.Availability).IsNotNull();
 
-        // TODO: change to implicit call when dictionary is supported in light.Validation
-        context.Check(new List<long>(dto.Availability.Keys))
-               .ValidateItems((Check<long> key) =>
-                                  key.IsLessThanOrEqualTo(10000));
+        context.Check(dto.Availability).ValidateWith(new LightDictionaryValidator());
 
         return dto;
     }
