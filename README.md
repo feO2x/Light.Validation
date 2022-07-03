@@ -100,8 +100,8 @@ public class RateMovieController : ControllerBase
 In a similar way, you can incorporate the validation mechanism in Minimal APIs:
 
 ```csharp
-app.MapPost("/api/movies/rate", ([FromBody] RateMovieDto? dto,
-                                 [FromServices] RateMovieDtoValidator validator)) =>
+app.MapPost("/api/movies/rate", (RateMovieDto? dto,
+                                 RateMovieDtoValidator validator) =>
 {
     if (Validator.CheckForErrors(dto, out var errors))
         return Results.BadRequest(errors);
@@ -134,28 +134,28 @@ services.AddSingleton<IValidationContextFactory>(ValidationContextFactory.Instan
 
 If you don't have a DTO, you can still use Light.Validation to validate parameters. This is usually the case in HTTP GET or DELETE endpoints that use query parameters. You can use the `IValidationContextFactory` directly instead of creating a validator.
 
-The following example shows a an ASP.NET Core MVC controller that has a single HTTP GET action supporting paging and searching. 
+The following example shows an ASP.NET Core MVC controller that has a single HTTP GET action supporting paging and searching. 
 
 ```csharp
 [ApiController]
 [Route("/api/contacts")]
 public class GetContactsController : ControllerBase
 {
-    public GetContactsController(IValidationContextFactory validationFactory,
+    public GetContactsController(ValidationContext validationContext,
                                  ISessionFactory<IGetContactsSession> sessionFactory)
     {
-        ValidationFactory = validationFactory;
+        ValidationContext = validationContext;
         SessionFactory = sessionFactory;
     }
 
-    private IValidationContextFactory ValidationFactory { get; }
+    private ValidationContext ValidationContext { get; }
     private ISessionFactory<IGetContactsSession> SessionFactory { get; }
 
     public async Task<ActionResult<List<ContactDto>>> GetContacts(int skip = 0,
                                                                   int take = 30,
                                                                   string? searchTerm = null)
     {
-        if (ValidationFactory.CreateContext().CheckForPagingErrors(skip, take, out var errors))
+        if (ValidationContext.CheckForPagingErrors(skip, take, out var errors))
             return BadRequest(errors);
 
         await using var session = await SessionFactory.OpenSessionAsync();
@@ -178,13 +178,17 @@ public static class ValidationExtensions
 }
 ```
 
-As you can see in the example above, an instance of `IValidationContextFactory` is injection via the constructor of the controller. When the endpoint action `GetContacts` is called, the factory is used to create a validation context which in turn is passed to the extension method `CheckForPagingErrors` to validate `skip` and `take`.
+As you can see in the example above, an instance of `ValidationContet` is injected via the constructor of the controller. When the endpoint action `GetContacts` is called, the context is passed to the extension method `CheckForPagingErrors` to validate `skip` and `take`. To make this work, you need to register the `ValidationContext` class with your DI container. You should either use a transient or scoped lifetime (do not share a singleton instance of the validation context between HTTP requests, `ValidationContext` is neither thread-safe nor can it distinguish between the errors of several concurrent callers).
 
-This example shows that you can use the `ValidationContext` directly without implementing a validator. The `IValidationContextFactory` is the central point to configure how a `ValidationContext` instance is created. If you want to use the default one, simply use `ValidationContextFactory.Instance`.
+```csharp
+services.AddTransient<ValidationContext>(_ => ValidationContextFactory.CreateContext());
+```
+
+This example shows that you can use the `ValidationContext` directly without implementing a validator. The `IValidationContextFactory` is the central point to configure how a `ValidationContext` instance is created. If you want to use the default one, simply use `ValidationContextFactory.Instance` for the `IValidationContextFactory` or `ValidationContextFactory.CreateContext()` to create the default context.
 
 ### Complex Child DTOs
 
-Some DTO's are structured so that they contain a complex child DTO. You can use the `ValidateWith` to validate child DTOs within a validator.
+Some DTO's are structured so that they contain a complex child DTO. You can use the `ValidateWith` to validate child DTOs within another validator.
 
 ```csharp
 public class NewContactDto
@@ -235,3 +239,53 @@ public class AddressDtoValidator : Validator<AddressDto>
 In the above example, the `NewContactDtoValidator` also takes a dependency on the `AddressDtoValidator`. The latter is then called in the former's `PerformValidation` method using `ValidateWith`. Both validators can be instantiated / registered with your DI container as singletons.
 
 This example shows you that validators are composable. You can reuse validator when two or more DTOs use the same child DTOs.
+
+**We highly recommend that you keep the structure of your DTOs as simple and as flat as possible. Do not introduce unnecessary nesting and/or collections in your DTOs.** Light.Validation will create a `ValidationContext` instance for each child DTO and each collection, which increases GC pressure and performance of validation methods. 
+
+### Validating Collections
+
+Sometimes a DTO contains a collection of values or other DTOs. You can use the `ValidateItems` extension method to validate the collection items:
+
+```csharp
+public sealed class Dto
+{
+    public List<int> Numbers { get; set; } = null!;
+}
+
+public sealed class DtoValidator : Validator<Dto>
+{
+    protected override Dto PerformValidation(ValidationContext context,
+                                             Dto dto)
+    {
+        context.Check(dto.Numbers)
+               .HasCount(3)
+               .ValidateItems(number => number.IsIn(Range.FromInclusive(0).ToInclusive(5)));
+        return dto;
+    }
+}
+```
+
+The above validator will ensure that the collection has exactly three numbers (with the call to `HasCount`) and that each number is between zero and five (with the call to `ValidateItems`). It's worth noting that the delegate you pass to `ValidateItems` is of the following form: `Check<T> ValidateItem(Check<T> item)`. This means that the `number` parameter in the example above is actually a `Check<int>` and within your delegate, you can check and transform the instance in the same way as you would do in a regular `PerformValidation` method of a validator.
+
+Please note that you can also validate complex DTOs in collections, simply by calling `ValidateWith` within the delegate passed to `ValidateItems`:
+
+```csharp
+public class ContactDtoValidator : Validator<ContactDto>
+{
+    public NewContactDtoValidator(IValidationContextFactory factory,
+                                  AddressDtoValidator childValidator)
+        : base(factory)
+    {
+        ChildValidator = childValidator;
+    }
+
+    private AddressDtoValidator ChildValidator { get; }
+
+    protected override ContactDto PerformValidation(ValidationContext context, ContactDto dto)
+    {
+        dto.Addresses
+           .ValidateItems(address => address.ValidateWith(ChildValidator));
+        return dto;
+    }
+}
+```
