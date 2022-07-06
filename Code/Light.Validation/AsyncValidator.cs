@@ -29,7 +29,7 @@ public abstract class AsyncValidator<T> : BaseValidator<T>
     /// is false. This is the boolean value passed to ConfigureAwait for the
     /// PerformValidationAsync task. If you have no clue, just leave it to false.
     /// </param>
-    protected AsyncValidator(ValidationContextFactory validationContextFactory,
+    protected AsyncValidator(IValidationContextFactory validationContextFactory,
                              bool isNullCheckingEnabled = true,
                              bool continueOnCapturedContextAfterAwait = false)
         : base(validationContextFactory, isNullCheckingEnabled) =>
