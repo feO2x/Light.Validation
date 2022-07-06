@@ -236,7 +236,7 @@ public class AddressDtoValidator : Validator<AddressDto>
 }
 ```
 
-In the above example, the `NewContactDtoValidator` also takes a dependency on the `AddressDtoValidator`. The latter is then called in the former's `PerformValidation` method using `ValidateWith`. Both validators can be instantiated / registered with your DI container as singletons.
+In the example above, the `NewContactDtoValidator` also takes a dependency on the `AddressDtoValidator`. The latter is then called in the former's `PerformValidation` method using `ValidateWith`. Both validators can be instantiated / registered with your DI container as singletons.
 
 This example shows you that validators are composable. You can reuse validator when two or more DTOs use the same child DTOs.
 
@@ -288,4 +288,69 @@ public class ContactDtoValidator : Validator<ContactDto>
         return dto;
     }
 }
+```
+
+**Again, we encourage you to keep your DTOs as simple and as flat as possible.** Do not introduce unnecessary nesting with child DTOs or collections.
+
+### Async Validation
+
+Most of your checks will probably be performed in-memory, but you might sometimes need to make an I/O call to validate a value. You can derive from the `AsyncValidator<T>` base class in these cases:
+
+```csharp
+public class LinkDtoValidator : AsyncValidator<LinkDto>, IDisposable
+{
+    public LinkDtoValidator(IValidationContextFactory validationContextfactory,
+                            IHttpClientFactory httpClientFactory,
+                            ILogger logger)
+        : base(validationContextfactory)
+    {
+        HttpClientFactory = httpClientFactory;
+        Logger = logger;
+    }
+
+    private HttpClient HttpClientFactory { get; }
+    private ILogger Logger { get; }
+
+    protected override async Task<LinkDto> PerformValidationAsync(ValidationContext context,
+                                                                  LinkDto dto)
+    {
+        try
+        {
+            await using var httpClient = HttpClientFactory.CreateClient();
+            var response = await httpClient.GetAsync(dto.Url);
+            if (!response.IsSuccessStatusCode)
+                context.Check(dto.Url).AddError("The URL is not accessible");
+        }
+        catch(Exception exception)
+        {
+            Logger.Error(exception, "Could not validate {@Dto}", dto);
+            context.Check(dto.Url).AddError("The URL could not be verified due to a connection error");
+        }
+
+        return dto;
+    }
+}
+```
+
+In the code example above, you see an async validator that takes the URL of a DTO and verifies that it is accessible via an HTTP request. You can also see that an error is created not only when the returned HTTP status code does not indicate success, but also when any connection error occurred. Of course, how you react to errors in async validation code is highly dependent on your context - it might e.g. also be fine to simply not catch the exception and produce an HTTP 500 Internal Server Error status code.
+
+To use a validator in an endpoint, you register it with the DI container. Because we use an HTTP client in this example, we need to register it, too.
+
+```csharp
+// Don't forget the logger and the IValidationContextFactory
+services.AddHttpClient()
+        .AddSingleton<LinkDtoValidator>();
+```
+
+In your endpoints, you can then simply inject the validator, e.g. for Minimal APIs:
+
+```csharp
+app.MapPost("/api/validateUrl", async (LinkDto dto, LinkDtoValidator validator) => 
+{
+    var validationResult = await validator.ValidateAsync(dto);
+    if (validationResult.TryGetErrors(out var errors))
+        return Results.BadRequest(errors);
+    
+    return Results.Ok();
+});
 ```
