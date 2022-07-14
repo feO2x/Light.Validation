@@ -120,7 +120,7 @@ The resulting body of the bad request would then look like the following JSON do
 }
 ```
 
-To inject your validator, you need to register it with your DI container. Light.Validation is designed to be fast, so by default, your validators can and should be registered as singletons:
+To inject your validator, you need to register it with your DI container. Light.Validation is designed to be fast, so by default, your validators can (and should be) registered as singletons:
 
 ```csharp
 // The validation context factory only needs to be registered once
@@ -132,7 +132,7 @@ services.AddSingleton<IValidationContextFactory>(ValidationContextFactory.Instan
 
 ### Validate query parameters
 
-If you don't have a DTO, you can still use Light.Validation to validate parameters. This is usually the case in HTTP GET or DELETE endpoints that use query parameters. You can use the `IValidationContextFactory` directly instead of creating a validator.
+If you don't have a DTO, you can still use Light.Validation to validate parameters. This is usually the case in HTTP GET or DELETE endpoints that use query parameters. You can use the `ValidationContext` directly instead of creating a validator.
 
 The following example shows an ASP.NET Core MVC controller that has a single HTTP GET action supporting paging and searching. 
 
@@ -240,7 +240,7 @@ In the example above, the `NewContactDtoValidator` also takes a dependency on th
 
 This example shows you that validators are composable. You can reuse validator when two or more DTOs use the same child DTOs.
 
-**We highly recommend that you keep the structure of your DTOs as simple and as flat as possible. Do not introduce unnecessary nesting and/or collections in your DTOs.** Light.Validation will create a `ValidationContext` instance for each child DTO and each collection, which increases GC pressure and performance of validation methods. 
+**We highly recommend that you keep the structure of your DTOs as simple and as flat as possible. Do not introduce unnecessary nesting and/or collections in your DTOs.** Light.Validation will create a `ValidationContext` instance for each child DTO and each collection, which might increase GC pressure.
 
 ### Validating Collections
 
@@ -337,8 +337,9 @@ In the code example above, you see an async validator that takes the URL of a DT
 To use a validator in an endpoint, you register it with the DI container. Because we use an HTTP client in this example, we need to register it, too.
 
 ```csharp
-// Don't forget the logger and the IValidationContextFactory
-services.AddHttpClient()
+// Don't forget to register the logger
+services.AddSingleton<IValidationContextFactory>(ValidationContextFactory.Instance)
+        .AddHttpClient()
         .AddSingleton<LinkDtoValidator>();
 ```
 
@@ -354,3 +355,33 @@ app.MapPost("/api/validateUrl", async (LinkDto dto, LinkDtoValidator validator) 
     return Results.Ok();
 });
 ```
+
+### Multi-Step Validation (Sharing ValidationContext)
+
+Sometimes, DTO validation involves several steps, e.g. static checks and afterwards calling a third-party system. You can reuse a validation context in these cases.
+
+```csharp
+app.MapPut("/api/customers", async (UpdateCustomerDto dto,
+                                    UpdateCustomerDtoValidator validator,
+                                    ValidationContext validationContext,
+                                    ISessionFactory<IUpdateCustomerSession> sessionFactory) => 
+{
+    if (validator.CheckForErrors(dto, validationContext, out var errors))
+        return Results.BadRequest(errors);
+    
+    await using var session = await sessionFactory.OpenSessionAsync();
+    var existingCustomer = await session.GetCustomerAsync(dto.Id);
+    if (existingCustomer is null)
+    {
+        validationContext.Check(dto.Id).AddError($"There is no user with ID {dto.Id}");
+        return Results.BadRequest(validationContext.Errors);
+    }
+
+    dto.UpdateCustomer(existingCustomer);
+    await session.SaveChangesAsync();
+
+    return Results.NoContent();
+});
+```
+
+In the example above, the DTO is first validated with the validator. Afterwards, a database session is opened and the corresponding customer is loaded, after which the second validation takes place (if there actually is a customer). This is done by using a dedicated instance of `ValidationContext` that is also injected into the Minimal API endpoint. The validator will not create its own validation context in these circustances.
