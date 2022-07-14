@@ -385,3 +385,53 @@ app.MapPut("/api/customers", async (UpdateCustomerDto dto,
 ```
 
 In the example above, the DTO is first validated with the validator. Afterwards, a database session is opened and the corresponding customer is loaded, after which the second validation takes place (if there actually is a customer). This is done by using a dedicated instance of `ValidationContext` that is also injected into the Minimal API endpoint. The validator will not create its own validation context in these circustances.
+
+### Attaching Information to ValidationContext
+
+You can attach any kind of data to a validation context. This might be useful when you want to pass information to a child validator:
+
+```csharp
+public class ParentValidator : Validator<CustomerDto>
+{
+    public ParentValidator(IValidationContextFactory factory,
+                           ChildValidator childValidator)
+        : base(factory)
+    {
+        ChildValidator = childValidator;
+    }
+
+    private ChildValidator ChildValidator { get; }
+
+    protected override CustomerDto PerformValidation(ValidationContext context, CustomerDto dto)
+    {
+        context.Check(dto.Id).IsGreaterThan(0);
+        var customerId = dto.Id
+        context.SetAttachedObject("customerId", customerId);
+        context.Check(dto.PaymentOption).ValidateWith(ChildValidator);
+        return dto;
+    }
+}
+
+public class ChildValidator : Validator<PaymentOptionDto>
+{
+    public ChildValidator(IValidationContextFactory factory, Func<IPaymentOptionsService> createPaymentOptionsService)
+        : base(factory) 
+    {
+        CreatePaymentOptionsService = createPaymentOptionsService;
+    }
+
+    private Func<IPaymentOptionsService> CreatePaymentOptionsService { get; }
+
+    protected override PaymentOptionDto PerformValidation(ValidationContext context, PaymentOptionDto dto)
+    {
+        // There is also a TryGetAttachedObject method
+        var customerId = context.GetAttachedObject<Guid>();
+        using var paymentOptionsService = CreatePaymentOptionsService();
+        if (!paymentOptionsService.CheckIfCustomerIsEligible(customerId, dto.PaymentDetails))
+            context.Check(dto.PaymentDetails).AddError($"The customer with ID \"{customerId}\" cannot use this payment method");
+        return dto;
+    }
+}
+```
+
+In the example above, the parent validator attaches the customerId to the validation context by calling `SetAttachedObject`. When the child validator is called, it retrieves this value using the `GetAttachedObject<T>` method.
