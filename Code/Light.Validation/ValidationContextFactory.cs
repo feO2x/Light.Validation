@@ -51,5 +51,5 @@ public sealed class ValidationContextFactory : IValidationContextFactory
     /// <see cref="CreateValidationContext" />.
     /// </summary>
     public ValidationContext CreateChildValidationContext<T>(ValidationContext parent, T childValue) =>
-        CreateValidationContext();
+        new (this, parent.Options, parent.ErrorTemplates, parent);
 }
