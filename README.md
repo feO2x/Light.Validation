@@ -39,6 +39,11 @@ public class RateMovieDto
 The `MovieId` identifies the target movie, the `Rating` is a value between 0 and 5 and `Comment` is an optional text that the user might add. To validate this DTO, you should create a validator. Please be sure to add using statements for the `Light.Validation` and `Light.Validation.Checks` namespaces.
 
 ```csharp
+using Light.Validation;
+using Light.Validation.Checks;
+
+namespace MyWebApi;
+
 public class RateMovieDtoValidator : Validator<RateMovieDto>
 {
     // The passed factory is used to create instances of ValidationContext
@@ -151,6 +156,7 @@ public class GetContactsController : ControllerBase
     private ValidationContext ValidationContext { get; }
     private ISessionFactory<IGetContactsSession> SessionFactory { get; }
 
+    [HttpGet]
     public async Task<ActionResult<List<ContactDto>>> GetContacts(int skip = 0,
                                                                   int take = 30,
                                                                   string? searchTerm = null)
@@ -178,7 +184,7 @@ public static class ValidationExtensions
 }
 ```
 
-As you can see in the example above, an instance of `ValidationContet` is injected via the constructor of the controller. When the endpoint action `GetContacts` is called, the context is passed to the extension method `CheckForPagingErrors` to validate `skip` and `take`. To make this work, you need to register the `ValidationContext` class with your DI container. You should either use a transient or scoped lifetime (do not share a singleton instance of the validation context between HTTP requests, `ValidationContext` is neither thread-safe nor can it distinguish between the errors of several concurrent callers).
+As you can see in the example above, an instance of `ValidationContext` is injected via the constructor of the controller. When the endpoint action `GetContacts` is called, the context is passed to the extension method `CheckForPagingErrors` to validate `skip` and `take`. To make this work, you need to register the `ValidationContext` class with your DI container. You should either use a transient or scoped lifetime (do not share a singleton instance of the validation context between HTTP requests, `ValidationContext` is neither thread-safe nor can it distinguish between the errors of several concurrent callers).
 
 ```csharp
 services.AddTransient<ValidationContext>(_ => ValidationContextFactory.CreateContext());
@@ -188,7 +194,7 @@ This example shows that you can use the `ValidationContext` directly without imp
 
 ### Complex Child DTOs
 
-Some DTO's are structured so that they contain a complex child DTO. You can use the `ValidateWith` to validate child DTOs within another validator.
+Some DTO's are structured so that they contain a complex child DTO. You can use the `ValidateWith` extension method to validate child DTOs with another validator.
 
 ```csharp
 public class NewContactDto
@@ -238,7 +244,7 @@ public class AddressDtoValidator : Validator<AddressDto>
 
 In the example above, the `NewContactDtoValidator` also takes a dependency on the `AddressDtoValidator`. The latter is then called in the former's `PerformValidation` method using `ValidateWith`. Both validators can be instantiated / registered with your DI container as singletons.
 
-This example shows you that validators are composable. You can reuse validator when two or more DTOs use the same child DTOs.
+This example shows you that validators are composable. You can reuse validator when two or more DTOs use the same child DTO type.
 
 **We highly recommend that you keep the structure of your DTOs as simple and as flat as possible. Do not introduce unnecessary nesting and/or collections in your DTOs.** Light.Validation will create a `ValidationContext` instance for each child DTO and each collection, which might increase GC pressure.
 
@@ -384,7 +390,7 @@ app.MapPut("/api/customers", async (UpdateCustomerDto dto,
 });
 ```
 
-In the example above, the DTO is first validated with the validator. Afterwards, a database session is opened and the corresponding customer is loaded, after which the second validation takes place (if there actually is a customer). This is done by using a dedicated instance of `ValidationContext` that is also injected into the Minimal API endpoint. The validator will not create its own validation context in these circustances.
+In the example above, the DTO is first validated with the validator. Afterwards, a database session is opened and the corresponding customer is loaded, after which the second validation takes place (if there actually is a customer with the specified ID). This is done by using a dedicated instance of `ValidationContext` that is also injected into the Minimal API endpoint. The validator will not create its own validation context in these circustances.
 
 ### Attaching Information to ValidationContext
 
@@ -434,4 +440,4 @@ public class ChildValidator : Validator<PaymentOptionDto>
 }
 ```
 
-In the example above, the parent validator attaches the customerId to the validation context by calling `SetAttachedObject`. When the child validator is called, it retrieves this value using the `GetAttachedObject<T>` method.
+In the example above, the parent validator attaches the `customerId` to the validation context by calling `SetAttachedObject`. When the child validator is called, it retrieves this value using the `GetAttachedObject<T>` method.
