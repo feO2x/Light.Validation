@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <TargetFrameworks>net6.0;netstandard2.0</TargetFrameworks>
-        <Version>0.5.0</Version>
+        <Version>0.6.0</Version>
         <LangVersion>10.0</LangVersion>
         <Nullable>enable</Nullable>
         <TreatWarningsAsErrors Condition="'$(Configuration)' == 'Release'">true</TreatWarningsAsErrors>
@@ -22,14 +22,11 @@
         <EmbedUntrackedSources>true</EmbedUntrackedSources>
         <PackageTags>Validation, Check, DTO, Data-Transfer-Object, HTTP, Web-Service, Web-API, Lightweight</PackageTags>
         <PackageReleaseNotes>
-Light.Validation 0.5.0
+Light.Validation 0.6.0
 --------------------------------
 
-- added ability to easily validate the items of a collection via ValidateItems(Async)
-- enhanced ValidateWith(Async) to respect short-circuiting, performance optimized by avoiding the creation of child contexts when the value to be validated is null
-- introduced DisplayName to Check&lt;T&gt; so that the name of a value can differ from its key
-- introduced IValidationContextFactory to properly create child contexts and to offer a good extension points for plug-ins that want to configure the validation context
-- breaking change: ExtensibleObject no longer has the option to be immutable
+- attached objects set on validation context are now properly passed to child contexts
+- ValidationResult now also checks for lists and null in IsValid property
 - read all docs at https://github.com/feO2x/Light.Validation
         </PackageReleaseNotes>
     </PropertyGroup>
