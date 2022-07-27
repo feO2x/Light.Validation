@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Light.GuardClauses;
 
@@ -23,7 +24,8 @@ public readonly record struct ValidationResult<T>(T ValidatedValue, object? Erro
         {
             string errorMessage => errorMessage.IsNullOrWhiteSpace(),
             Dictionary<string, object> { Count: > 0 } => false,
-            _ => true
+            IList { Count: > 0 } => false,
+            _ => Errors is null
         };
 
     /// <summary>
