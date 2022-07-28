@@ -410,8 +410,8 @@ public class ParentValidator : Validator<CustomerDto>
 
     protected override CustomerDto PerformValidation(ValidationContext context, CustomerDto dto)
     {
-        context.Check(dto.Id).IsGreaterThan(0);
-        var customerId = dto.Id
+        // Remember, a Check<T> has an implicit conversion to the value it encapsulates.
+        int customerId = context.Check(dto.Id).IsGreaterThan(0);
         context.SetAttachedObject("customerId", customerId);
         context.Check(dto.PaymentOption).ValidateWith(ChildValidator);
         return dto;
@@ -431,7 +431,7 @@ public class ChildValidator : Validator<PaymentOptionDto>
     protected override PaymentOptionDto PerformValidation(ValidationContext context, PaymentOptionDto dto)
     {
         // There is also a TryGetAttachedObject method
-        var customerId = context.GetAttachedObject<Guid>();
+        var customerId = context.GetAttachedObject<int>("customerId");
         using var paymentOptionsService = CreatePaymentOptionsService();
         if (!paymentOptionsService.CheckIfCustomerIsEligible(customerId, dto.PaymentDetails))
             context.Check(dto.PaymentDetails).AddError($"The customer with ID \"{customerId}\" cannot use this payment method");
