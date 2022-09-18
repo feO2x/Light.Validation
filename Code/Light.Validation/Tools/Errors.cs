@@ -362,7 +362,7 @@ public static class Errors
     /// <summary>
     /// Adds the "Count" error message to the context. Depending on the <paramref name="count" />,
     /// the <see cref="ErrorTemplates.CountSingular" /> or <see cref="ErrorTemplates.CountMultiple" />
-    /// error template is chosen (if message is not null).
+    /// error template is chosen (if message is null).
     /// </summary>
     /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
     /// <param name="count">The count the collection was compared against.</param>
@@ -376,6 +376,26 @@ public static class Errors
         message ??= count == 1 ?
                         string.Format(check.Context.ErrorTemplates.CountSingular, check.DisplayName) :
                         string.Format(check.Context.ErrorTemplates.CountMultiple, check.DisplayName, count.ToString());
+        return check.AddError(message);
+    }
+
+    /// <summary>
+    /// Adds the "Minimum Count" error message to the context. Depending on the <paramref name="minimumCount" />,
+    /// the <see cref="ErrorTemplates.MinimumCountSingular" /> or <see cref="ErrorTemplates.MinimumCountMultiple" />
+    /// error template is chosen (if message is null).
+    /// </summary>
+    /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
+    /// <param name="minimumCount">The minimum count the collection was compared against.</param>
+    /// <param name="message">
+    /// The error message (optional). If null is provided, an error message will be
+    /// generated from the error templates associated with the context.
+    /// </param>
+    public static Check<T> AddMinimumCountError<T>(this Check<T> check, int minimumCount, string? message = null)
+    {
+        check = check.NormalizeKeyIfNecessary();
+        message ??= minimumCount == 1 ?
+                        string.Format(check.Context.ErrorTemplates.MinimumCountSingular, check.DisplayName) :
+                        string.Format(check.Context.ErrorTemplates.MinimumCountMultiple, check.DisplayName, minimumCount.ToString());
         return check.AddError(message);
     }
 
