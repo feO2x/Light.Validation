@@ -268,6 +268,27 @@ public class ErrorTemplates : ExtensibleObject
     public string MinimumCountMultiple { get; set; } = "{0} must have at least {1} items";
 
     /// <summary>
+    /// Gets the template for the "Maximum Count Singular" error message.
+    /// The default value is "{0} must have at most 1 item".
+    /// This template takes one parameter:
+    /// <list type="bullet">
+    /// <item>{0} display name</item>
+    /// </list>
+    /// </summary>
+    public string MaximumCountSingular { get; set; } = "{0} must have at most 1 item";
+
+    /// <summary>
+    /// Gets the template for the "Maximum Count Singular" error message.
+    /// The default value is "{0} must have at most {1} items".
+    /// This template takes two parameters:
+    /// <list type="bullet">
+    /// <item>{0} display name</item>
+    /// <item>{1} count</item>
+    /// </list>
+    /// </summary>
+    public string MaximumCountMultiple { get; set; } = "{0} must have at most {1} items";
+
+    /// <summary>
     /// Gets the template for the "Try Parse To Enum" error message.
     /// The default value is "{0} is not one of the allowed values".
     /// The template takes one parameter:

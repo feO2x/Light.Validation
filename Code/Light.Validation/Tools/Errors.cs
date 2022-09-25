@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Light.GuardClauses;
 
 namespace Light.Validation.Tools;
@@ -385,7 +386,7 @@ public static class Errors
     /// error template is chosen (if message is null).
     /// </summary>
     /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
-    /// <param name="minimumCount">The minimum count the collection was compared against.</param>
+    /// <param name="minimumCount">The minimum count the collection count was compared against.</param>
     /// <param name="message">
     /// The error message (optional). If null is provided, an error message will be
     /// generated from the error templates associated with the context.
@@ -396,6 +397,26 @@ public static class Errors
         message ??= minimumCount == 1 ?
                         string.Format(check.Context.ErrorTemplates.MinimumCountSingular, check.DisplayName) :
                         string.Format(check.Context.ErrorTemplates.MinimumCountMultiple, check.DisplayName, minimumCount.ToString());
+        return check.AddError(message);
+    }
+
+    /// <summary>
+    /// Adds the "Maximum Count" error message to the context. Depending on the <paramref name="maximumCount" />,
+    /// the <see cref="ErrorTemplates.MaximumCountSingular" /> or <see cref="ErrorTemplates.MaximumCountMultiple" />
+    /// error template is chosen (if message is null).
+    /// </summary>
+    /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
+    /// <param name="maximumCount">The maximum count the collection count was compared against.</param>
+    /// <param name="message">
+    /// The error message (optional). If null is provided, an error message will be
+    /// generated from the error templates associated with the context.
+    /// </param>
+    public static Check<T> AddMaximumCountError<T>(this Check<T> check, int maximumCount, string? message = null)
+    {
+        check = check.NormalizeKeyIfNecessary();
+        message ??= maximumCount == 1 ?
+                        string.Format(check.Context.ErrorTemplates.MaximumCountSingular, check.DisplayName) :
+                        string.Format(check.Context.ErrorTemplates.MaximumCountMultiple, check.DisplayName, maximumCount.ToString());
         return check.AddError(message);
     }
 
