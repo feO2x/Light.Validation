@@ -289,6 +289,13 @@ public class ErrorTemplates : ExtensibleObject
     public string MaximumCountMultiple { get; set; } = "{0} must have at most {1} items";
 
     /// <summary>
+    /// Gets the template for the "Count In Range" error message.
+    /// The default value is "{0} must have {1} items".
+    /// This template takes two parameters:
+    /// </summary>
+    public string CountInRange { get; set; } = "{0} must have {1} items";
+
+    /// <summary>
     /// Gets the template for the "Try Parse To Enum" error message.
     /// The default value is "{0} is not one of the allowed values".
     /// The template takes one parameter:

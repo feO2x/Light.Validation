@@ -170,6 +170,57 @@ public static partial class Checks
     }
 
     /// <summary>
+    /// Checks if the collection's count is within the specified range, or otherwise adds an error message
+    /// to the validation context.
+    /// </summary>
+    /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
+    /// <param name="range">The range that the collection's count should be in between.</param>
+    /// <param name="message">The error message that will be added to the context (optional). If null is provided, the default error
+    /// message will be created from the error templates associated to the validation context.
+    /// </param>
+    /// <param name="shortCircuitOnError">
+    /// The value indicating whether the check instance is short-circuited when validation fails.
+    /// Short-circuited instances will not perform any more checks.
+    /// </param>
+    public static Check<T> HasCountIn<T>(this Check<T> check,
+                                         Range<int> range,
+                                         string? message = null,
+                                         bool shortCircuitOnError = false)
+        where T : IEnumerable
+    {
+        if (check.IsShortCircuited || !check.IsValueNull && range.IsValueWithinRange(check.Value.GetCount()))
+            return check;
+
+        check = check.AddCountInRangeError(range, message);
+        return check.ShortCircuitIfNecessary(shortCircuitOnError);
+    }
+    
+    /// <summary>
+    /// Checks if the collection's count is within the specified range, or otherwise adds an error message
+    /// that was created by the specified factory to the validation context.
+    /// </summary>
+    /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
+    /// <param name="range">The range that the collection's count should be in between.</param>
+    /// <param name="errorMessageFactory">The delegate that is used to create the error message.</param>
+    /// <param name="shortCircuitOnError">
+    /// The value indicating whether the check instance is short-circuited when validation fails.
+    /// Short-circuited instances will not perform any more checks.
+    /// </param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="errorMessageFactory" /> is null.</exception>
+    public static Check<T> HasCountIn<T>(this Check<T> check,
+                                         Range<int> range,
+                                         Func<Check<T>, Range<int>, string> errorMessageFactory,
+                                         bool shortCircuitOnError = false)
+        where T : IEnumerable
+    {
+        if (check.IsShortCircuited || !check.IsValueNull && range.IsValueWithinRange(check.Value.GetCount()))
+            return check;
+
+        check = check.CreateAndAddError(errorMessageFactory, range);
+        return check.ShortCircuitIfNecessary(shortCircuitOnError);
+    }
+
+    /// <summary>
     /// Validates each item of the collection with the specified <paramref name="validate" /> delegate.
     /// Before the collection is iterated, a null check is performed unless you set <paramref name="isNullCheckingEnabled" />
     /// to false.

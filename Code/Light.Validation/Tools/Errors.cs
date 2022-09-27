@@ -421,6 +421,24 @@ public static class Errors
     }
 
     /// <summary>
+    /// Adds the "Count In Range" error message to the context. 
+    /// </summary>
+    /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
+    /// <param name="range">The range that the count of the collection is not in between.</param>
+    /// <param name="message">
+    /// The error message (optional). If null is provided, an error message will be
+    /// generated from the error templates associated with the context.
+    /// </param>
+    public static Check<T> AddCountInRangeError<T>(this Check<T> check, Range<int> range, string? message = null)
+    {
+        check = check.NormalizeKeyIfNecessary();
+        message ??= string.Format(check.Context.ErrorTemplates.CountInRange,
+                                  check.DisplayName,
+                                  check.Context.ErrorTemplates.FormatRange(range));
+        return check.AddError(message);
+    }
+
+    /// <summary>
     /// Adds the "Try Parse to Enum" error message to the context.
     /// </summary>
     /// <param name="check">The structure that encapsulates the value to be checked and the validation context.</param>
