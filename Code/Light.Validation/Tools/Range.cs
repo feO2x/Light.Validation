@@ -65,11 +65,11 @@ public readonly record struct Range<T> where T : IComparable<T>
     /// Returns a text description of this range with the following pattern: From (inclusive | exclusive) to To (inclusive | exclusive).
     /// </summary>
     public string CreateRangeDescriptionText(string fromToConnectionWord = "to") =>
-        From + " (" + GetLowerBoundaryType() + ") " + fromToConnectionWord + " " + To + " (" + GetUpperBoundaryType() + ")";
+        $"{From} {GetLowerBoundaryType()}{fromToConnectionWord} {GetUpperBoundaryType()}{To}";
 
     private string GetLowerBoundaryType() => GetBoundaryText(IsFromInclusive);
     private string GetUpperBoundaryType() => GetBoundaryText(IsToInclusive);
-    private static string GetBoundaryText(bool isInclusive) => isInclusive ? "inclusive" : "exclusive";
+    private static string GetBoundaryText(bool isInclusive) => isInclusive ? string.Empty : "(exclusive) ";
 
     /// <summary>
     /// The nested <see cref="RangeFromInfo" /> can be used to fluently create a <see cref="Range{T}" />.

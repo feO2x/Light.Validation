@@ -40,7 +40,7 @@ public sealed class ValidateWithTests
             new Dictionary<string, object>
             {
                 ["Id"] = "Id must be greater than 0",
-                ["Name"] = "Name must have 2 (inclusive) to 100 (inclusive) characters"
+                ["Name"] = "Name must have 2 to 100 characters"
             }
         );
         check.ShouldNotBeShortCircuited();
