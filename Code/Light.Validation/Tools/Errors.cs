@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using Light.GuardClauses;
 
 namespace Light.Validation.Tools;
@@ -374,9 +373,10 @@ public static class Errors
     public static Check<T> AddCountError<T>(this Check<T> check, int count, string? message = null)
     {
         check = check.NormalizeKeyIfNecessary();
+        var errorTemplates = check.Context.ErrorTemplates;
         message ??= count == 1 ?
-                        string.Format(check.Context.ErrorTemplates.CountSingular, check.DisplayName) :
-                        string.Format(check.Context.ErrorTemplates.CountMultiple, check.DisplayName, count.ToString());
+                        string.Format(errorTemplates.CountSingular, check.DisplayName) :
+                        string.Format(errorTemplates.CountMultiple, check.DisplayName, errorTemplates.FormatParameter(count));
         return check.AddError(message);
     }
 
@@ -394,9 +394,10 @@ public static class Errors
     public static Check<T> AddMinimumCountError<T>(this Check<T> check, int minimumCount, string? message = null)
     {
         check = check.NormalizeKeyIfNecessary();
+        var errorTemplates = check.Context.ErrorTemplates; 
         message ??= minimumCount == 1 ?
-                        string.Format(check.Context.ErrorTemplates.MinimumCountSingular, check.DisplayName) :
-                        string.Format(check.Context.ErrorTemplates.MinimumCountMultiple, check.DisplayName, minimumCount.ToString());
+                        string.Format(errorTemplates.MinimumCountSingular, check.DisplayName) :
+                        string.Format(errorTemplates.MinimumCountMultiple, check.DisplayName, errorTemplates.FormatParameter(minimumCount));
         return check.AddError(message);
     }
 
@@ -414,9 +415,10 @@ public static class Errors
     public static Check<T> AddMaximumCountError<T>(this Check<T> check, int maximumCount, string? message = null)
     {
         check = check.NormalizeKeyIfNecessary();
+        var errorTemplates = check.Context.ErrorTemplates;
         message ??= maximumCount == 1 ?
-                        string.Format(check.Context.ErrorTemplates.MaximumCountSingular, check.DisplayName) :
-                        string.Format(check.Context.ErrorTemplates.MaximumCountMultiple, check.DisplayName, maximumCount.ToString());
+                        string.Format(errorTemplates.MaximumCountSingular, check.DisplayName) :
+                        string.Format(errorTemplates.MaximumCountMultiple, check.DisplayName, errorTemplates.FormatParameter(maximumCount));
         return check.AddError(message);
     }
 
